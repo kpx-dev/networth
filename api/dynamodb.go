@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute"
 )
 
-var accountTable = aws.String(GetEnv("ACCOUNT_TABLE", ""))
+var accountTable = aws.String(getEnv("ACCOUNT_TABLE", ""))
 
 // DBClient db client struct
 type DBClient struct {
@@ -81,31 +81,31 @@ func (d DBClient) GetAccounts(username string) map[string]interface{} {
 }
 
 // UpsertAccounts update or insert accounts to db
-func (d DBClient) UpsertAccounts(username string, account Account) {
-	dynoData, err := dynamodbattribute.Marshal(account)
+// func (d DBClient) UpsertAccounts(username string, account Account) {
+// 	dynoData, err := dynamodbattribute.Marshal(account)
 
-	if err != nil {
-		panic(err)
-	}
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	column := fmt.Sprintf("%s:%s", account.Type, account.Mask)
+// 	column := fmt.Sprintf("%s:%s", account.Type, account.Mask)
 
-	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
-		Key: map[string]dynamodb.AttributeValue{
-			"username": {S: aws.String(fmt.Sprintf("%s:accounts", username))},
-		},
-		TableName: accountTable,
-		ExpressionAttributeNames: map[string]string{
-			"#column": column,
-		},
-		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":column": *dynoData,
-		},
-		UpdateExpression: aws.String("SET #column = :column"),
-	})
+// 	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
+// 		Key: map[string]dynamodb.AttributeValue{
+// 			"username": {S: aws.String(fmt.Sprintf("%s:accounts", username))},
+// 		},
+// 		TableName: accountTable,
+// 		ExpressionAttributeNames: map[string]string{
+// 			"#column": column,
+// 		},
+// 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+// 			":column": *dynoData,
+// 		},
+// 		UpdateExpression: aws.String("SET #column = :column"),
+// 	})
 
-	req.Send()
-}
+// 	req.Send()
+// }
 
 // UpdateNetworth update latest networth amount
 func (d DBClient) UpdateNetworth(username string, networth float64) {

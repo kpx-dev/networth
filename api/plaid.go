@@ -2,50 +2,45 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/plaid/plaid-go/plaid"
 )
 
 // PlaidClient plaid client
 type PlaidClient struct {
-	client *plaid.Client
-	// env         string
-	// clientID    string
-	// secret      string
-	// AccessToken string
+	*plaid.Client
 }
 
 // NewPlaidClient new Plaid client
 func NewPlaidClient() *PlaidClient {
+	plaidEnv := getEnv("PLAID_ENV", "sandbox")
+	plaidHost := plaid.Sandbox
+
+	switch plaidEnv {
+	case "sandbox":
+		plaidHost = plaid.Sandbox
+		break
+	case "dev":
+		plaidHost = plaid.Development
+		break
+	case "prod":
+		plaidHost = plaid.Production
+		break
+	default:
+		plaidHost = plaid.Sandbox
+	}
+
 	clientOptions := plaid.ClientOptions{
-		os.Getenv("PLAID_CLIENT_ID"),
-		os.Getenv("PLAID_SECRET"),
-		os.Getenv("PLAID_PUBLIC_KEY"),
-		plaid.Sandbox,  // Available environments are Sandbox, Development, and Production
-		&http.Client{}, // This parameter is optional
+		ClientID:    getEnv("PLAID_CLIENT_ID"),
+		Secret:      getEnv("PLAID_SECRET"),
+		PublicKey:   getEnv("PLAID_PUBLIC_KEY"),
+		Environment: plaidHost,
+		HTTPClient:  &http.Client{},
 	}
 	client, _ := plaid.NewClient(clientOptions)
 
 	return &PlaidClient{client}
 }
-
-// package nwlib
-
-// import (
-// 	"bytes"
-// 	"encoding/json"
-// 	"fmt"
-// 	"net/http"
-// )
-
-// // PlaidClient plaid client
-// type PlaidClient struct {
-// 	env         string
-// 	clientID    string
-// 	secret      string
-// 	AccessToken string
-// }
 
 // // Account account
 // type Account struct {

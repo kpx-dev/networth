@@ -9,7 +9,7 @@ import (
 )
 
 var snsClient = sns.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
-var snsTopicARN = GetEnv("SNS_TOPIC_ARN", "")
+var snsTopicARN = getEnv("SNS_TOPIC_ARN", "")
 
 // PublishSNS publish message to SNS topic
 func PublishSNS(message string) {

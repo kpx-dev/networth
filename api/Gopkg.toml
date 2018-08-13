@@ -9,3 +9,11 @@
 [[constraint]]
   branch = "master"
   name = "github.com/plaid/plaid-go"
+
+[[constraint]]
+  name = "github.com/go-redis/redis"
+  version = "6.13.2"
+
+[[constraint]]
+  name = "github.com/gorilla/mux"
+  version = "1.6.2"

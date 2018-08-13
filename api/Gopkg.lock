@@ -73,6 +73,33 @@
   version = "v1.38.1"
 
 [[projects]]
+  name = "github.com/go-redis/redis"
+  packages = [
+    ".",
+    "internal",
+    "internal/consistenthash",
+    "internal/hashtag",
+    "internal/pool",
+    "internal/proto",
+    "internal/singleflight",
+    "internal/util"
+  ]
+  revision = "480db94d33e6088e08d628833b6c0705451d24bb"
+  version = "v6.13.2"
+
+[[projects]]
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
+  version = "v1.1.1"
+
+[[projects]]
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
+  version = "v1.6.2"
+
+[[projects]]
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
   revision = "0b12d6b5"
@@ -80,7 +107,6 @@
 [[projects]]
   name = "github.com/plaid/plaid-go"
   packages = [
-    ".",
     "internal",
     "plaid"
   ]
@@ -90,6 +116,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ccf7b22384512493b1a541f5e5701ef588e5d8b62083b39a6a79826490608476"
+  inputs-digest = "2bcf430729d09a5c86d7bd43c22ff504168811b1f942473db975bbfe1ba51d98"
   solver-name = "gps-cdcl"
   solver-version = 1
