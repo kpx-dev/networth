@@ -8,7 +8,7 @@ import (
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
-func (s *server) handleTokens() http.HandlerFunc {
+func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// switch r.Method {
 		// case "GET":
@@ -38,10 +38,10 @@ func (s *server) handleTokens() http.HandlerFunc {
 	}
 }
 
-func (s *server) auth(h http.HandlerFunc) http.HandlerFunc {
+func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
-		jwtKey := strings.Replace(authHeader, "Bearer", "", 1)
+		jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
 		parsed, err := jwt.ParseSigned(jwtKey)
 		if err != nil {
 			w.WriteHeader(http.StatusForbidden)

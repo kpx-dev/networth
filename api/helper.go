@@ -12,6 +12,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws/external"
 )
 
+// APIResponse api reponse
+type APIResponse struct {
+	Data interface{} `json:"data"`
+}
+
 func getEnv(params ...string) string {
 	if value, ok := os.LookupEnv(params[0]); ok {
 		return value
@@ -26,14 +31,22 @@ func error(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 
-	json.NewEncoder(w).Encode(resp{message.(string)})
+	json.NewEncoder(w).Encode(APIResponse{message.(string)})
 }
 
 func success(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	json.NewEncoder(w).Encode(resp{message.(string)})
+	switch message.(type) {
+	case string:
+		json.NewEncoder(w).Encode(APIResponse{message.(string)})
+		break
+
+	default:
+		json.NewEncoder(w).Encode(APIResponse{message})
+	}
+
 }
 
 func getAPIVersion() string {
@@ -59,7 +72,13 @@ func getAPIVersion() string {
 }
 
 func loadDotEnv() {
-	file, _ := os.Open(".env")
+	dir, _ := os.Getwd()
+	if strings.HasSuffix(dir, "/api") {
+		dir = strings.Replace(dir, "/api", "", 1)
+	}
+
+	envPath := dir + "/.env"
+	file, _ := os.Open(envPath)
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)

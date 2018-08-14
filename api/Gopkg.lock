@@ -67,6 +67,12 @@
   version = "v2.0.0-preview.4"
 
 [[projects]]
+  name = "github.com/coreos/bbolt"
+  packages = ["."]
+  revision = "583e8937c61f1af6513608ccc75c97b6abdf4ff9"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/go-ini/ini"
   packages = ["."]
   revision = "358ee7663966325963d4e8b2e1fbd570c5195153"
@@ -124,6 +130,12 @@
   revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
 
 [[projects]]
+  branch = "master"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "4e1fef5609515ec7a2cee7b5de30ba6d9b438cbf"
+
+[[projects]]
   name = "gopkg.in/square/go-jose.v2"
   packages = [
     ".",
@@ -137,6 +149,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "319e4db7be6a3eeade3f391dc1e57414206cceee2c6d1c134d1972c0eb7d65c0"
+  inputs-digest = "f7bff0bd2789231b878d5facf7b1bec812b04081d79980116439bfd2c9351be8"
   solver-name = "gps-cdcl"
   solver-version = 1

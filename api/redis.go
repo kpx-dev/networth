@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/go-redis/redis"
 )
 
@@ -18,4 +20,15 @@ func NewRedisClient() *RedisClient {
 	})
 
 	return &RedisClient{client}
+}
+
+// GetNetworth get current networth
+func (c *RedisClient) GetNetworth() string {
+	val, err := c.Get("networth").Result()
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return val
 }
