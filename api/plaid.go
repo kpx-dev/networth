@@ -13,7 +13,6 @@ type PlaidClient struct {
 
 // NewPlaidClient new Plaid client
 func NewPlaidClient() *PlaidClient {
-	plaidEnv := getEnv("PLAID_ENV", "sandbox")
 	plaidHost := plaid.Sandbox
 
 	switch plaidEnv {
@@ -31,9 +30,9 @@ func NewPlaidClient() *PlaidClient {
 	}
 
 	clientOptions := plaid.ClientOptions{
-		ClientID:    getEnv("PLAID_CLIENT_ID"),
-		Secret:      getEnv("PLAID_SECRET"),
-		PublicKey:   getEnv("PLAID_PUBLIC_KEY"),
+		ClientID:    plaidClientID,
+		Secret:      plaidSecret,
+		PublicKey:   plaidPublicKey,
 		Environment: plaidHost,
 		HTTPClient:  &http.Client{},
 	}

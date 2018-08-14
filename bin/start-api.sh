@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-go run api/*.go
+cd api && gin --appPort=8000

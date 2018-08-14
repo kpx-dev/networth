@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -21,39 +20,26 @@ type resp struct {
 }
 
 func (s *server) routes() {
+	// s.router.HandleFunc("/tokens", s.handleTokens()).Methods("GET", "POST")
+	s.router.HandleFunc("/tokens", s.auth(s.handleTokens())).Methods("GET", "POST")
 	s.router.HandleFunc("/institutions", s.auth(s.handleInstitutions()))
-	s.router.HandleFunc("/healthcheck", s.handleHealthcheck())
-	s.router.HandleFunc("/", s.handleIndex())
-}
-
-func (s *server) auth(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// if !currentUser(r).IsAdmin {
-		// 	http.NotFound(w, r)
-		// 	return
-		// }
-		h(w, r)
-	}
+	s.router.HandleFunc("/healthcheck", s.handleHealthcheck()).Methods("GET")
+	s.router.HandleFunc("/", s.handleIndex()).Methods("GET")
 }
 
 func (s *server) handleIndex() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		message := resp{"root"}
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message)
+		message := resp{"networth-api! Please visit https://docs.networth.app/"}
+
+		success(w, message)
 	}
 }
 
 func (s *server) handleInstitutions() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-
-		ins, _ := s.plaid.GetInstitutions(5, 0)
-		// fmt.Println(ins)
-
-		json.NewEncoder(w).Encode(ins)
+		// ins, _ := s.plaid.GetInstitutions(5, 0)
+		// success(w, ins)
+		success(w, "ok")
 	}
 }
 
@@ -66,9 +52,7 @@ func (s *server) handleHealthcheck() http.HandlerFunc {
 			"version": version,
 		}
 
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(message)
+		success(w, message)
 	}
 }
 

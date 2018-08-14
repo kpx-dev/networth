@@ -113,9 +113,30 @@
   revision = "ef879de0d7bd1325d31c59a4ba290064dfb1b071"
   version = "1.1.0"
 
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = [
+    "ed25519",
+    "ed25519/internal/edwards25519",
+    "pbkdf2"
+  ]
+  revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
+
+[[projects]]
+  name = "gopkg.in/square/go-jose.v2"
+  packages = [
+    ".",
+    "cipher",
+    "json",
+    "jwt"
+  ]
+  revision = "8254d6c783765f38c8675fae4427a1fe73fbd09d"
+  version = "v2.1.8"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2bcf430729d09a5c86d7bd43c22ff504168811b1f942473db975bbfe1ba51d98"
+  inputs-digest = "319e4db7be6a3eeade3f391dc1e57414206cceee2c6d1c134d1972c0eb7d65c0"
   solver-name = "gps-cdcl"
   solver-version = 1

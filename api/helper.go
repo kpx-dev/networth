@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
+	"net/http"
 	"os"
 	"strings"
 
@@ -18,6 +20,20 @@ func getEnv(params ...string) string {
 	}
 
 	return ""
+}
+
+func error(w http.ResponseWriter, message interface{}) {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusBadRequest)
+
+	json.NewEncoder(w).Encode(resp{message.(string)})
+}
+
+func success(w http.ResponseWriter, message interface{}) {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(resp{message.(string)})
 }
 
 func getAPIVersion() string {
