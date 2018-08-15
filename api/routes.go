@@ -19,7 +19,7 @@ func (s *NetworthAPI) handleHealthcheck() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		success(w, "version: "+version)
+		successResp(w, "version: "+version)
 	}
 }
 

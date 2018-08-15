@@ -27,14 +27,14 @@ func getEnv(params ...string) string {
 	return ""
 }
 
-func error(w http.ResponseWriter, message interface{}) {
+func errorResp(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 
 	json.NewEncoder(w).Encode(APIResponse{message.(string)})
 }
 
-func success(w http.ResponseWriter, message interface{}) {
+func successResp(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 

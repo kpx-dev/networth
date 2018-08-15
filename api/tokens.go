@@ -22,7 +22,7 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 		key := []byte(jwtSecret)
 		sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: key}, (&jose.SignerOptions{}).WithType("JWT"))
 		if err != nil {
-			error(w, err.Error())
+			errorResp(w, err.Error())
 			return
 		}
 
@@ -30,11 +30,11 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 
 		raw, err := jwt.Signed(sig).Claims(myClaim).CompactSerialize()
 		if err != nil {
-			error(w, err.Error())
+			errorResp(w, err.Error())
 			return
 		}
 
-		success(w, raw)
+		successResp(w, raw)
 	}
 }
 
@@ -45,7 +45,7 @@ func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 		parsed, err := jwt.ParseSigned(jwtKey)
 		if err != nil {
 			w.WriteHeader(http.StatusForbidden)
-			error(w, "Invalid JWT format")
+			errorResp(w, "Invalid JWT format")
 			return
 		}
 
@@ -53,7 +53,7 @@ func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 		key := []byte(jwtSecret)
 		if err := parsed.Claims(key, &claim); err != nil {
 			w.WriteHeader(http.StatusForbidden)
-			error(w, "Invalid JWT crypto")
+			errorResp(w, "Invalid JWT crypto")
 			return
 		}
 

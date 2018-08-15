@@ -9,7 +9,7 @@ func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 		accounts, err := s.plaid.GetAccounts(accessToken)
 
 		if err != nil {
-			error(w, err.Error())
+			errorResp(w, err.Error())
 			return
 		}
 
@@ -20,6 +20,6 @@ func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 		// payload, _ := json.Marshal(accounts.Accounts)
 		// fmt.Println(string(payload))
 		// json.NewEncoder(w).Encode()
-		success(w, accounts.Accounts)
+		successResp(w, accounts.Accounts)
 	}
 }

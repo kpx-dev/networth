@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/go-redis/redis"
 )
@@ -23,12 +24,14 @@ func NewRedisClient() *RedisClient {
 }
 
 // GetNetworth get current networth
-func (c *RedisClient) GetNetworth() string {
+func (c *RedisClient) GetNetworth() float64 {
 	val, err := c.Get("networth").Result()
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	return val
+	networth, _ := strconv.ParseFloat(val, 32)
+
+	return networth
 }

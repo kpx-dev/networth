@@ -13,6 +13,7 @@ type NetworthAPI struct {
 }
 
 var (
+	username       = "demo@networth.app"
 	accessToken    string
 	jwtSecret      string
 	plaidEnv       string
@@ -34,6 +35,7 @@ func main() {
 	plaidClient := NewPlaidClient()
 	// redisClient := NewRedisClient()
 	boltClient := NewBoltClient()
+	boltClient.Init()
 
 	s := &NetworthAPI{
 		// db:     redisClient,
