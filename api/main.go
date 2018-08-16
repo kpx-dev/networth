@@ -31,18 +31,17 @@ func main() {
 	plaidSecret = getEnv("PLAID_SECRET")
 	plaidPublicKey = getEnv("PLAID_PUBLIC_KEY")
 	plaidEnv = getEnv("PLAID_ENV", "sandbox")
+	apiHost := getEnv("API_HOST", ":8000")
 
 	plaidClient := NewPlaidClient()
 	// redisClient := NewRedisClient()
 	boltClient := NewBoltClient()
-	boltClient.Init()
 
-	s := &NetworthAPI{
+	api := &NetworthAPI{
 		// db:     redisClient,
 		db:     boltClient,
 		router: mux.NewRouter(),
 		plaid:  plaidClient,
 	}
-	s.routes()
-	s.serve(":8000")
+	api.Start(apiHost)
 }

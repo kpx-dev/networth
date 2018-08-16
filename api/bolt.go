@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 
 	bolt "github.com/coreos/bbolt"
 )
@@ -15,48 +17,97 @@ type BoltClient struct {
 
 // NewBoltClient new bolt client
 func NewBoltClient() *BoltClient {
-	db, _ := bolt.Open("bolt.db", 0600, nil)
-	defer db.Close()
+	path := getRootDir() + "/data/" + dbBucket + ".db"
+	db, _ := bolt.Open(path, 0600, nil)
 
-	return &BoltClient{db}
+	client := &BoltClient{db}
+	client.init()
+
+	return client
 }
 
-// Init create required buckets
-func (db *BoltClient) Init() {
+// init create required buckets
+func (db *BoltClient) init() {
 	db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(dbBucket))
 		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
+			return fmt.Errorf("Error creating bucket: %s", err)
 		}
 		return nil
 	})
 }
 
-// GetNetworth get current networth
-func (db *BoltClient) GetNetworth() float64 {
-	// networth := 0
-	fmt.Println("GetNetworth", username)
-
-	db.Update(func(tx *bolt.Tx) error {
+// Set key value
+func (db *BoltClient) Set(key string, value string) error {
+	err := db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(dbBucket))
-		err := b.Put([]byte(username), []byte("42"))
+		err := b.Put([]byte(username+":"+key), []byte(value))
+
 		return err
 	})
 
-	db.View(func(tx *bolt.Tx) error {
-		fmt.Println("inside view...")
+	if err != nil {
+		log.Println(err)
+	}
+
+	return err
+}
+
+// Get value
+func (db *BoltClient) Get(key string) string {
+	var payload string
+	err := db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(dbBucket))
-		v := b.Get([]byte(username))
-		// networth =
-		fmt.Printf("The answer is: %s\n", v)
+		v := b.Get([]byte(username + ":" + key))
+		payload = string(v)
+
 		return nil
 	})
 
-	// db.Update(func(tx *bolt.Tx) error {
-	// 	b := tx.Bucket([]byte("MyBucket"))
-	// 	err := b.Put([]byte("answer"), []byte("42"))
-	// 	return err
-	// })
+	if err != nil {
+		log.Println(err)
+	}
 
-	return 0
+	return payload
+}
+
+// SetNetworth set current networth
+func (db *BoltClient) SetNetworth(networth float64) error {
+	err := db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(dbBucket))
+		err := b.Put([]byte(username), []byte(strconv.FormatFloat(networth, 'f', 6, 64)))
+
+		return err
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return err
+}
+
+// GetAccessToken return the access token
+func (db *BoltClient) GetAccessToken() string {
+	return db.Get(username + ":access_token")
+}
+
+// GetNetworth get current networth
+func (db *BoltClient) GetNetworth() float64 {
+	networth := 0.0
+
+	err := db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(dbBucket))
+		v := b.Get([]byte(username))
+		nw, err := strconv.ParseFloat(string(v), 64)
+		networth = nw
+
+		return err
+	})
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	return networth
 }

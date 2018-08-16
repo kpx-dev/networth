@@ -31,7 +31,7 @@ func (c *RedisClient) GetNetworth() float64 {
 		log.Println(err)
 	}
 
-	networth, _ := strconv.ParseFloat(val, 32)
+	networth, _ := strconv.ParseFloat(val, 64)
 
 	return networth
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -8,13 +10,43 @@ import (
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
+func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
+	type TokenBody struct {
+		Token string `json:"token"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		var body TokenBody
+
+		err := json.NewDecoder(r.Body).Decode(&body)
+
+		if err != nil {
+			errorResp(w, err.Error())
+			return
+		}
+
+		accessToken, err := s.plaid.ExchangePublicToken(body.Token)
+
+		if err != nil {
+			errorResp(w, err.Error())
+			return
+		}
+
+		errDb := s.db.Set("access_token", accessToken.AccessToken)
+
+		fmt.Println("db error ", errDb)
+
+		if errDb != nil {
+			errorResp(w, err.Error())
+			return
+		}
+
+		successResp(w, "access token created")
+	}
+}
+
 func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// switch r.Method {
-		// case "GET":
-		// case "POST":
-		// }
-
 		type claim struct {
 			Username string `json:"username"`
 		}
@@ -26,7 +58,7 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 			return
 		}
 
-		myClaim := claim{"demo@networth.app"}
+		myClaim := claim{username}
 
 		raw, err := jwt.Signed(sig).Claims(myClaim).CompactSerialize()
 		if err != nil {
@@ -40,6 +72,10 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 
 func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: enable auth when deploy
+		h(w, r)
+		return
+
 		authHeader := r.Header.Get("Authorization")
 		jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
 		parsed, err := jwt.ParseSigned(jwtKey)

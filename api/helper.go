@@ -50,7 +50,8 @@ func successResp(w http.ResponseWriter, message interface{}) {
 }
 
 func getAPIVersion() string {
-	file, _ := os.Open("Gopkg.toml")
+	path := getRootDir() + "/Gopkg.toml"
+	file, _ := os.Open(path)
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
@@ -71,13 +72,17 @@ func getAPIVersion() string {
 	return ""
 }
 
-func loadDotEnv() {
+func getRootDir() string {
 	dir, _ := os.Getwd()
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
 	}
 
-	envPath := dir + "/.env"
+	return dir
+}
+
+func loadDotEnv() {
+	envPath := getRootDir() + "/.env"
 	file, _ := os.Open(envPath)
 	defer file.Close()
 
