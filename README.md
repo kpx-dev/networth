@@ -1,7 +1,7 @@
-# networth
+# ![networth.app logo](docs/assets/img/networth.app-logo.png "networth.app logo") networth.app
 
-Networth.app - Get your realtime net worth!
+Get your real-time net worth!
 
-## API
+## REST API
 
-API is written in Golang located in `/api`
+REST API is written in Golang located in `/api`
