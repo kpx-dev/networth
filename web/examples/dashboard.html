@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Black Dashboard by Creative Tim
+    networth.app - Dashboard
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -24,17 +24,17 @@
 
 <body class=" ">
   <div class="wrapper ">
-    <div class="sidebar">
+    <div class="sidebar" data-color="blue">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
     -->
       <div class="sidebar-wrapper">
         <div class="logo">
-          <a href="http://www.creative-tim.com" class="simple-text logo-mini">
-            CT
+          <a href="https://networth.com/app" class="simple-text logo-mini">
+            DU
           </a>
-          <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-            Creative Tim
+          <a href="https://networth.com/app" class="simple-text logo-normal">
+            Demo User
           </a>
         </div>
         <ul class="nav">
@@ -207,19 +207,23 @@
               <div class="card-header ">
                 <div class="row">
                   <div class="col-sm-6 text-left">
-                    <h5 class="card-category">Total Shipments</h5>
-                    <h2 class="card-title">Performance</h2>
+                    <h5 class="card-category">Net Worth value overtime</h5>
+                    <h3 class="card-title"><i class="tim-icons icon-money-coins text-success "></i> $100,343</h3>
+                    <!-- <h2 class="card-title">Net Worth: $100,343</h2> -->
                   </div>
                   <div class="col-sm-6">
                     <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-                      <label class="btn btn-sm btn-primary btn-simple active" id="0">
-                        <input type="radio" name="options" autocomplete="off" checked> Accounts
+                      <label class="btn btn-sm btn-primary btn-simple" id="0">
+                        <input type="radio" name="options" autocomplete="off"> Daily
                       </label>
                       <label class="btn btn-sm btn-primary btn-simple " id="1">
-                        <input type="radio" name="options" autocomplete="off"> Purchases
-                      </label>
+                          <input type="radio" name="options" autocomplete="off"> Weekly
+                        </label>
                       <label class="btn btn-sm btn-primary btn-simple " id="2">
-                        <input type="radio" name="options" autocomplete="off"> Sessions
+                        <input type="radio" name="options" autocomplete="off"> Monhtly
+                      </label>
+                      <label class="btn btn-sm btn-primary btn-simple active" id="3">
+                        <input type="radio" name="options" autocomplete="off" checked> Yearly
                       </label>
                     </div>
                   </div>
@@ -237,7 +241,7 @@
           <div class="col-lg-4">
             <div class="card card-chart">
               <div class="card-header ">
-                <h5 class="card-category">Total Shipments</h5>
+                <h5 class="card-category">Assets</h5>
                 <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary "></i> 763,215</h3>
               </div>
               <div class="card-body ">
@@ -250,7 +254,7 @@
           <div class="col-lg-4">
             <div class="card card-chart">
               <div class="card-header ">
-                <h5 class="card-category">Daily Sales</h5>
+                <h5 class="card-category">Liabilities</h5>
                 <h3 class="card-title"><i class="tim-icons icon-delivery-fast text-info "></i> 3,500€</h3>
               </div>
               <div class="card-body ">
@@ -263,7 +267,7 @@
           <div class="col-lg-4">
             <div class="card card-chart">
               <div class="card-header ">
-                <h5 class="card-category">Completed Tasks</h5>
+                <h5 class="card-category">Daily Net Worth</h5>
                 <h3 class="card-title"><i class="tim-icons icon-send text-success "></i> 12,100K</h3>
               </div>
               <div class="card-body ">
@@ -587,7 +591,8 @@
       </footer>
       </div>
     </div>
-    <div class="fixed-plugin">
+
+    <!-- <div class="fixed-plugin">
       <div class="dropdown show-dropdown">
         <a href="#" data-toggle="dropdown">
           <i class="fa fa-cog fa-2x"> </i>
@@ -626,7 +631,8 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
+
     <!--   Core JS Files   -->
     <script src="../assets/js/core/jquery.min.js"></script>
     <script src="../assets/js/core/popper.min.js"></script>
