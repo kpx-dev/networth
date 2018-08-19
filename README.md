@@ -2,6 +2,8 @@
 
 Get your real-time net worth!
 
+![Product Gif](https://s3.amazonaws.com/creativetim_bucket/github/gif/black-dashboard.gif)
+
 ## Project Structure
 
 Each folder below has its own instruction, please go there to read and set it up.
