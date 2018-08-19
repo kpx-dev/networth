@@ -31,7 +31,7 @@ If it requires more effort, please [create an issue](https://github.com/networth
 
 ## Maintainers
 
-This project is actively mainted by the following open source heros:
+This project is actively mainted by the following open source heroes:
 
 [@kienpham2000](https://github.com/kienpham2000) - Kien Pham
 
