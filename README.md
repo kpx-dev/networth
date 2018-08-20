@@ -36,16 +36,20 @@ If it requires more effort, please [create an issue](https://github.com/networth
 This project is actively mainted by the following open source heroes:
 
 [@raoasifraza11](https://github.com/raoasifraza11) - Asif Raza
+
 [@kienpham2000](https://github.com/kienpham2000) - Kien Pham
 
 ## Contributors
 
 Thanks to the following contributors even if it's a small PR!
 
-[@andreidolhescu](https://github.com/andreidolhescu)
-[@bbourqu](https://github.com/bbourqu)
+[@andreidolhescu](https://github.com/andreidolhescu) - Andrei Dolhescu
+
+[@bbourqu](https://github.com/bbourqu) - Brett Bourquin
+
 [@crossroadguyjp](https://github.com/crossroadguyjp)
-[@kanishkarj](https://github.com/kanishkarj)
+
+[@kanishkarj](https://github.com/kanishkarj) - Kanishkar J
 
 ## License
 
