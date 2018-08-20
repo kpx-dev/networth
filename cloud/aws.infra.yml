@@ -246,6 +246,23 @@ Resources:
     Properties:
       BucketName: !Ref DomainName
 
+  LandingS3BucketPublicReadPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        !Ref LandingS3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: PublicReadGetObject
+          Effect: Allow
+          Principal:
+            AWS: !Join [' ', ['arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref CloudFrontOriginAccessIdentity]]
+          Action:
+          - s3:GetObject
+          Resource:
+          - !Join ['', ['arn:aws:s3:::', !Ref LandingS3Bucket, '/*']]
+
   DemoS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -260,6 +277,15 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
+        CustomErrorResponses:
+        -
+          ErrorCode: 404
+          ResponseCode: 404
+          ResponsePagePath: '/404.html'
+        -
+          ErrorCode: 403
+          ResponseCode: 404
+          ResponsePagePath: '/404.html'
         Aliases:
           - !Ref DomainName
           - !Join ['.', [www, !Ref DomainName]]
@@ -281,6 +307,7 @@ Resources:
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
         DefaultCacheBehavior:
+          Compress: true
           ViewerProtocolPolicy: redirect-to-https
           ForwardedValues:
             QueryString: false
