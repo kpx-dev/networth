@@ -245,39 +245,16 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Ref DomainName
-      AccessControl : PublicRead
-      WebsiteConfiguration:
-        IndexDocument: index.html
 
-  LandingS3BucketPolicy:
-    Type: AWS::S3::BucketPolicy
+  DemoS3Bucket:
+    Type: AWS::S3::Bucket
     Properties:
-      Bucket: !Ref DomainName
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Sid: PublicReadGetObject
-          Effect: Allow
-          Principal: "*"
-          Action:
-          - s3:GetObject
-          Resource:
-          - !Join ['', ['arn:aws:s3:::', !Ref DomainName, /*]]
+      BucketName: !Join ['.', [demo, !Ref DomainName]]
 
   LoggingS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join ['.', [log, !Ref DomainName]]
-
-  RedirectS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Join ['.', [www, !Ref DomainName]]
-      AccessControl : PublicRead
-      WebsiteConfiguration:
-        RedirectAllRequestsTo:
-          HostName: !Ref DomainName
-          Protocol: https
 
   CloudFront:
     Type: AWS::CloudFront::Distribution
@@ -295,33 +272,57 @@ Resources:
           IncludeCookies: true
           Prefix: !Ref DomainName
         Origins:
-          -
-            DomainName: !GetAtt LandingS3Bucket.DomainName
-            Id: networthLandingOrigin
+          - DomainName: !GetAtt LandingS3Bucket.DomainName
+            Id: landing
+            S3OriginConfig:
+              OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
+          - DomainName: !GetAtt DemoS3Bucket.DomainName
+            Id: demo
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
         DefaultCacheBehavior:
           ViewerProtocolPolicy: redirect-to-https
           ForwardedValues:
             QueryString: false
-          TargetOriginId: networthLandingOrigin
+          TargetOriginId: landing
+        CacheBehaviors:
+          - AllowedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+            PathPattern: /demo*
+            TargetOriginId: demo
+            ViewerProtocolPolicy: redirect-to-https
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref Certificate
           SslSupportMethod: sni-only
 
-  # MXRecord:
-  #   Type: AWS::Route53::RecordSet
-  #   Properties:
-  #     HostedZoneName: !Ref DomainName
-  #     Comment: MX records
-  #     Name: ''
-  #     Type: MX
-  #     # TTL: '900'
-  #     ResourceRecords:
-  #     -
-  #       5 gmr-smtp-in.l.google.com
-  #       10 alt1.gmr-smtp-in.l.google.com
-  #       20 alt2.gmr-smtp-in.l.google.com
-  #       30 alt3.gmr-smtp-in.l.google.com
-  #       40 alt4.gmr-smtp-in.l.google.com
+  ARecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt CloudFront.DomainName
+        EvaluateTargetHealth: true
+        HostedZoneId: Z2FDTNDATAQYW2
+      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
+      Name: !Ref DomainName
+      Type: A
+
+  MXRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
+      Comment: MX records
+      Name: !Ref DomainName
+      Type: MX
+      TTL: 3600
+      ResourceRecords:
+      - 5 gmr-smtp-in.l.google.com.
+      - 10 alt1.gmr-smtp-in.l.google.com.
+      - 20 alt2.gmr-smtp-in.l.google.com.
+      - 30 alt3.gmr-smtp-in.l.google.com.
+      - 40 alt4.gmr-smtp-in.l.google.com.
+
