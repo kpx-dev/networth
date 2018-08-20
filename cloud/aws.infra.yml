@@ -1,0 +1,327 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: networth.app Infrastructure on AWS
+
+Parameters:
+  AppName:
+    Type: String
+    Default: networth
+  DomainName:
+    Type: String
+    Default: networth.app
+
+Outputs:
+  KMS:
+    Export:
+      Name: !Join [-, [ !Ref AppName, kms]]
+    Value: !GetAtt KMSKey.Arn
+
+  KMSAlias:
+    Export:
+      Name: !Join [-, [ !Ref AppName, kms, alias]]
+    Value: !Ref KMSAlias
+
+  UserPool:
+    Export:
+      Name: !Join [-, [ !Ref AppName, userpool]]
+    Value: !GetAtt UserPool.Arn
+
+  TokenTable:
+    Export:
+      Name: !Join [-, [ !Ref AppName, token, table]]
+    Value: !Ref TokenTable
+
+  HistoryTable:
+    Export:
+      Name: !Join [-, [ !Ref AppName, history, table]]
+    Value: !Ref HistoryTable
+
+  TransactionTable:
+    Export:
+      Name: !Join [-, [ !Ref AppName, transaction, table]]
+    Value: !Ref TransactionTable
+
+  LambdaRole:
+    Export:
+      Name: !Join [-, [ !Ref AppName, lambda, role]]
+    Value: !GetAtt LambdaRole.Arn
+
+  SNSTopic:
+    Export:
+      Name: !Join [-, [ !Ref AppName, sns]]
+    Value: !Ref SNSTopic
+
+  LandingS3:
+    Export:
+      Name: !Join [-, [ !Ref AppName, s3, landing, bucket]]
+    Value: !Ref LandingS3Bucket
+
+Resources:
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Ref AppName
+      TopicName: !Ref AppName
+
+  TokenTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        -
+          AttributeName: email
+          KeyType: HASH
+      AttributeDefinitions:
+        -
+          AttributeName: email
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  TransactionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        -
+          AttributeName: email
+          KeyType: HASH
+        -
+          AttributeName: datetime
+          KeyType: RANGE
+      AttributeDefinitions:
+        -
+          AttributeName: email
+          AttributeType: S
+        -
+          AttributeName: datetime
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  HistoryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        -
+          AttributeName: email
+          KeyType: HASH
+        -
+          AttributeName: datetime
+          KeyType: RANGE
+      AttributeDefinitions:
+        -
+          AttributeName: email
+          AttributeType: S
+        -
+          AttributeName: datetime
+          AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  CognitoIdentityPoolRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - cognito-idp.amazonaws.com
+
+  CognitoIdentityPoolRoleAttach:
+    Type: AWS::Cognito::IdentityPoolRoleAttachment
+    Properties:
+      IdentityPoolId: !Ref CognitoIdentityPool
+      Roles:
+        authenticated: !GetAtt CognitoIdentityPoolRole.Arn
+        unauthenticated: !GetAtt CognitoIdentityPoolRole.Arn
+
+  CognitoIdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    Properties:
+      IdentityPoolName: !Ref AppName
+      AllowUnauthenticatedIdentities: true
+      DeveloperProviderName: !Ref AppName
+      CognitoIdentityProviders:
+        -
+          ClientId: !Ref UserPoolClient
+          ProviderName: !Sub
+            - cognito-idp.${AWS::Region}.amazonaws.com/${UserPoolId}
+            - { UserPoolId: !Ref UserPool }
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Join [-, [ !Ref AppName, ui]]
+      GenerateSecret: false
+      UserPoolId: !Ref UserPool
+
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref AppName
+      AutoVerifiedAttributes:
+        - email
+      EmailVerificationSubject: Welcome to networth.app
+      EmailConfiguration:
+        ReplyToEmailAddress: !Join ['@', [info, !Ref DomainName]]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Join ['.', ['*', !Ref DomainName]]
+
+  KMSAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Join ['/', [alias,  !Ref AppName]]
+      TargetKeyId: !Ref KMSKey
+
+  KMSKey:
+    Type: AWS::KMS::Key
+    Properties:
+      Description: KMS key for networth.app infra
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          -
+            Sid: Allow root user full admin of the key
+            Effect: Allow
+            Action: "*"
+            Principal:
+              AWS: !Ref AWS::AccountId
+            Resource: "*"
+          -
+            Sid: Allow services to use this key
+            Effect: Allow
+            Action:
+              - kms:Encrypt
+              - kms:Decrypt
+            Principal:
+              AWS:
+                - !GetAtt LambdaRole.Arn
+                - Fn::Sub: arn:aws:iam::${AWS::AccountId}:user/networth
+            Resource: "*"
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+          - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
+          - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            -
+              Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Access for networth.app S3 bucket
+
+  LandingS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref DomainName
+      AccessControl : PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  LandingS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DomainName
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: PublicReadGetObject
+          Effect: Allow
+          Principal: "*"
+          Action:
+          - s3:GetObject
+          Resource:
+          - !Join ['', ['arn:aws:s3:::', !Ref DomainName, /*]]
+
+  LoggingS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['.', [log, !Ref DomainName]]
+
+  RedirectS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['.', [www, !Ref DomainName]]
+      AccessControl : PublicRead
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref DomainName
+          Protocol: https
+
+  CloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases:
+          - !Ref DomainName
+          - !Join ['.', [www, !Ref DomainName]]
+        Comment: !Ref DomainName
+        DefaultRootObject: index.html
+        Enabled: true
+        HttpVersion: http2
+        Logging:
+          Bucket: !GetAtt LandingS3Bucket.DomainName
+          IncludeCookies: true
+          Prefix: !Ref DomainName
+        Origins:
+          -
+            DomainName: !GetAtt LandingS3Bucket.DomainName
+            Id: networthLandingOrigin
+            S3OriginConfig:
+              OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: redirect-to-https
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId: networthLandingOrigin
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Ref Certificate
+          SslSupportMethod: sni-only
+
+  # MXRecord:
+  #   Type: AWS::Route53::RecordSet
+  #   Properties:
+  #     HostedZoneName: !Ref DomainName
+  #     Comment: MX records
+  #     Name: ''
+  #     Type: MX
+  #     # TTL: '900'
+  #     ResourceRecords:
+  #     -
+  #       5 gmr-smtp-in.l.google.com
+  #       10 alt1.gmr-smtp-in.l.google.com
+  #       20 alt2.gmr-smtp-in.l.google.com
+  #       30 alt3.gmr-smtp-in.l.google.com
+  #       40 alt4.gmr-smtp-in.l.google.com
