@@ -241,6 +241,11 @@ Resources:
       CloudFrontOriginAccessIdentityConfig:
         Comment: Access for networth.app S3 bucket
 
+  S3BucketLambda:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['.', [lambda, !Ref DomainName]]
+
   LandingS3Bucket:
     Type: AWS::S3::Bucket
     Properties:

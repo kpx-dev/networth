@@ -1,47 +1,58 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
-Description: Net Worth REST API Lambda
+Description: networth.app REST API Lambda
+
+Parameters:
+  AppName:
+    Type: String
+    Default: networth
+  EnvPlaidClientID:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/PLAID_CLIENT_ID
+  EnvPlaidSecret:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/PLAID_SECRET
 
 Resources:
   NetWorthFunction:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: go1.x
-      CodeUri: bin
-      Handler: main
+      CodeUri: ../bin
+      Handler: !Ref AppName
       FunctionName: networth-api
-      Description:  Net Worth REST API
+      Description:  networth.app REST API
       Environment:
         Variables:
-        #   ACCOUNT_TABLE:
-        #     Fn::ImportValue:
-        #       !Join ['-', [!Ref Env, !Ref InfraName, account, table]]
-        #   TRANSACTIONS_TABLE:
-        #     Fn::ImportValue:
-        #       !Join ['-', [!Ref Env, !Ref InfraName, transactions, table]]
-        #   HISTORY_TABLE:
-        #     Fn::ImportValue:
-        #       !Join ['-', [!Ref Env, !Ref InfraName, history, table]]
-        #   SNS_TOPIC_ARN:
-        #     Fn::ImportValue:
-        #       !Join ['-', [!Ref Env, !Ref InfraName, sns]]
+          TOKEN_TABLE:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, token, table]]
+          HISTORY_TABLE:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, history, table]]
+          TRANSACTION_TABLE:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, transaction, table]]
+          SNS_TOPIC_ARN:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, sns]]
           KMS_KEY_ALIAS:
             Fn::ImportValue:
-              !Join ['-', [!Ref Env, !Ref InfraName, kms, alias]]
+              !Join [-, [ !Ref AppName, kms, alias]]
           PLAID_ENV: sandbox
           PLAID_PUBLIC_KEY: 7e599ac974fb8343f50fac8535fcf1
-          PLAID_CLIENT_ID: AQICAHhjfiiHA0w6JHVBiRSQz5a9O1azCe5lOaEutPQH99xyjwFRMkxxZAIFXU+jjdhLDZuZAAAAdjB0BgkqhkiG9w0BBwagZzBlAgEAMGAGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMg8Dp0oB7NHAk0xh8AgEQgDMCz9zESK4ayY344cXCHF9AVcoBDMo0CuDctsg8jI7ex1mbhDRe65CtnDlGa+ph91Rv4F4=
-          PLAID_SECRET: AQICAHhjfiiHA0w6JHVBiRSQz5a9O1azCe5lOaEutPQH99xyjwFpsPVUNky6a73ZmwGUUCqEAAAAfDB6BgkqhkiG9w0BBwagbTBrAgEAMGYGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMTn+FwfmEjTHfM4XNAgEQgDlv+Eage2euZBj5iotJObCPQweNL5IPCPFAmllaypQ0lSTJ63WYIIpx6hSzLnXg3WulRXvNf6W7X4c=
+          PLAID_CLIENT_ID: !Ref EnvPlaidClientID
+          PLAID_SECRET: !Ref EnvPlaidSecret
       Events:
-        GetAccounts:
+        GetNetWorth:
           Type: Api
           Properties:
-            Path: /accounts
+            Path: /networth
             Method: get
 
         # GetApiProxyResource:
         #   Type: Api
         #   Properties:
-        #     Path: /api/{proxy+}
+        #     Path: /{proxy+}
         #     Method: any
         #     RestApiId: !Ref ApiGatewayApi

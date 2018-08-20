@@ -15,5 +15,11 @@ deploy-demo:
 deploy-landing:
 	aws s3 cp --recursive landing s3://networth.app/
 
+deploy-api:
+	export GOOS=linux
+	cd api && go build -o ../bin/networth .
+	sam package --template-file api/template.yml --s3-bucket lambda.networth.app --output-template-file /tmp/networth-api.yml --s3-prefix networth-api
+	sam deploy --template-file /tmp/networth-api.yml --stack-name networth-api --capabilities CAPABILITY_IAM
+
 start-api:
 	cd api && gin --appPort=8000
