@@ -273,6 +273,23 @@ Resources:
     Properties:
       BucketName: !Join ['.', [demo, !Ref DomainName]]
 
+  DemoS3BucketPublicReadPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        !Ref DemoS3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: PublicReadGetObject
+          Effect: Allow
+          Principal:
+            AWS: !Join [' ', ['arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref CloudFrontOriginAccessIdentity]]
+          Action:
+          - s3:GetObject
+          Resource:
+          - !Join ['', ['arn:aws:s3:::', !Ref DemoS3Bucket, '/*']]
+
   LoggingS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
