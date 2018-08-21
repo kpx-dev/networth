@@ -390,7 +390,7 @@ Resources:
         DNSName: !GetAtt CloudFrontLanding.DomainName
         EvaluateTargetHealth: true
         HostedZoneId: Z2FDTNDATAQYW2
-      HostedZoneName: !Ref DomainName
+      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
       Name: !Ref DomainName
       Type: A
 
@@ -401,8 +401,8 @@ Resources:
         DNSName: !GetAtt CloudFrontDemo.DomainName
         EvaluateTargetHealth: true
         HostedZoneId: Z2FDTNDATAQYW2
-      HostedZoneName: !Join ['.', [demo, !Ref DomainName]]
-      Name: !Ref DomainName
+      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
+      Name: !Join ['.', [demo, !Ref DomainName]]
       Type: A
 
   ARecordAPI:
