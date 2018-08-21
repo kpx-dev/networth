@@ -6,6 +6,9 @@ Parameters:
   AppName:
     Type: String
     Default: networth
+  DomainName:
+    Type: String
+    Default: networth.app
   EnvPlaidClientID:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /networth/PLAID_CLIENT_ID
@@ -14,6 +17,14 @@ Parameters:
     Default: /networth/PLAID_SECRET
 
 Resources:
+  APIGatewayBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      # BasePath: '/'
+      DomainName: !Ref DomainName
+      RestApiId: !Ref NetWorthFunction
+      Stage: Prod
+
   NetWorthFunction:
     Type: AWS::Serverless::Function
     Properties:

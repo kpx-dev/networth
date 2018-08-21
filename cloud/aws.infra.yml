@@ -324,32 +324,27 @@ Resources:
             Id: landing
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
-          - DomainName: !GetAtt DemoS3Bucket.DomainName
-            Id: demo
-            S3OriginConfig:
-              OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
         DefaultCacheBehavior:
           Compress: true
           ViewerProtocolPolicy: redirect-to-https
           ForwardedValues:
             QueryString: false
           TargetOriginId: landing
-        CacheBehaviors:
-          - AllowedMethods:
-              - GET
-              - HEAD
-            Compress: true
-            ForwardedValues:
-              QueryString: true
-            PathPattern: /demo*
-            TargetOriginId: demo
-            ViewerProtocolPolicy: redirect-to-https
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref Certificate
           SslSupportMethod: sni-only
 
-  ARecord:
+  APIGatewayDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      RegionalCertificateArn: !Ref Certificate
+
+  ARecordLanding:
     Type: AWS::Route53::RecordSet
     Properties:
       AliasTarget:
@@ -358,6 +353,17 @@ Resources:
         HostedZoneId: Z2FDTNDATAQYW2
       HostedZoneName: !Join ['', [!Ref DomainName, '.']]
       Name: !Ref DomainName
+      Type: A
+
+  ARecordAPI:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      AliasTarget:
+        DNSName: !GetAtt APIGatewayDomainName.DistributionDomainName
+        EvaluateTargetHealth: true
+        HostedZoneId: !GetAtt APIGatewayDomainName.RegionalHostedZoneId
+      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
+      Name: !Join ['.', [api, !Ref DomainName]]
       Type: A
 
   MXRecord:

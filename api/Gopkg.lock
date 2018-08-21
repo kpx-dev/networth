@@ -2,6 +2,16 @@
 
 
 [[projects]]
+  name = "github.com/aws/aws-lambda-go"
+  packages = [
+    "lambda",
+    "lambda/messages",
+    "lambdacontext"
+  ]
+  revision = "2d482ef09017ae953b1e8d5a6ddac5b696663a3c"
+  version = "v1.6.0"
+
+[[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -149,6 +159,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "19df009eca1a4bafe7ce2ab64a69a73c70f9c80c020580e9d39758e3e72d3208"
+  inputs-digest = "b8f25bb28d0acbcd596e2842ad849ff6f03786367264fd79df6d34c4555b4f40"
   solver-name = "gps-cdcl"
   solver-version = 1
