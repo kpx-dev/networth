@@ -11,13 +11,13 @@ deploy-landing:
 	aws cloudfront create-invalidation --distribution-id E21OGDJ6NKWTTA --paths '/*'
 
 deploy-api:
-	export GOOS=linux
-	cd api && go build -o ../bin/networth .
+	# export GOOS=linux
+	cd api && env GOOS=linux GOARCH=amd64 go build -o ../bin/networth .
 	sam package --template-file api/template.yml --s3-bucket lambda.networth.app --output-template-file /tmp/networth-api.yml --s3-prefix networth-api
 	sam deploy --template-file /tmp/networth-api.yml --stack-name networth-api --capabilities CAPABILITY_IAM
 
 start-api:
-	cd api && gin --appPort=8000
+	cd api && sam local start-api
 
 # TODO: pass in args
 # validate-cfn-template:

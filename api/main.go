@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/gorilla/mux"
 )
@@ -23,8 +24,8 @@ var (
 	plaidPublicKey string
 )
 
-// Handler handle incoming apigateway request
-func Handler() {
+// APIGatewayHandler handle incoming apigateway request
+func APIGatewayHandler(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	loadDotEnv()
 
 	accessToken = getEnv("PLAID_ACCESS_TOKEN")
@@ -49,5 +50,5 @@ func Handler() {
 }
 
 func main() {
-	lambda.Start(Handler)
+	lambda.Start(APIGatewayHandler)
 }

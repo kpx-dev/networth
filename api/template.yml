@@ -20,7 +20,7 @@ Resources:
   APIGatewayBasePathMapping:
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
-      # BasePath: '/'
+      BasePath: '/'
       DomainName: !Ref DomainName
       RestApiId: !Ref NetWorthFunction
       Stage: Prod
