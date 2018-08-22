@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"time"
 )
 
 // init routing
@@ -18,15 +17,8 @@ func (s *NetworthAPI) init() {
 
 // Start start api service
 func (s *NetworthAPI) Start(host string) {
-	srv := &http.Server{
-		Handler:      s.router,
-		Addr:         host,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
 	s.init()
-
 	log.Println("Starting api service on: ", host)
-	log.Fatal(srv.ListenAndServe())
+	// log.Fatal(gateway.ListenAndServe(host, s.router))
+	log.Fatal(http.ListenAndServe(host, s.router))
 }

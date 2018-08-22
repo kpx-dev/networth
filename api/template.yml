@@ -30,7 +30,8 @@ Resources:
     Properties:
       Runtime: go1.x
       CodeUri: ../bin
-      Handler: !Ref AppName
+      # Handler: !Ref AppName
+      Handler: networth
       FunctionName: networth-api
       Description:  networth.app REST API
       Environment:

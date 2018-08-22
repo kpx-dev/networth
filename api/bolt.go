@@ -17,8 +17,12 @@ type BoltClient struct {
 
 // NewBoltClient new bolt client
 func NewBoltClient() *BoltClient {
-	path := getRootDir() + "/data/" + dbBucket + ".db"
-	db, _ := bolt.Open(path, 0600, nil)
+	path := "/tmp/" + dbBucket + ".db"
+	db, err := bolt.Open(path, 0600, nil)
+
+	if err != nil {
+		panic(err)
+	}
 
 	client := &BoltClient{db}
 	client.init()
