@@ -7,11 +7,11 @@ deploy-infra:
 deploy-demo:
 	aws s3 cp web/index.html s3://demo.networth.app/
 	aws s3 cp web/assets s3://demo.networth.app/ --recursive
-	# aws cloudfront create-invalidation --distribution-id E21OGDJ6NKWTTA --paths '/*'
+	aws cloudfront create-invalidation --distribution-id E2IFZPL7N5RFY5 --paths '/*'
 
 deploy-landing:
 	aws s3 cp --recursive landing s3://networth.app/
-	aws cloudfront create-invalidation --distribution-id E21OGDJ6NKWTTA --paths '/*'
+	aws cloudfront create-invalidation --distribution-id ECVB0BCWU7O9M --paths '/*'
 
 api:
 	cd api && env GOOS=linux GOARCH=amd64 go build -o ../bin/networth .
