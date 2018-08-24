@@ -16,76 +16,80 @@ Parameters:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /networth/PLAID_SECRET
 
-Resources:
-  ApiGatewayApi:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: !Ref AppName
-      StageName: latest
-      EndpointConfiguration: REGIONAL
-      Cors: !Ref DomainName
-      DefinitionBody:
-        swagger: "2.0"
-        info:
-          title: !Ref AWS::StackName
-        securityDefinitions:
-          networth-cognito-authorizer:
-            type: apiKey
-            name: Authorization
-            in: header
-            x-amazon-apigateway-authtype: cognito_user_pools
-            x-amazon-apigateway-authorizer:
-              providerARNs:
-                - Fn::ImportValue:
-                    !Join ['-', [!Ref AppName, userpool]]
-              type: cognito_user_pools
-        paths:
-          /{proxy+}:
-            x-amazon-apigateway-any-method:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri:
-                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
-              responses: {}
-              security:
-                - networth-cognito-authorizer: []
-            options:
-              consumes:
-                - application/json
-              produces:
-                - application/json
-              responses:
-                "200":
-                  description: 200 response
-                  schema:
-                    $ref: "#/definitions/Empty"
-                  headers:
-                    Access-Control-Allow-Origin:
-                      type: string
-                    Access-Control-Allow-Methods:
-                      type: string
-                    Access-Control-Allow-Headers:
-                      type: string
-              x-amazon-apigateway-integration:
-                responses:
-                  default:
-                    statusCode: 200
-                    responseParameters:
-                      method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
-                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-                      method.response.header.Access-Control-Allow-Origin: "'*'"
-                passthroughBehavior: when_no_match
-                requestTemplates:
-                  application/json: "{\"statusCode\": 200}"
-                type: mock
+Globals:
+  Api:
+    Cors: "'https://dev.trddev.com'"
 
-  APIGatewayBasePathMapping:
-    Type: AWS::ApiGateway::BasePathMapping
-    Properties:
-      DomainName: !Ref DomainName
-      RestApiId: !Ref ApiGatewayApi
-      Stage: latest
+Resources:
+  # ApiGatewayApi:
+  #   Type: AWS::Serverless::Api
+  #   Properties:
+  #     Name: !Ref AppName
+  #     StageName: latest
+  #     EndpointConfiguration: REGIONAL
+  #     Cors: !Ref DomainName
+  #     DefinitionBody:
+  #       swagger: "2.0"
+  #       info:
+  #         title: !Ref AWS::StackName
+  #       securityDefinitions:
+  #         networth-cognito-authorizer:
+  #           type: apiKey
+  #           name: Authorization
+  #           in: header
+  #           x-amazon-apigateway-authtype: cognito_user_pools
+  #           x-amazon-apigateway-authorizer:
+  #             providerARNs:
+  #               - Fn::ImportValue:
+  #                   !Join ['-', [!Ref AppName, userpool]]
+  #             type: cognito_user_pools
+        # paths:
+        #   /{proxy+}:
+        #     x-amazon-apigateway-any-method:
+        #       x-amazon-apigateway-integration:
+        #         httpMethod: POST
+        #         type: aws_proxy
+        #         uri:
+        #           !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+        #       responses: {}
+        #       security:
+        #         - networth-cognito-authorizer: []
+        #     options:
+        #       consumes:
+        #         - application/json
+        #       produces:
+        #         - application/json
+        #       responses:
+        #         "200":
+        #           description: 200 response
+        #           schema:
+        #             $ref: "#/definitions/Empty"
+        #           headers:
+        #             Access-Control-Allow-Origin:
+        #               type: string
+        #             Access-Control-Allow-Methods:
+        #               type: string
+        #             Access-Control-Allow-Headers:
+        #               type: string
+        #       x-amazon-apigateway-integration:
+        #         responses:
+        #           default:
+        #             statusCode: 200
+        #             responseParameters:
+        #               method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
+        #               method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+        #               method.response.header.Access-Control-Allow-Origin: "'*'"
+        #         passthroughBehavior: when_no_match
+        #         requestTemplates:
+        #           application/json: "{\"statusCode\": 200}"
+        #         type: mock
+
+  # APIGatewayBasePathMapping:
+  #   Type: AWS::ApiGateway::BasePathMapping
+  #   Properties:
+  #     DomainName: !Ref DomainName
+  #     RestApiId: !Ref ApiGatewayApi
+  #     Stage: latest
 
   NetWorthFunction:
     Type: AWS::Serverless::Function
@@ -119,9 +123,15 @@ Resources:
           PLAID_CLIENT_ID: !Ref EnvPlaidClientID
           PLAID_SECRET: !Ref EnvPlaidSecret
       Events:
-        GetApiProxyResource:
+        GetNetworth:
           Type: Api
           Properties:
-            Path: /{proxy+}
-            Method: any
-            RestApiId: !Ref ApiGatewayApi
+            Path: /networth
+            Method: get
+            # RestApiId: !Ref ApiGatewayApi
+        # GetApiProxyResource:
+        #   Type: Api
+        #   Properties:
+        #     Path: /{proxy+}
+        #     Method: any
+        #     # RestApiId: !Ref ApiGatewayApi

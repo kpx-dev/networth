@@ -6,8 +6,8 @@ import (
 
 func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		networth := s.db.GetNetworth()
+		// networth := s.db.GetNetworth()
 
-		successResp(w, networth)
+		successResp(w, 10)
 	}
 }
