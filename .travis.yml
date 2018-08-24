@@ -1,4 +1,4 @@
-language: python
+language: go
 
 install: pip install awscli
 test: true
@@ -17,10 +17,12 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: demo.networth.app
-    local-dir: web
+    local-dir: demo
     acl: public_read
     on:
       repo: networth-app/networth
+  - provider: script
+    script: make deploy-api
 
 after_deploy:
   - aws cloudfront create-invalidation --distribution-id ${DEMO_DISTRIBUTION_ID} --paths '/*'
