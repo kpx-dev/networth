@@ -1,4 +1,7 @@
 language: node_js
+
+test: true
+
 deploy:
   provider: s3
   access_key_id: AKIAJL6AZNUAP72O5B2Q
