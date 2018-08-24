@@ -1,9 +1,8 @@
 language: node_js
 
-install: true
-
-# script: bundle exec thor build
+# install: true
+# script: true
 
 deploy:
-  - make deploy-landing
-  - make deploy-demo
+- make deploy-landing
+- make deploy-demo
