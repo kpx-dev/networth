@@ -18,7 +18,9 @@ Parameters:
 
 Globals:
   Api:
-    Cors: "'https://dev.trddev.com'"
+    Cors:
+      AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
 
 Resources:
   # ApiGatewayApi:
