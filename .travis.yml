@@ -1,6 +1,7 @@
 language: node_js
 
 test: true
+script: true
 
 deploy:
   provider: s3
@@ -10,5 +11,6 @@ deploy:
   bucket: networth.app
   local-dir: landing
   acl: public_read
+  region: us-east-1
   on:
     repo: networth-app/networth
