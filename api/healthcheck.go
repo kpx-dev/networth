@@ -8,6 +8,7 @@ func (s *NetworthAPI) handleHealthcheck() http.HandlerFunc {
 	version := getAPIVersion()
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		successResp(w, "version: "+version)
+		payload := map[string]string{"version": version}
+		successResp(w, payload)
 	}
 }

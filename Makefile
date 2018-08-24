@@ -1,11 +1,11 @@
-.PHONY: api deploy-infra deploy-demo deploy-landing deploy-api start-api
-.SILENT: api deploy-infra deploy-demo deploy-landing deploy-api start-api
-
-deploy-infra:
-	aws cloudformation update-stack --stack-name networth --capabilities CAPABILITY_IAM --template-body file://cloud/aws.infra.yml
+.PHONY: api deploy-infra deploy-api start-api
+.SILENT: api deploy-infra deploy-api start-api
 
 api:
 	cd api && env GOOS=linux GOARCH=amd64 go build -o ../bin/networth
+
+deploy-infra:
+	aws cloudformation update-stack --stack-name networth --capabilities CAPABILITY_IAM --template-body file://cloud/aws.infra.yml
 
 deploy-api:
 	make api
@@ -15,7 +15,3 @@ deploy-api:
 start-api:
 	make api
 	cd api && sam local start-api
-
-# TODO: pass in args
-# validate-cfn-template:
-# aws cloudformation validate-template --template-body file://$1
