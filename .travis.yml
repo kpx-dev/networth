@@ -1,6 +1,6 @@
 language: go
 
-install: pip install awscli
+install: pip install awscli --upgrade --user
 test: true
 script: true
 
