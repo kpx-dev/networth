@@ -4,12 +4,23 @@ test: true
 script: true
 
 deploy:
-  provider: s3
-  access_key_id: AKIAJL6AZNUAP72O5B2Q
-  secret_access_key: $AWS_SECRET_ACCESS_KEY
-  bucket: networth.app
-  local-dir: landing
-  acl: public_read
-  region: us-east-1
-  on:
-    repo: networth-app/networth
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: networth.app
+    local-dir: landing
+    acl: public_read
+    on:
+      repo: networth-app/networth
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: demo.networth.app
+    local-dir: web
+    acl: public_read
+    on:
+      repo: networth-app/networth
+
+after_deploy:
+  - aws cloudfront create-invalidation --distribution-id ${DEMO_DISTRIBUTION_ID} --paths '/*'
+  - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
