@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/apex/gateway"
 )
 
 // init routing
@@ -19,6 +21,6 @@ func (s *NetworthAPI) init() {
 func (s *NetworthAPI) Start(host string) {
 	s.init()
 	log.Println("Starting api service on: ", host)
-	// log.Fatal(gateway.ListenAndServe(host, s.router))
-	log.Fatal(http.ListenAndServe(host, s.router))
+	log.Fatal(gateway.ListenAndServe(host, s.router))
+	// log.Fatal(http.ListenAndServe(host, s.router))
 }

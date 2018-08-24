@@ -2,6 +2,23 @@
 
 
 [[projects]]
+  name = "github.com/apex/gateway"
+  packages = ["."]
+  revision = "21c9971861be4e8be9352e7a2540710b0c46610f"
+  version = "v1.1.1"
+
+[[projects]]
+  name = "github.com/aws/aws-lambda-go"
+  packages = [
+    "events",
+    "lambda",
+    "lambda/messages",
+    "lambdacontext"
+  ]
+  revision = "2d482ef09017ae953b1e8d5a6ddac5b696663a3c"
+  version = "v1.6.0"
+
+[[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -39,7 +56,6 @@
 [[projects]]
   name = "github.com/aws/aws-sdk-go-v2"
   packages = [
-    ".",
     "aws",
     "aws/awserr",
     "aws/defaults",
@@ -111,6 +127,12 @@
   revision = "0b12d6b5"
 
 [[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   name = "github.com/plaid/plaid-go"
   packages = [
     "internal",
@@ -149,6 +171,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f6674e68be45d1287897652aa8f4d9f7c22965c070c196d45c53f94581b26832"
+  inputs-digest = "43972b2b04695b84efc8ed0fb6fc1bf5d9fa75bca3259f4927b3fc637f637ae8"
   solver-name = "gps-cdcl"
   solver-version = 1
