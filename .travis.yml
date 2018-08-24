@@ -1,8 +1,11 @@
 language: node_js
-
-# install: true
-# script: true
-
 deploy:
-- make deploy-landing
-- make deploy-demo
+  provider: s3
+  access_key_id: AKIAJL6AZNUAP72O5B2Q
+  secret_access_key:
+    secure: DlqwBOxNWOmwqDtacgjLJRwgBFBAQOh+NUGJjrJECypy/N+vQwSpJwLFNYIbm41PMV04UimvV8C2mAasX7Csqb+jVjt1MvC6aHmQues3jMRGcLzSVbDrseKe5x6uJ68TntfB03X1MXD7NE2PJE2qLi08Fh7BhLHO5VnykR7bLV2wK5IfxbUM66uAE3TFHkD9yZi52X+CzXr+plw9tONW7bW1j3NA31coY4PjF7PIbvE+Kk/hpAe5qwAOkBh09F8rE514rt2/zTJkyhHLNZsmT8XCU46FkHarsy/RXgollf7/+DDZhRR6+it4ns4I/KURwpa1yYOjeazGgbeZU3EQ1HQ9s0hStm8Dqdjnq1JA1aSxX5AjEitKnWOcOXbZklulxjnSAuokQPjvkxrkTdz2jegGYO3a3+zfIW5760PdP2RBY9suoEDcr3zseP3lY6ixUdjaGtLkn9wEwpVh646014aBDxNwfr/VJl/rNT1JMTR71M0r2xMsmY0NK8RFGuBHnZb7nK3f4a2bL7lJP2lq4GGnDgtUmzli4/w1yXtHq+/sez98TTotT1twoZr9XzTt4wi9T5BUtZMvP0i2cKJ27rVTNEzVhUshyqEhZzv4WkoYERRRE9ndqZsMdf6LgaXvvV7xo3BLQiTmA/8kOjskVo9/Z65qYzzPxUkB7C25Wzw=
+  bucket: networth.app
+  local-dir: landing
+  acl: public_read
+  on:
+    repo: networth-app/networth
