@@ -55,6 +55,16 @@ Outputs:
       Name: !Join [-, [ !Ref AppName, s3, landing, bucket]]
     Value: !Ref LandingS3Bucket
 
+  CloudFrontLanding:
+    Export:
+      Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
+    Value: !Ref CloudFrontLanding
+
+  CloudFrontDemo:
+    Export:
+      Name: !Join [-, [ !Ref AppName, cloudfront, demo]]
+    Value: !Ref CloudFrontDemo
+
 Resources:
   SNSTopic:
     Type: AWS::SNS::Topic
