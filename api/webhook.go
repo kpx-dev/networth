@@ -24,6 +24,12 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		RemovedTransactions []string     `json:"removed_transactions"` // ["yBVBEwrPyJs8GvR77N7QTxnGg6wG74H7dEDN6", "kgygNvAVPzSX9KkddNdWHaVGRVex1MHm3k9no"],
 	}
 
+	// plaid webhook ips: (https://support.plaid.com/customer/en/portal/articles/2546264-webhook-overview)
+	// 52.21.26.131
+	// 52.21.47.157
+	// 52.41.247.19
+	// 52.88.82.239
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body WebhookBody
 

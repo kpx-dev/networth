@@ -170,6 +170,9 @@ Resources:
       ClientName: !Join [-, [ !Ref AppName, ui]]
       GenerateSecret: false
       UserPoolId: !Ref UserPool
+      # TODO: [SECURITY] remove this later
+      ExplicitAuthFlows:
+        - USER_PASSWORD_AUTH
 
   UserPool:
     Type: AWS::Cognito::UserPool
@@ -233,6 +236,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
+        # TODO: [SECURITY] will not need all full access to sns
         - arn:aws:iam::aws:policy/AmazonSNSFullAccess
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -404,7 +408,7 @@ Resources:
   APIGatewayDomainName:
     Type: AWS::ApiGateway::DomainName
     Properties:
-      DomainName: !Ref DomainName
+      DomainName: !Join ['.', [api, !Ref DomainName]]
       EndpointConfiguration:
         Types:
           - REGIONAL

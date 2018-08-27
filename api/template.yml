@@ -16,92 +16,70 @@ Parameters:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /networth/PLAID_SECRET
 
-Globals:
-  Api:
-    Cors:
-      AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-      AllowOrigin: "'*'"
-
 Resources:
-  # ApiGatewayApi:
-  #   Type: AWS::Serverless::Api
-  #   Properties:
-  #     Name: !Ref AppName
-  #     StageName: latest
-  #     EndpointConfiguration: REGIONAL
-  #     Cors:
-  #       AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-  #       AllowOrigin: "'*'"
-  #     DefinitionBody:
-  #       swagger: "2.0"
-  #       info:
-  #         title: !Ref AWS::StackName
-  #       # securityDefinitions:
-  #       #   networth-cognito-authorizer:
-  #       #     type: apiKey
-  #       #     name: Authorization
-  #       #     in: header
-  #       #     x-amazon-apigateway-authtype: cognito_user_pools
-  #       #     x-amazon-apigateway-authorizer:
-  #       #       providerARNs:
-  #       #         - Fn::ImportValue:
-  #       #             !Join ['-', [!Ref AppName, userpool]]
-  #       #       type: cognito_user_pools
-  #       paths:
-  #         /{proxy+}:
-  #           x-amazon-apigateway-any-method:
-  #             x-amazon-apigateway-integration:
-  #               httpMethod: POST
-  #               type: aws_proxy
-  #               uri:
-  #                 !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
-  #             responses: {}
-  #             # security:
-  #             #   - networth-cognito-authorizer: []
-  #           # options:
-  #           #   consumes:
-  #           #     - application/json
-  #           #   produces:
-  #           #     - application/json
-  #           #   responses:
-  #           #     "200":
-  #           #       description: 200 response
-  #           #       schema:
-  #           #         $ref: "#/definitions/Empty"
-  #           #       headers:
-  #           #         Access-Control-Allow-Origin:
-  #           #           type: string
-  #           #         Access-Control-Allow-Methods:
-  #           #           type: string
-  #           #         Access-Control-Allow-Headers:
-  #           #           type: string
-  #           #   x-amazon-apigateway-integration:
-  #           #     responses:
-  #           #       default:
-  #           #         statusCode: 200
-  #           #         responseParameters:
-  #           #           method.response.header.Access-Control-Allow-Methods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"
-  #           #           method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
-  #           #           method.response.header.Access-Control-Allow-Origin: "'*'"
-  #           #     passthroughBehavior: when_no_match
-  #           #     requestTemplates:
-  #           #       application/json: "{\"statusCode\": 200}"
-  #           #     type: mock
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Ref AppName
+      StageName: latest
+      EndpointConfiguration: REGIONAL
+      Cors:
+        AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: !Ref AWS::StackName
+        securityDefinitions:
+          networth-cognito-authorizer:
+            type: apiKey
+            name: Authorization
+            in: header
+            x-amazon-apigateway-authtype: cognito_user_pools
+            x-amazon-apigateway-authorizer:
+              providerARNs:
+                - Fn::ImportValue:
+                    !Join ['-', [!Ref AppName, userpool]]
+              type: cognito_user_pools
+        paths:
+          /healthcheck:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+          /webhook:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+              security:
+                - networth-cognito-authorizer: []
 
-  # APIGatewayBasePathMapping:
-  #   Type: AWS::ApiGateway::BasePathMapping
-  #   Properties:
-  #     DomainName: !Ref DomainName
-  #     RestApiId: !Ref ApiGatewayApi
-  #     Stage: latest
+  APIGatewayBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    DependsOn: ApiGatewayApi
+    Properties:
+      DomainName: !Join ['.', [api, !Ref DomainName]]
+      RestApiId: !Ref ApiGatewayApi
+      Stage: latest
 
   NetWorthFunction:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: go1.x
       CodeUri: ../bin
-      # sam-cli doesn't support !Ref yet :(
-      # Handler: !Ref AppName
+      # sam-cli doesn't support !Ref yet: !Ref AppName
       Handler: networth
       FunctionName: networth-api
       Description:  networth.app REST API
@@ -130,15 +108,9 @@ Resources:
           PLAID_CLIENT_ID: !Ref EnvPlaidClientID
           PLAID_SECRET: !Ref EnvPlaidSecret
       Events:
-        # GetNetworth:
-        #   Type: Api
-        #   Properties:
-        #     Path: /networth
-        #     Method: get
-        #     RestApiId: !Ref ApiGatewayApi
         GetApiProxyResource:
           Type: Api
           Properties:
             Path: /{proxy+}
             Method: any
-            # RestApiId: !Ref ApiGatewayApi
+            RestApiId: !Ref ApiGatewayApi

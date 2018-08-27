@@ -1,0 +1,1 @@
+# networth.app - macOS app

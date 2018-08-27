@@ -15,3 +15,6 @@ deploy-api:
 start-api:
 	make api
 	cd api && sam local start-api
+
+token:
+	aws cognito-idp initiate-auth --client-id 2tam11a22g38in2vqcd5kge3cu --auth-flow USER_PASSWORD_AUTH --auth-parameters USERNAME=demo@networth.com,PASSWORD=Testing!!1234. | jq -r .AuthenticationResult.IdToken

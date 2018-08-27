@@ -1,4 +1,6 @@
-# networth.app DynamoDB Table Schema
+# networth.app - Schema / Architecture Design
+
+## DynamoDB Table Schema
 
 Table: `networth_token`
 | email (partition key: string) | tokens (list) | accounts (list) |

@@ -4,9 +4,9 @@ Get your real-time net worth!
 
 ![Product Gif](https://s3.amazonaws.com/creativetim_bucket/github/gif/black-dashboard.gif)
 
-## Live Demo
+## [Live Demo](https://demo.networth.app/)
 
-https://demo.networth.app/
+[https://demo.networth.app/](https://demo.networth.app/)
 
 username: `demo@networth.com`
 
@@ -14,17 +14,25 @@ password: `Testing!!1234.`
 
 ## Project Structure
 
-Each folder below has its own instruction, please go there to read and set it up.
+Each service below has its own instruction:
 
 [/api](api/) - REST API written in Golang, handling backend.
 
 [/bin](bin/) - scripts to help automating things during development.
 
-[/docs](docs/) - the main landing page at [networth.app](https://networth.app).
+[/cloud](cloud/) - templates to setup networth.app infrastructure on cloud provider, currently AWS.
 
-[/web](web/) - web app.
+[/data](data/) - hold in-memory database.
+
+[/demo](demo/) - demo of web app.
+
+[/landing](landing/) - main landing page powering [networth.app](https://networth.app).
 
 [/macOS](macOS/) - native macOS app.
+
+[/schema](schema/) - schema and architecture design.
+
+[/web](web/) - web app.
 
 ## FAQ
 
@@ -32,8 +40,7 @@ Q: Why mono repo?
 
 A: Let's KISS for now.
 
-
-## How to contribute?
+## How to contribute
 
 If it takes you less than 15 mins to do something in this project, please send in a PR, or multiple PRs!
 
