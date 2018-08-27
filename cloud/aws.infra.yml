@@ -230,20 +230,37 @@ Resources:
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
-        ManagedPolicyArns:
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-          - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
-          - arn:aws:iam::aws:policy/AmazonSNSFullAccess
-        AssumeRolePolicyDocument:
-          Version: 2012-10-17
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess
+        - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      Policies:
+      - PolicyName: ApiDeploy
+        PolicyDocument:
+          Version: '2012-10-17'
           Statement:
-            -
-              Effect: Allow
-              Action:
-                - sts:AssumeRole
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
+          - Effect: Allow
+            Action:
+              - dynamodb:Batch*
+              - dynamodb:GetItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+            Resource:
+              - Fn::Sub:
+                - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${AppName}*"
+                - { AppName: !Ref AppName }
 
   CloudFrontOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity

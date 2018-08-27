@@ -4,6 +4,14 @@ Get your real-time net worth!
 
 ![Product Gif](https://s3.amazonaws.com/creativetim_bucket/github/gif/black-dashboard.gif)
 
+## Live Demo
+
+https://demo.networth.app/
+
+username: `demo@networth.com`
+
+password: `Testing!!1234.`
+
 ## Project Structure
 
 Each folder below has its own instruction, please go there to read and set it up.

@@ -2,20 +2,29 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute"
 )
 
 var (
-	tokenTable       = aws.String(getEnv("TOKEN_TABLE"))
-	transactionTable = aws.String(getEnv("TRANSACTION_TABLE"))
+	tokenTable       = getEnv("TOKEN_TABLE")
+	transactionTable = getEnv("TRANSACTION_TABLE")
+	historyTable     = getEnv("HISTORY_TABLE")
 )
 
 // DynamoDBClient db client struct
 type DynamoDBClient struct {
 	*dynamodb.DynamoDB
+}
+
+// HistoryResp history response
+type HistoryResp struct {
+	Networth float64 `json:"networth"`
 }
 
 // NewDynamoDBClient new dynamodb client
@@ -28,49 +37,130 @@ func NewDynamoDBClient() *DynamoDBClient {
 
 // GetNetworth return networth
 func (d DynamoDBClient) GetNetworth() float64 {
-	// lastHour := time.Now().UTC().Add(-1 * time.Hour).Format(time.RFC3339)
-	lastHour := time.Now().UTC().Add(-48 * time.Hour).Format(time.RFC3339)
-	now := time.Now().UTC().Format(time.RFC3339)
+	today := time.Now().UTC().Format("2006-01-02")
 
-	req := d.QueryRequest(&dynamodb.QueryInput{
-		KeyConditionExpression: aws.String("email=:email AND #sort BETWEEN :lastHour AND :now"),
-		ExpressionAttributeNames: map[string]string{
-			"#sort": "datetime",
+	networth, err := d.Get(historyTable, username, today)
+
+	if err != nil {
+		return 0.0
+	}
+
+	return networth
+}
+
+// SetNetworth value as of today date and current timestamp
+func (d DynamoDBClient) SetNetworth(networth float64) error {
+	now := time.Now().UTC()
+	today := now.Format("2006-01-02")
+	timestamp := now.Format(time.RFC3339)
+	networthStr := aws.String(strconv.FormatFloat(networth, 'f', -1, 64))
+
+	req := d.BatchWriteItemRequest(&dynamodb.BatchWriteItemInput{
+		RequestItems: map[string][]dynamodb.WriteRequest{
+			historyTable: {
+				{
+					PutRequest: &dynamodb.PutRequest{
+						Item: map[string]dynamodb.AttributeValue{
+							"email":    {S: aws.String(username)},
+							"datetime": {S: aws.String(today)},
+							"networth": {N: networthStr},
+						},
+					},
+				},
+				{
+					PutRequest: &dynamodb.PutRequest{
+						Item: map[string]dynamodb.AttributeValue{
+							"email":    {S: aws.String(username)},
+							"datetime": {S: aws.String(timestamp)},
+							"networth": {N: networthStr},
+						},
+					},
+				},
+			},
 		},
-		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":email":    {S: aws.String(username)},
-			":lastHour": {S: aws.String(lastHour)},
-			":now":      {S: aws.String(now)},
+	})
+
+	_, err := req.Send()
+
+	return err
+}
+
+// Get item
+func (d DynamoDBClient) Get(table string, partitionKey string, sortKey string) (float64, error) {
+	req := d.GetItemRequest(&dynamodb.GetItemInput{
+		TableName: aws.String(table),
+		Key: map[string]dynamodb.AttributeValue{
+			"email":    {S: aws.String(partitionKey)},
+			"datetime": {S: aws.String(sortKey)},
 		},
-		Limit:     aws.Int64(1),
-		TableName: aws.String(getEnv("HISTORY_TABLE")),
 	})
 
 	res, err := req.Send()
 	if err != nil {
-		panic(err)
+		return 0.0, err
 	}
 
-	if *res.Count > int64(0) {
-		// nw := make(map[string]interface{})
-		// if err := dynamodbattribute.UnmarshalMap(res.Items[0], &nw); err != nil {
-		// 	panic(err)
-		// }
+	payload := HistoryResp{}
+	if err := dynamodbattribute.UnmarshalMap(res.Item, &payload); err != nil {
+		log.Println(err)
 
-		// fmt.Println(nw)
-		fmt.Println(res.Items[0]["networth"])
-		return 1
+		return 0.0, err
 	}
+	fmt.Println(payload)
 
-	fmt.Println(res)
-	return 0.0
+	return payload.Networth, nil
 }
 
 // Set key / val to db
-func (d DynamoDBClient) Set(key string, value string) error {
-	fmt.Println("saving ", key, value)
-	return nil
+func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, val interface{}) error {
+	req := d.PutItemRequest(&dynamodb.PutItemInput{
+		Item: map[string]dynamodb.AttributeValue{
+			"email":    {S: aws.String(partitionKey)},
+			"datetime": {S: aws.String(sortKey)},
+		},
+		TableName: aws.String(table),
+	})
+
+	res, err := req.Send()
+
+	fmt.Println("Set res: ", res)
+
+	return err
 }
+
+// func Range() {
+// 	req := d.QueryRequest(&dynamodb.QueryInput{
+// 		KeyConditionExpression: aws.String("email=:email AND #sort BETWEEN :lastHour AND :now"),
+// 		ExpressionAttributeNames: map[string]string{
+// 			"#sort": "datetime",
+// 		},
+// 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+// 			":email":    {S: aws.String(username)},
+// 			":lastHour": {S: aws.String(lastHour)},
+// 			":now":      {S: aws.String(now)},
+// 		},
+// 		Limit:     aws.Int64(1),
+// 		TableName: aws.String(getEnv("HISTORY_TABLE")),
+// 	})
+
+// 	res, err := req.Send()
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	if *res.Count > int64(0) {
+// 		// nw := make(map[string]interface{})
+// 		// if err := dynamodbattribute.UnmarshalMap(res.Items[0], &nw); err != nil {
+// 		// 	panic(err)
+// 		// }
+
+// 		// fmt.Println(nw)
+// 		fmt.Println(res.Items[0]["networth"])
+// 		return 1
+// 	}
+
+// 	fmt.Println(res)
+// }
 
 // GetTokens return tokens from db
 // func (d DynamoDBClient) GetTokens(username string) []string {

@@ -32,7 +32,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			return
 		}
 
-		errDb := s.db.Set("access_token", accessToken.AccessToken)
+		errDb := s.db.Set(tokenTable, username, "", accessToken.AccessToken)
 
 		fmt.Println("db error ", errDb)
 

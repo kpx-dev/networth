@@ -5,7 +5,7 @@ api:
 	cd api && env GOOS=linux GOARCH=amd64 go build -o ../bin/networth
 
 deploy-infra:
-	aws cloudformation update-stack --stack-name networth --capabilities CAPABILITY_IAM --template-body file://cloud/aws.infra.yml
+	aws cloudformation deploy --template-file cloud/aws.infra.yml --stack-name networth --capabilities CAPABILITY_IAM --region us-east-1
 
 deploy-api:
 	make api
