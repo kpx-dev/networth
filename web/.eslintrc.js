@@ -17,5 +17,9 @@ module.exports = {
     "eslint:recommended",
     "plugin:react/recommended",
     "plugin:prettier/recommended"
-  ]
+  ],
+  rules: {
+    "max-len": "warn",
+    "no-console": "warn"
+  }
 };

@@ -6,7 +6,7 @@ import Amplify from "aws-amplify";
 
 import indexRoutes from "./routes/index.jsx";
 
-import "assets/scss/material-kit-react.css?v=1.2.0";
+import "./assets/scss/material-kit-react.css?v=1.2.0";
 
 var hist = createBrowserHistory();
 
