@@ -1,7 +1,6 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
-
 
 import Face from "@material-ui/icons/Face";
 import Chat from "@material-ui/icons/Chat";
@@ -13,6 +12,10 @@ import CustomTabs from "components/CustomTabs/CustomTabs.jsx";
 import tabsStyle from "assets/jss/material-kit-react/views/componentsSections/tabsStyle.jsx";
 
 class SectionTabs extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   render() {
     const { classes } = this.props;
     return (

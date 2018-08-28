@@ -1,12 +1,7 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import classNames from "classnames";
-
 import withStyles from "@material-ui/core/styles/withStyles";
-
-
-
-
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Button from "components/CustomButtons/Button.jsx";
@@ -21,6 +16,10 @@ import team2 from "assets/img/faces/christian.jpg";
 import team3 from "assets/img/faces/kendall.jpg";
 
 class TeamSection extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   render() {
     const { classes } = this.props;
     const imageClasses = classNames(

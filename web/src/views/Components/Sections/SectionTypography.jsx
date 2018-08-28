@@ -1,10 +1,6 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
-
-
-
-
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Small from "components/Typography/Small.jsx";
@@ -17,7 +13,12 @@ import Muted from "components/Typography/Muted.jsx";
 import Quote from "components/Typography/Quote.jsx";
 import typographyStyle from "assets/jss/material-kit-react/views/componentsSections/typographyStyle.jsx";
 import image from "assets/img/faces/avatar.jpg";
+
 class SectionTypography extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -132,7 +133,7 @@ class SectionTypography extends React.Component {
                 <h2>
                   Header with small subtitle
                   <br />
-                  <Small>Use "Small" tag for the headers</Small>
+                  <Small>Use small tag for the headers</Small>
                 </h2>
               </div>
             </GridContainer>

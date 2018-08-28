@@ -2,11 +2,9 @@ import React from "react";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 
-
 import Dashboard from "@material-ui/icons/Dashboard";
 import Schedule from "@material-ui/icons/Schedule";
 import List from "@material-ui/icons/List";
-
 
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
