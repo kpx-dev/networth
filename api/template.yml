@@ -16,9 +16,13 @@ Parameters:
   EnvPlaidSecret:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /networth/PLAID_SECRET
-  # EnvSlackWebhookUrl:
-  #   Type : 'AWS::SSM::Parameter::Value<String>'
-  #   Default: /networth/SLACK_WEBHOOK_URL
+  EnvSlackWebhookUrl:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/SLACK_WEBHOOK_URL
+
+Globals:
+  Function:
+    Runtime: go1.x
 
 Resources:
   ApiGatewayApi:
@@ -52,21 +56,21 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
                 uri:
-                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthAPIFunction.Arn}/invocations
           /webhook:
             post:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
                 uri:
-                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthAPIFunction.Arn}/invocations
           /{proxy+}:
             x-amazon-apigateway-any-method:
               x-amazon-apigateway-integration:
                 httpMethod: POST
                 type: aws_proxy
                 uri:
-                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthFunction.Arn}/invocations
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthAPIFunction.Arn}/invocations
               security:
                 - networth-cognito-authorizer: []
 
@@ -78,14 +82,13 @@ Resources:
       RestApiId: !Ref ApiGatewayApi
       Stage: latest
 
-  NetWorthFunction:
+  NetWorthAPIFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: go1.x
       CodeUri: ../bin
       # sam-cli doesn't support !Ref yet: !Ref AppName
       Handler: networth
-      FunctionName: networth-api
+      FunctionName: networth-rest-api
       Description:  networth.app REST API
       Role:
         Fn::ImportValue:
@@ -107,7 +110,6 @@ Resources:
           KMS_KEY_ALIAS:
             Fn::ImportValue:
               !Join [-, [ !Ref AppName, kms, alias]]
-          # SLACK_WEBHOOK_URL: !Ref EnvSlackWebhookURL
           PLAID_ENV: sandbox
           PLAID_PUBLIC_KEY: 7e599ac974fb8343f50fac8535fcf1
           PLAID_CLIENT_ID: !Ref EnvPlaidClientID
@@ -119,3 +121,22 @@ Resources:
             Path: /{proxy+}
             Method: any
             RestApiId: !Ref ApiGatewayApi
+
+  # NetWorthTaskFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: ../bin
+  #     Handler: networthTaskHandler
+  #     FunctionName: networth-task
+  #     Description:  networth.app Task
+  #     Role:
+  #       Fn::ImportValue:
+  #         !Join [-, [ !Ref AppName, lambda, role]]
+  #     Environment:
+  #       Variables:
+  #         SLACK_WEBHOOK_URL: !Ref EnvSlackWebhookURL
+  #     Events:
+  #       Timer:
+  #         Type: Schedule
+  #         Properties:
+  #           Schedule: rate(30 minutes)

@@ -4,9 +4,9 @@ Get your real-time net worth!
 
 ![Product Gif](https://s3.amazonaws.com/creativetim_bucket/github/gif/black-dashboard.gif)
 
-## [Live Demo](https://demo.networth.app/)
+## [Live Demo](https://networth.app/)
 
-[https://demo.networth.app/](https://demo.networth.app/)
+[https://networth.app/](https://networth.app/)
 
 username: `demo@networth.com`
 
@@ -23,8 +23,6 @@ Each service below has its own instruction:
 [/cloud](cloud/) - templates to setup networth.app infrastructure on cloud provider, currently AWS.
 
 [/data](data/) - hold in-memory database.
-
-[/demo](demo/) - demo of web app.
 
 [/landing](landing/) - main landing page powering [networth.app](https://networth.app).
 

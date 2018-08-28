@@ -60,10 +60,10 @@ Outputs:
       Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
     Value: !Ref CloudFrontLanding
 
-  CloudFrontDemo:
+  CloudFrontWebApp:
     Export:
-      Name: !Join [-, [ !Ref AppName, cloudfront, demo]]
-    Value: !Ref CloudFrontDemo
+      Name: !Join [-, [ !Ref AppName, cloudfront, webapp]]
+    Value: !Ref CloudFrontWebApp
 
 Resources:
   SNSTopic:
@@ -299,16 +299,16 @@ Resources:
           Resource:
           - !Join ['', ['arn:aws:s3:::', !Ref LandingS3Bucket, '/*']]
 
-  DemoS3Bucket:
+  WebAppS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['.', [demo, !Ref DomainName]]
+      BucketName: !Join ['.', [app, !Ref DomainName]]
 
-  DemoS3BucketPublicReadPolicy:
+  WebAppS3BucketPublicReadPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket:
-        !Ref DemoS3Bucket
+        !Ref WebAppS3Bucket
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -319,7 +319,7 @@ Resources:
           Action:
           - s3:GetObject
           Resource:
-          - !Join ['', ['arn:aws:s3:::', !Ref DemoS3Bucket, '/*']]
+          - !Join ['', ['arn:aws:s3:::', !Ref WebAppS3Bucket, '/*']]
 
   LoggingS3Bucket:
     Type: AWS::S3::Bucket
@@ -366,7 +366,7 @@ Resources:
           AcmCertificateArn: !Ref Certificate
           SslSupportMethod: sni-only
 
-  CloudFrontDemo:
+  CloudFrontWebApp:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -380,18 +380,18 @@ Resources:
           ResponseCode: 404
           ResponsePagePath: '/404.html'
         Aliases:
-          - !Join ['.', [demo, !Ref DomainName]]
-        Comment: !Join ['.', [demo, !Ref DomainName]]
+          - !Join ['.', [app, !Ref DomainName]]
+        Comment: !Join ['.', [app, !Ref DomainName]]
         DefaultRootObject: index.html
         Enabled: true
         HttpVersion: http2
         Logging:
           Bucket: !GetAtt LoggingS3Bucket.DomainName
           IncludeCookies: true
-          Prefix: !Join ['.', [demo, !Ref DomainName]]
+          Prefix: !Join ['.', [app, !Ref DomainName]]
         Origins:
-          - DomainName: !GetAtt DemoS3Bucket.DomainName
-            Id: demo
+          - DomainName: !GetAtt WebAppS3Bucket.DomainName
+            Id: webapp
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
         DefaultCacheBehavior:
@@ -399,7 +399,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
           ForwardedValues:
             QueryString: false
-          TargetOriginId: demo
+          TargetOriginId: webapp
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref Certificate
@@ -425,15 +425,15 @@ Resources:
       Name: !Ref DomainName
       Type: A
 
-  ARecordDemo:
+  ARecordWebApp:
     Type: AWS::Route53::RecordSet
     Properties:
       AliasTarget:
-        DNSName: !GetAtt CloudFrontDemo.DomainName
+        DNSName: !GetAtt CloudFrontWebApp.DomainName
         EvaluateTargetHealth: true
         HostedZoneId: Z2FDTNDATAQYW2
       HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      Name: !Join ['.', [demo, !Ref DomainName]]
+      Name: !Join ['.', [app, !Ref DomainName]]
       Type: A
 
   ARecordAPI:

@@ -11,19 +11,15 @@ deploy:
     bucket: networth.app
     local-dir: landing
     acl: public_read
-    on:
-      repo: networth-app/networth
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: demo.networth.app
-    local-dir: demo
+    bucket: app.networth.app
+    local-dir: web
     acl: public_read
-    on:
-      repo: networth-app/networth
   - provider: script
     script: make deploy-api
 
 after_deploy:
-  - aws cloudfront create-invalidation --distribution-id ${DEMO_DISTRIBUTION_ID} --paths '/*'
+  # - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
   - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
