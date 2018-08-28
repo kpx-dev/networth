@@ -1,5 +1,5 @@
 import React from "react";
-// @material-ui/core components
+import { Auth } from "aws-amplify";
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Icon from "@material-ui/core/Icon";
@@ -28,8 +28,13 @@ class LoginPage extends React.Component {
     super(props);
     // we use this to make the card to appear after the page has been rendered
     this.state = {
-      cardAnimaton: "cardHidden"
+      cardAnimaton: "cardHidden",
+      email: "demo@networth.app",
+      password: "Testing!!1234."
     };
+
+    // this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
   componentDidMount() {
     // we add a hidden class to the card and after 700 ms we delete it and the transition appears
@@ -40,6 +45,20 @@ class LoginPage extends React.Component {
       700
     );
   }
+
+  // handleChange(event) {
+  //   this.setState({value: event.target.value});
+  // }
+
+  handleSubmit(event) {
+    console.log(this.state.email, this.state.password);
+    event.preventDefault();
+
+    Auth.signIn(this.state.email, this.state.password)
+      .then(user => console.log(user))
+      .catch(err => console.log(err));
+  }
+
   render() {
     const { classes, ...rest } = this.props;
     return (
@@ -63,9 +82,10 @@ class LoginPage extends React.Component {
             <GridContainer justify="center">
               <GridItem xs={12} sm={12} md={4}>
                 <Card className={classes[this.state.cardAnimaton]}>
-                  <form className={classes.form}>
+                  <form className={classes.form} onSubmit={this.handleSubmit}>
                     <CardBody>
                       <CustomInput
+                        value={this.state.email}
                         labelText="Email"
                         id="email"
                         formControlProps={{
@@ -81,6 +101,7 @@ class LoginPage extends React.Component {
                         }}
                       />
                       <CustomInput
+                        value={this.state.password}
                         labelText="Password"
                         id="pass"
                         formControlProps={{
@@ -102,6 +123,7 @@ class LoginPage extends React.Component {
                       <Button simple color="primary" size="lg">
                         Login
                       </Button>
+                      <input type="submit" value="Submit" />
                     </CardFooter>
                   </form>
                 </Card>

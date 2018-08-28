@@ -30,6 +30,8 @@ class LinkAccountPage extends React.Component {
     // const { classes, ...rest } = this.props;
     return (
       <PlaidLink
+        // institution={null}
+        webhook="https://api.networth.app/webhook"
         clientName="networth.app"
         env="sandbox"
         product={["transactions"]}

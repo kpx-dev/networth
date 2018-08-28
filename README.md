@@ -8,7 +8,7 @@ Get your real-time net worth!
 
 [https://networth.app/](https://networth.app/)
 
-username: `demo@networth.com`
+username: `demo@networth.app`
 
 password: `Testing!!1234.`
 
