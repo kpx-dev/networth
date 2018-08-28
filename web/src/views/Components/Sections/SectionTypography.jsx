@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import withStyles from "@material-ui/core/styles/withStyles";
 
 // @material-ui/icons
@@ -131,7 +130,8 @@ class SectionTypography extends React.Component {
               <div className={classes.typo}>
                 <div className={classes.note}>Small Tag</div>
                 <h2>
-                  Header with small subtitle<br />
+                  Header with small subtitle
+                  <br />
                   <Small>Use "Small" tag for the headers</Small>
                 </h2>
               </div>

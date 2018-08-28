@@ -4,7 +4,6 @@ import classNames from "classnames";
 
 import PropTypes from "prop-types";
 
-
 import withStyles from "@material-ui/core/styles/withStyles";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
@@ -101,8 +100,12 @@ class CustomDropdown extends React.Component {
           disablePortal
           placement={
             dropup
-              ? left ? "top-start" : "top"
-              : left ? "bottom-start" : "bottom"
+              ? left
+                ? "top-start"
+                : "top"
+              : left
+                ? "bottom-start"
+                : "bottom"
           }
           className={classNames({
             [classes.popperClose]: !open,

@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import withStyles from "@material-ui/core/styles/withStyles";
 
 // @material-ui/icons
@@ -120,7 +119,6 @@ class SectionPills extends React.Component {
                 />
               </GridItem> */}
 
-
               <GridItem xs={12} sm={12} md={12} lg={12}>
                 <NavPills
                   color="rose"
@@ -134,9 +132,7 @@ class SectionPills extends React.Component {
                       tabIcon: Dashboard,
                       tabContent: (
                         <span>
-                          <p>
-                            Your current networth is: $1M!
-                          </p>
+                          <p>Your current networth is: $1M!</p>
                           <br />
                           <p>
                             Dramatically visualize customer directed convergence

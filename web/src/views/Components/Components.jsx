@@ -46,8 +46,12 @@ class Components extends React.Component {
           }}
           {...rest}
         />
-        <br /><br /><br />
-        <br /><br /><br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
 
         {/* <Parallax image={require("assets/img/bg4.jpg")}>
           <div className={classes.container}>
