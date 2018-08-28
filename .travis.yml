@@ -15,7 +15,7 @@ matrix:
         - cd web
       script:
         - npm i
-        - npm build
+        - npm run build
 
       deploy:
         - provider: s3
