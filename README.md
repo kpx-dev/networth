@@ -18,19 +18,19 @@ Each service below has its own instruction:
 
 [/api](api/) - REST API written in Golang, handling backend.
 
-[/bin](bin/) - scripts to help automating things during development.
+[/bin](bin/) - Scripts to help in to automating things during development.
 
-[/cloud](cloud/) - templates to setup networth.app infrastructure on cloud provider, currently AWS.
+[/cloud](cloud/) - Templates to setup networth.app infrastructure on cloud provider, currently AWS.
 
-[/data](data/) - hold in-memory database.
+[/data](data/) - Hold in-memory database.
 
-[/landing](landing/) - main landing page powering [networth.app](https://networth.app).
+[/landing](landing/) - Main landing page powering [networth.app](https://networth.app).
 
-[/macOS](macOS/) - native macOS app.
+[/macOS](macOS/) - Native macOS app.
 
-[/schema](schema/) - schema and architecture design.
+[/schema](schema/) - Schema and architecture design.
 
-[/web](web/) - web app.
+[/web](web/) - Web app.
 
 ## FAQ
 
@@ -46,7 +46,7 @@ If it requires more effort, please [create an issue](https://github.com/networth
 
 ## Maintainers
 
-This project is actively mainted by the following open source heroes:
+This project is actively maintained by the following open source heroes:
 
 [@raoasifraza11](https://github.com/raoasifraza11) - Asif Raza
 
