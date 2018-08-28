@@ -1,3 +1,4 @@
+web/build
 gin-bin
 yarn-error.log
 *.log

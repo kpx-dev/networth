@@ -1,4 +1,12 @@
-language: go
+matrix:
+  include:
+    - language: go
+    - language: node_js
+      before_script:
+        - cd web
+      script:
+        - npm i
+        - npm build
 
 install: pip install awscli --upgrade --user
 test: true
@@ -11,15 +19,18 @@ deploy:
     bucket: networth.app
     local-dir: landing
     acl: public_read
+
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: app.networth.app
-    local-dir: web
+    local-dir: web/build
     acl: public_read
+    skip_cleanup: true
+
   - provider: script
     script: make deploy-api
 
 after_deploy:
-  # - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
+  - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
   - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
