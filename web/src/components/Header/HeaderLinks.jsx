@@ -3,7 +3,7 @@ import React from "react";
 // react components for routing our app without refresh
 import { Link } from "react-router-dom";
 
-// @material-ui/core components
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";

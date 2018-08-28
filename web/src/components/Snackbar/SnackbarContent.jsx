@@ -1,7 +1,7 @@
 import React from "react";
-// nodejs library to set properties for components
+
 import PropTypes from "prop-types";
-// @material-ui/core components
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import Snack from "@material-ui/core/SnackbarContent";
 import IconButton from "@material-ui/core/IconButton";

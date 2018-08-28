@@ -1,6 +1,6 @@
 import React from "react";
 
-// @material-ui/core components
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";

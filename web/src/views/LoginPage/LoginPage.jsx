@@ -120,10 +120,10 @@ class LoginPage extends React.Component {
                       />
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                      <Button simple color="primary" size="lg">
+                      <Button simple color="primary" size="lg" type="submit">
                         Login
                       </Button>
-                      <input type="submit" value="Submit" />
+                      {/* <input type="submit" value="Submit" /> */}
                     </CardFooter>
                   </form>
                 </Card>

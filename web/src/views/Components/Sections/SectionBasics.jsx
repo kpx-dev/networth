@@ -1,7 +1,7 @@
 import React from "react";
 // react plugin that creates slider
 import Nouislider from "react-nouislider";
-// @material-ui/core components
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControlLabel from "@material-ui/core/FormControlLabel";

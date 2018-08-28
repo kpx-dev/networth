@@ -1,11 +1,11 @@
 import React from "react";
-// nodejs library that concatenates classes
+
 import classNames from "classnames";
-// nodejs library to set properties for components
+
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
 
-// @material-ui/core components
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
