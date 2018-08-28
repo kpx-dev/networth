@@ -24,6 +24,7 @@ matrix:
           bucket: networth.app
           local-dir: landing
           acl: public_read
+          skip_cleanup: true
 
         - provider: s3
           access_key_id: $AWS_ACCESS_KEY_ID
