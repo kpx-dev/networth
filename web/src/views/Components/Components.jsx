@@ -46,7 +46,10 @@ class Components extends React.Component {
           }}
           {...rest}
         />
-        <Parallax image={require("assets/img/bg4.jpg")}>
+        <br /><br /><br />
+        <br /><br /><br />
+
+        {/* <Parallax image={require("assets/img/bg4.jpg")}>
           <div className={classes.container}>
             <GridContainer>
               <GridItem>
@@ -59,28 +62,29 @@ class Components extends React.Component {
               </GridItem>
             </GridContainer>
           </div>
-        </Parallax>
+        </Parallax> */}
 
         <div className={classNames(classes.main, classes.mainRaised)}>
-          <SectionBasics />
-          <SectionNavbars />
-          <SectionTabs />
+          {/* <SectionBasics /> */}
           <SectionPills />
-          <SectionNotifications />
-          <SectionTypography />
+          {/* <SectionTabs /> */}
+          {/* <SectionDownload /> */}
+
+          {/* <SectionNavbars /> */}
+          {/* <SectionNotifications /> */}
+          {/* <SectionTypography />
           <SectionJavascript />
           <SectionCarousel />
           <SectionCompletedExamples />
-          <SectionLogin />
-          <GridItem md={12} className={classes.textCenter}>
+          <SectionLogin /> */}
+          {/* <GridItem md={12} className={classes.textCenter}>
             <Link to={"/login"} className={classes.link}>
               <Button color="primary" size="lg" simple>
                 View Login Page
               </Button>
             </Link>
-          </GridItem>
-          <SectionExamples />
-          <SectionDownload />
+          </GridItem> */}
+          {/* <SectionExamples /> */}
         </div>
         <Footer />
       </div>

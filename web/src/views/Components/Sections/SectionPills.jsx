@@ -21,16 +21,17 @@ class SectionPills extends React.Component {
       <div className={classes.section}>
         <div className={classes.container}>
           <div id="navigation-pills">
-            <div className={classes.title}>
+            {/* <div className={classes.title}>
               <h3>Navigation Pills</h3>
-            </div>
-            <div className={classes.title}>
+            </div> */}
+            {/* <div className={classes.title}>
               <h3>
                 <small>With Icons</small>
               </h3>
-            </div>
+            </div> */}
+
             <GridContainer>
-              <GridItem xs={12} sm={12} md={8} lg={6}>
+              {/* <GridItem xs={12} sm={12} md={8} lg={6}>
                 <NavPills
                   color="primary"
                   tabs={[
@@ -117,24 +118,24 @@ class SectionPills extends React.Component {
                     }
                   ]}
                 />
-              </GridItem>
-              <GridItem xs={12} sm={12} md={12} lg={6}>
+              </GridItem> */}
+
+
+              <GridItem xs={12} sm={12} md={12} lg={12}>
                 <NavPills
                   color="rose"
                   horizontal={{
-                    tabsGrid: { xs: 12, sm: 4, md: 4 },
+                    tabsGrid: { xs: 12, sm: 4, md: 4, lg: 2 },
                     contentGrid: { xs: 12, sm: 8, md: 8 }
                   }}
                   tabs={[
                     {
-                      tabButton: "Dashboard",
+                      tabButton: "Net Worth",
                       tabIcon: Dashboard,
                       tabContent: (
                         <span>
                           <p>
-                            Collaboratively administrate empowered markets via
-                            plug-and-play networks. Dynamically procrastinate
-                            B2C users after installed base benefits.
+                            Your current networth is: $1M!
                           </p>
                           <br />
                           <p>
@@ -156,7 +157,7 @@ class SectionPills extends React.Component {
                       )
                     },
                     {
-                      tabButton: "Schedule",
+                      tabButton: "History",
                       tabIcon: Schedule,
                       tabContent: (
                         <span>
