@@ -3,11 +3,11 @@ import React from "react";
 
 
 import withStyles from "@material-ui/core/styles/withStyles";
-// @material-ui/icons
+
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-// core components
+
 import downloadStyle from "assets/jss/material-kit-react/views/componentsSections/downloadStyle.jsx";
 
 class SectionDownload extends React.Component {

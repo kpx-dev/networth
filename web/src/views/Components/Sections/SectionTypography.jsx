@@ -2,9 +2,9 @@ import React from "react";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 
-// @material-ui/icons
 
-// core components
+
+
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Small from "components/Typography/Small.jsx";

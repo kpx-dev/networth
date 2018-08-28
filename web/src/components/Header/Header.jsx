@@ -11,9 +11,9 @@ import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import Hidden from "@material-ui/core/Hidden";
 import Drawer from "@material-ui/core/Drawer";
-// @material-ui/icons
+
 import Menu from "@material-ui/icons/Menu";
-// core components
+
 import headerStyle from "assets/jss/material-kit-react/components/headerStyle.jsx";
 
 class Header extends React.Component {

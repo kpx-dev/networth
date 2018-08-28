@@ -8,12 +8,12 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import Radio from "@material-ui/core/Radio";
 import Switch from "@material-ui/core/Switch";
-// @material-ui/icons
+
 import Favorite from "@material-ui/icons/Favorite";
 import People from "@material-ui/icons/People";
 import Check from "@material-ui/icons/Check";
 import FiberManualRecord from "@material-ui/icons/FiberManualRecord";
-// core components
+
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Button from "components/CustomButtons/Button.jsx";

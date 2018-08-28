@@ -19,7 +19,7 @@ module.exports = {
     "plugin:prettier/recommended"
   ],
   rules: {
-    "max-len": "warn",
+    "max-len": ["warn", { code: 200 }],
     "no-console": "warn"
   }
 };

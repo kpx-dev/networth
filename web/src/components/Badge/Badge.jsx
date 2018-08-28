@@ -1,10 +1,7 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import withStyles from "@material-ui/core/styles/withStyles";
-
-import badgeStyle from "assets/jss/material-kit-react/components/badgeStyle.jsx";
+import badgeStyle from "../../assets/jss/material-kit-react/components/badgeStyle.jsx";
 
 function Badge({ ...props }) {
   const { classes, color, children } = props;
@@ -19,6 +16,7 @@ Badge.defaultProps = {
 
 Badge.propTypes = {
   classes: PropTypes.object.isRequired,
+  children: PropTypes.string,
   color: PropTypes.oneOf([
     "primary",
     "warning",

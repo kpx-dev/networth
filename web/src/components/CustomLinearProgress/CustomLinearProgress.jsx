@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 import LinearProgress from "@material-ui/core/LinearProgress";
-// core components
+
 import customLinearProgressStyle from "assets/jss/material-kit-react/components/customLinearProgressStyle.jsx";
 
 function CustomLinearProgress({ ...props }) {

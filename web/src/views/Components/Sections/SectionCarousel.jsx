@@ -3,9 +3,9 @@ import React from "react";
 import Carousel from "react-slick";
 
 import withStyles from "@material-ui/core/styles/withStyles";
-// @material-ui/icons
+
 import LocationOn from "@material-ui/icons/LocationOn";
-// core components
+
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Card from "components/Card/Card.jsx";

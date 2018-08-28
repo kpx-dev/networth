@@ -1,13 +1,7 @@
 import React from "react";
-
 import classNames from "classnames";
-
 import PropTypes from "prop-types";
-
 import withStyles from "@material-ui/core/styles/withStyles";
-// @material-ui/icons
-
-// core components
 import cardStyle from "assets/jss/material-kit-react/components/cardStyle.jsx";
 
 function Card({ ...props }) {
