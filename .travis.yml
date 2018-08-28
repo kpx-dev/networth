@@ -11,9 +11,11 @@ matrix:
 
     - language: node_js
       node_js: 10
-      before_install: cd $TRAVIS_BUILD_DIR/web
+      before_install: cd web
       install: npm i
-      script: npm run build
+      script:
+        # - npm test
+        - npm run build
 
       deploy:
         - provider: s3
