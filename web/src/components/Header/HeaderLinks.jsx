@@ -6,11 +6,21 @@ import ListItem from "@material-ui/core/ListItem";
 import Tooltip from "@material-ui/core/Tooltip";
 import { Apps, CloudDownload, LockOpen } from "@material-ui/icons";
 import CustomDropdown from "../CustomDropdown/CustomDropdown.jsx";
-import Button from "..//CustomButtons/Button.jsx";
+import Button from "../CustomButtons/Button.jsx";
 import headerLinksStyle from "../../assets/jss/material-kit-react/components/headerLinksStyle.jsx";
+import { Auth } from 'aws-amplify';
+import { Redirect } from 'react-router-dom'
 
 function HeaderLinks({ ...props }) {
   const { classes } = props;
+
+  const handleLogout = async () => {
+    await Auth.signOut();
+
+    // TODO: make redirect work
+    return <Redirect to='/logout' />
+  };
+
   return (
     <List className={classes.list}>
       {/* <ListItem className={classes.listItem}>
@@ -36,7 +46,7 @@ function HeaderLinks({ ...props }) {
           ]}
         />
       </ListItem> */}
-      <ListItem className={classes.listItem}>
+      {/* <ListItem className={classes.listItem}>
         <Button
           href="/download"
           color="transparent"
@@ -44,12 +54,12 @@ function HeaderLinks({ ...props }) {
         >
           <CloudDownload className={classes.icons} /> Download
         </Button>
-      </ListItem>
+      </ListItem> */}
       <ListItem className={classes.listItem}>
         <Button
-          href="logout"
           color="transparent"
           className={classes.navLink}
+          onClick={handleLogout}
         >
         <LockOpen className={classes.icons} /> Logout
         </Button>

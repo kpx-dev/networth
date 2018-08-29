@@ -29,10 +29,11 @@ class Components extends React.Component {
     return (
       <div>
         <Header
+          href="/"
           brand="networth.app"
           rightLinks={<HeaderLinks />}
           fixed
-          color="transparent"
+          // color="transparent"
           changeColorOnScroll={{
             height: 400,
             color: "white"
