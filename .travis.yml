@@ -14,7 +14,7 @@ matrix:
       before_install: cd web
       install: npm i
       script:
-        # - npm test
+        - npm test
         - npm run build
 
       deploy:
