@@ -22,7 +22,7 @@ matrix:
           access_key_id: $AWS_ACCESS_KEY_ID
           secret_access_key: $AWS_SECRET_ACCESS_KEY
           bucket: networth.app
-          local-dir: landing
+          local-dir: ${TRAVIS_BUILD_DIR}/landing
           acl: public_read
           skip_cleanup: true
 
@@ -30,7 +30,7 @@ matrix:
           access_key_id: $AWS_ACCESS_KEY_ID
           secret_access_key: $AWS_SECRET_ACCESS_KEY
           bucket: app.networth.app
-          local-dir: web/build
+          local-dir: ${TRAVIS_BUILD_DIR}/web/build
           acl: public_read
           skip_cleanup: true
 
