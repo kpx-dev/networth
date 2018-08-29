@@ -1,4 +1,4 @@
-import { container } from "assets/jss/material-kit-react.jsx";
+import { container } from "../../material-kit-react.jsx";
 
 const downloadStyle = {
   section: {

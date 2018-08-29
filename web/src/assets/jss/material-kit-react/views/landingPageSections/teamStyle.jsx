@@ -1,4 +1,4 @@
-import { cardTitle, title } from "assets/jss/material-kit-react.jsx";
+import { cardTitle, title } from "../../material-kit-react.jsx";
 import imagesStyle from "assets/jss/material-kit-react/imagesStyles.jsx";
 
 const teamStyle = {

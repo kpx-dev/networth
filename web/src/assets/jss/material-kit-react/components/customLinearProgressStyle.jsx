@@ -6,7 +6,7 @@ import {
   infoColor,
   roseColor,
   grayColor
-} from "assets/jss/material-kit-react.jsx";
+} from "../../material-kit-react.jsx";
 
 const customLinearProgressStyle = {
   root: {

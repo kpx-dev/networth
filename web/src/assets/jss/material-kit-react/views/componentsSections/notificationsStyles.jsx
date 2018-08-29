@@ -1,4 +1,4 @@
-import { container, title } from "assets/jss/material-kit-react.jsx";
+import { container, title } from "../../material-kit-react.jsx";
 
 const notificationsStyles = {
   section: {
