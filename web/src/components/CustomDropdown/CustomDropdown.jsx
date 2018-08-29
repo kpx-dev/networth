@@ -1,9 +1,6 @@
 import React from "react";
-
 import classNames from "classnames";
-
 import PropTypes from "prop-types";
-
 import withStyles from "@material-ui/core/styles/withStyles";
 import MenuItem from "@material-ui/core/MenuItem";
 import MenuList from "@material-ui/core/MenuList";
@@ -13,10 +10,8 @@ import Grow from "@material-ui/core/Grow";
 import Divider from "@material-ui/core/Divider";
 import Icon from "@material-ui/core/Icon";
 import Popper from "@material-ui/core/Popper";
-
-import Button from "components/CustomButtons/Button.jsx";
-
-import customDropdownStyle from "assets/jss/material-kit-react/components/customDropdownStyle.jsx";
+import Button from "../CustomButtons/Button.jsx";
+import customDropdownStyle from "../../assets/jss/material-kit-react/components/customDropdownStyle.jsx";
 
 class CustomDropdown extends React.Component {
   constructor(props) {

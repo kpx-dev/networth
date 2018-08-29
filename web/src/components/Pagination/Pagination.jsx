@@ -1,13 +1,9 @@
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import classNames from "classnames";
-
 import withStyles from "@material-ui/core/styles/withStyles";
 import Button from "@material-ui/core/Button";
-
-import paginationStyle from "assets/jss/material-kit-react/components/paginationStyle.jsx";
+import paginationStyle from "../../assets/jss/material-kit-react/components/paginationStyle.jsx";
 
 function Pagination({ ...props }) {
   const { classes, pages, color } = props;

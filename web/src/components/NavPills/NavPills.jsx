@@ -1,18 +1,13 @@
 import React from "react";
-
 import classNames from "classnames";
-
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
-
 import withStyles from "@material-ui/core/styles/withStyles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-
-import navPillsStyle from "assets/jss/material-kit-react/components/navPillsStyle.jsx";
+import GridContainer from "../Grid/GridContainer.jsx";
+import GridItem from "..//Grid/GridItem.jsx";
+import navPillsStyle from "../../assets/jss/material-kit-react/components/navPillsStyle.jsx";
 
 class NavPills extends React.Component {
   constructor(props) {

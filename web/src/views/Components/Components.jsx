@@ -24,7 +24,6 @@ import SectionPills from "./Sections/SectionPills.jsx";
 import componentsStyle from "../../assets/jss/material-kit-react/views/components.jsx";
 
 class Components extends React.Component {
-
   render() {
     const { classes, ...rest } = this.props;
     return (

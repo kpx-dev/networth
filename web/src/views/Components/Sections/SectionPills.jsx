@@ -5,10 +5,10 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import Schedule from "@material-ui/icons/Schedule";
 import AddIcon from "@material-ui/icons/Add";
 // import List from "@material-ui/icons/List";
-import GridContainer from "components/Grid/GridContainer.jsx";
-import GridItem from "components/Grid/GridItem.jsx";
-import NavPills from "components/NavPills/NavPills.jsx";
-import pillsStyle from "assets/jss/material-kit-react/views/componentsSections/pillsStyle.jsx";
+import GridContainer from "../../../components/Grid/GridContainer.jsx";
+import GridItem from "../../../components/Grid/GridItem.jsx";
+import NavPills from "../../../components/NavPills/NavPills.jsx";
+import pillsStyle from "../../../assets/jss/material-kit-react/views/componentsSections/pillsStyle.jsx";
 import LinkAccount from "../../../components/LinkAccount/LinkAccount.jsx";
 
 class SectionPills extends React.Component {

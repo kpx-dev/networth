@@ -16,7 +16,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:react/recommended",
-    "plugin:prettier/recommended"
+    // "plugin:prettier/recommended" // TODO: enable
   ],
   rules: {
     "no-unused-vars": "off", // TODO: delete

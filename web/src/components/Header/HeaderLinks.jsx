@@ -1,22 +1,13 @@
-/*eslint-disable*/
 import React from "react";
-// react components for routing our app without refresh
 import { Link } from "react-router-dom";
-
-
 import withStyles from "@material-ui/core/styles/withStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Tooltip from "@material-ui/core/Tooltip";
-
-
 import { Apps, CloudDownload, LockOpen } from "@material-ui/icons";
-
-
-import CustomDropdown from "components/CustomDropdown/CustomDropdown.jsx";
-import Button from "components/CustomButtons/Button.jsx";
-
-import headerLinksStyle from "assets/jss/material-kit-react/components/headerLinksStyle.jsx";
+import CustomDropdown from "../CustomDropdown/CustomDropdown.jsx";
+import Button from "..//CustomButtons/Button.jsx";
+import headerLinksStyle from "../../assets/jss/material-kit-react/components/headerLinksStyle.jsx";
 
 function HeaderLinks({ ...props }) {
   const { classes } = props;

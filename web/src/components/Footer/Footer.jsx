@@ -1,15 +1,9 @@
-/*eslint-disable*/
 import React from "react";
-
 import PropTypes from "prop-types";
-
 import classNames from "classnames";
 import { List, ListItem, withStyles } from "@material-ui/core";
-
-
 import Favorite from "@material-ui/icons/Favorite";
-
-import footerStyle from "assets/jss/material-kit-react/components/footerStyle.jsx";
+import footerStyle from "../../assets/jss/material-kit-react/components/footerStyle.jsx";
 
 function Footer({ ...props }) {
   const { classes, whiteFont } = props;
@@ -78,7 +72,6 @@ function Footer({ ...props }) {
           </a>{" "}
           for a better web.
         </div> */}
-
       </div>
     </footer>
   );

@@ -36,11 +36,11 @@ class LinkAccount extends React.Component {
       mode: "no-cors",
       headers: new Headers({
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.idToken.jwtToken}`,
+        Authorization: `Bearer ${session.idToken.jwtToken}`
       }),
       body: JSON.stringify({ token })
     };
-    console.log('fetch opts ', fetchOptions);
+    console.log("fetch opts ", fetchOptions);
     const res = await fetch(exchangeUrl, fetchOptions);
     console.log("exchange res ", res);
   }
