@@ -19,7 +19,14 @@ module.exports = {
     "plugin:prettier/recommended"
   ],
   rules: {
+    "no-unused-vars": "off", // TODO: delete
+    "react/prop-types": "off", // TODO: delete
     "max-len": ["warn", { code: 200 }],
-    "no-console": "warn"
+    "no-console": "off" // TODO: warn
+  },
+  settings: {
+    react: {
+      version: "16"
+    }
   }
 };

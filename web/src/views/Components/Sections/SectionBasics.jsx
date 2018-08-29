@@ -1,7 +1,6 @@
 import React from "react";
-// react plugin that creates slider
 import Nouislider from "react-nouislider";
-
+import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -56,6 +55,11 @@ class SectionBasics extends React.Component {
       checked: newChecked
     });
   }
+
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   render() {
     const { classes } = this.props;
     return (

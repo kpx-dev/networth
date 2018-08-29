@@ -1,5 +1,5 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -13,7 +13,7 @@ import Explore from "@material-ui/icons/Explore";
 
 import GridContainer from "components/Grid/GridContainer.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
-import Header from "components/Header/Header.jsx";
+import Header from "../../components/Header/Header.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import CustomDropdown from "components/CustomDropdown/CustomDropdown.jsx";
 import Button from "components/CustomButtons/Button.jsx";
@@ -24,6 +24,10 @@ import image from "assets/img/bg.jpg";
 import profileImage from "assets/img/faces/avatar.jpg";
 
 class SectionNavbars extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   render() {
     const { classes } = this.props;
     return (
