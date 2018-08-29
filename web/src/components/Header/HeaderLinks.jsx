@@ -1,15 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import withStyles from "@material-ui/core/styles/withStyles";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Tooltip from "@material-ui/core/Tooltip";
-import { Apps, CloudDownload, LockOpen } from "@material-ui/icons";
-import CustomDropdown from "../CustomDropdown/CustomDropdown.jsx";
+// import Tooltip from "@material-ui/core/Tooltip";
+import { LockOpen } from "@material-ui/icons";
+// import CustomDropdown from "../CustomDropdown/CustomDropdown.jsx";
 import Button from "../CustomButtons/Button.jsx";
 import headerLinksStyle from "../../assets/jss/material-kit-react/components/headerLinksStyle.jsx";
 import { Auth } from 'aws-amplify';
-import { Redirect } from 'react-router-dom'
+// import { Redirect } from 'react-router-dom'
 
 function HeaderLinks({ ...props }) {
   const { classes } = props;
@@ -18,7 +18,8 @@ function HeaderLinks({ ...props }) {
     await Auth.signOut();
 
     // TODO: make redirect work
-    return <Redirect to='/logout' />
+    window.location.reload();
+    // return <Redirect to='/logout' />
   };
 
   return (
