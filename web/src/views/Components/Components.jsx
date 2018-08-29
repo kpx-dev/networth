@@ -21,14 +21,9 @@ import SectionPills from "./Sections/SectionPills.jsx";
 // import SectionLogin from "./Sections/SectionLogin.jsx";
 // import SectionExamples from "./Sections/SectionExamples.jsx";
 // import SectionDownload from "./Sections/SectionDownload.jsx";
-import componentsStyle from "assets/jss/material-kit-react/views/components.jsx";
+import componentsStyle from "../../assets/jss/material-kit-react/views/components.jsx";
 
 class Components extends React.Component {
-  // componentDidMount() {
-  //   Auth.currentAuthenticatedUser()
-  //   .then(user => console.log(user));
-  //   .catch(err => console.log(err));
-  // }
 
   render() {
     const { classes, ...rest } = this.props;

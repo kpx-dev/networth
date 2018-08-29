@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import indexRoutes from "./routes/index.jsx";
 import { createBrowserHistory } from "history";
-import { Auth } from "aws-amplify";
 import { withAuthenticator } from "aws-amplify-react";
 
 const hist = createBrowserHistory();
