@@ -37,7 +37,7 @@ class LinkAccount extends React.Component {
       },
       body: JSON.stringify({ token })
     };
-    const res = await fetch(exchangeUrl, fetchOptions);
+    await fetch(exchangeUrl, fetchOptions);
   }
 
   // handleOnExit() {

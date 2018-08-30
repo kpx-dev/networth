@@ -3,7 +3,7 @@ matrix:
     - language: go
       before_script: cd api
       script: go test
-      after_script: cd ${TRAVIS_BUILD_DIR}
+      before_deploy: cd ${TRAVIS_BUILD_DIR}
       deploy:
         - provider: script
           script: make deploy-api
@@ -17,6 +17,11 @@ matrix:
       script:
         - npm test
         - npm run build
+
+      before_deploy:
+        # after_deploy will run these twice
+        - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
+        - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
 
       deploy:
         - provider: s3
@@ -35,6 +40,3 @@ matrix:
           acl: public_read
           skip_cleanup: true
 
-      after_deploy:
-        - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
-        - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
