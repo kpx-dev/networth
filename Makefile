@@ -9,7 +9,7 @@ deploy-infra:
 
 deploy-api:
 	make api
-	aws cloudformation wait stack-update-complete --stack-name networth-api
+	aws cloudformation wait stack-update-complete --stack-name networth-api --region us-east-1
 	aws cloudformation package --template-file api/template.yml --s3-bucket lambda.networth.app --output-template-file /tmp/networth-api.yml --s3-prefix networth-api
 	aws cloudformation deploy --template-file /tmp/networth-api.yml --stack-name networth-api --capabilities CAPABILITY_IAM --region us-east-1
 

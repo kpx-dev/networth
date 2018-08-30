@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -25,21 +24,21 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 	}
 
 	// plaid webhook ips: (https://support.plaid.com/customer/en/portal/articles/2546264-webhook-overview)
-	// 52.21.26.131
-	// 52.21.47.157
-	// 52.41.247.19
-	// 52.88.82.239
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body WebhookBody
+		// plaidIps := []string{
+		// 	"52.21.26.131", "52.21.47.157", "52.41.247.19", "52.88.82.239",
+		// }
 
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			errorResp(w, err.Error())
 			return
 		}
 
-		ips := r.Header.Get("X-Forwarded-For")
-		fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
+		// TODO: check to make sure ip came from whitelist
+		// ips := r.Header.Get("X-Forwarded-For")
+		// fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
 		alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode)
 		successResp(w, body)
 	}
