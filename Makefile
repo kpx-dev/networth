@@ -14,7 +14,10 @@ deploy-api:
 
 start-api:
 	make api
-	cd api && sam local start-api
+	cd api && sam local start-api --env-vars .env.json
+
+start-web:
+	cd web && npm run start
 
 token:
 	# reset pass

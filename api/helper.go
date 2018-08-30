@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -31,7 +32,9 @@ func errorResp(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 
-	json.NewEncoder(w).Encode(APIResponse{message.(string)})
+	msg := message.(string)
+	log.Println("Response error: " + msg)
+	json.NewEncoder(w).Encode(APIResponse{msg})
 }
 
 func successResp(w http.ResponseWriter, message interface{}) {
@@ -81,21 +84,22 @@ func getRootDir() string {
 	return dir
 }
 
-func loadDotEnv() {
-	envPath := getRootDir() + "/.env"
-	file, _ := os.Open(envPath)
-	defer file.Close()
+// TODO: remove in favor of Lambda ENV
+// func loadDotEnv() {
+// 	envPath := getRootDir() + "/.env"
+// 	file, _ := os.Open(envPath)
+// 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		lineSplitted := strings.Split(line, "=")
+// 	scanner := bufio.NewScanner(file)
+// 	for scanner.Scan() {
+// 		line := scanner.Text()
+// 		lineSplitted := strings.Split(line, "=")
 
-		key := strings.TrimSpace(lineSplitted[0])
-		val := strings.TrimSpace(lineSplitted[1])
-		os.Setenv(key, val)
-	}
-}
+// 		key := strings.TrimSpace(lineSplitted[0])
+// 		val := strings.TrimSpace(lineSplitted[1])
+// 		os.Setenv(key, val)
+// 	}
+// }
 
 func loadAWSConfig() aws.Config {
 	cfg, err := external.LoadDefaultAWSConfig()

@@ -5,6 +5,8 @@ script: true
 matrix:
   include:
     - language: go
+      before_install: cd api
+      script: go test
       deploy:
         - provider: script
           script: make deploy-api

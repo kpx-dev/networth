@@ -112,18 +112,30 @@ func (d DynamoDBClient) Get(table string, partitionKey string, sortKey string) (
 }
 
 // Set key / val to db
-func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, val interface{}) error {
+func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, valMap map[string]string) error {
+	items := map[string]dynamodb.AttributeValue{
+		"email": {S: aws.String(partitionKey)},
+	}
+
+	if len(sortKey) > 0 {
+		items["datetime"] = dynamodb.AttributeValue{S: aws.String(sortKey)}
+	}
+
+	for key, val := range valMap {
+		fmt.Println("key / val ", key, val)
+		items[key] = dynamodb.AttributeValue{S: aws.String(val)}
+	}
+
+	fmt.Println(items)
+
 	req := d.PutItemRequest(&dynamodb.PutItemInput{
-		Item: map[string]dynamodb.AttributeValue{
-			"email":    {S: aws.String(partitionKey)},
-			"datetime": {S: aws.String(sortKey)},
-		},
+		Item:      items,
 		TableName: aws.String(table),
 	})
 
 	res, err := req.Send()
 
-	fmt.Println("Set res: ", res)
+	fmt.Println("Dyno Set() res: ", res)
 
 	return err
 }

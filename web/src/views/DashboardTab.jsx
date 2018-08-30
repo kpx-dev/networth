@@ -5,13 +5,13 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import Schedule from "@material-ui/icons/Schedule";
 import AddIcon from "@material-ui/icons/Add";
 // import List from "@material-ui/icons/List";
-import GridContainer from "../../../components/Grid/GridContainer.jsx";
-import GridItem from "../../../components/Grid/GridItem.jsx";
-import NavPills from "../../../components/NavPills/NavPills.jsx";
-import pillsStyle from "../../../assets/jss/material-kit-react/views/componentsSections/pillsStyle.jsx";
-import LinkAccount from "../../../components/LinkAccount/LinkAccount.jsx";
+import GridContainer from "../components/Grid/GridContainer.jsx";
+import GridItem from "../components/Grid/GridItem.jsx";
+import NavPills from "../components/NavPills/NavPills.jsx";
+import pillsStyle from "../assets/jss/material-kit-react/views/componentsSections/pillsStyle.jsx";
+import LinkAccount from "../components/LinkAccount/LinkAccount.jsx";
 
-class SectionPills extends React.Component {
+class DashboardTab extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired
   };
@@ -31,6 +31,36 @@ class SectionPills extends React.Component {
                     contentGrid: { xs: 12, sm: 8, md: 8 }
                   }}
                   tabs={[
+                    {
+                      tabButton: "Link Account",
+                      tabIcon: AddIcon,
+                      tabContent: (
+                        <span>
+                          <LinkAccount />
+                          {/* <p>Common Banks</p>
+                          <LinkAccount
+                            institution="ins_1"
+                            text="Bank of America"
+                          />
+                          <LinkAccount institution="ins_3" text="Chase" />
+                          <LinkAccount institution="ins_4" text="Wells Fargo" /> */}
+
+                          {/* <LinkAccount institution="ins_5" text="Citi" />
+                          <LinkAccount institution="ins_14" text="TD Bank" />
+                          <LinkAccount institution="ins_13" text="PNC" />
+                          <LinkAccount institution="ins_9" text="Capital One" />
+                          <LinkAccount institution="ins_22" text="BB&T" />
+                          <LinkAccount institution="ins_16" text="SunTrust" />
+                          <LinkAccount institution="ins_25" text="Ally Bank" /> */}
+                          {/* <LinkAccount
+                            institution="ins_10"
+                            text="American Express"
+                          />
+                          <br />
+                          <br /> */}
+                        </span>
+                      )
+                    },
                     {
                       tabButton: "Net Worth",
                       tabIcon: Dashboard,
@@ -52,36 +82,6 @@ class SectionPills extends React.Component {
                           </p>
                         </span>
                       )
-                    },
-                    {
-                      tabButton: "Link Account",
-                      tabIcon: AddIcon,
-                      tabContent: (
-                        <span>
-                          <p>Common Banks</p>
-                          <LinkAccount
-                            institution="ins_1"
-                            text="Bank of America"
-                          />
-                          <LinkAccount institution="ins_3" text="Chase" />
-                          <LinkAccount institution="ins_4" text="Wells Fargo" />
-                          <LinkAccount institution="ins_5" text="Citi" />
-                          <LinkAccount institution="ins_14" text="TD Bank" />
-                          <LinkAccount institution="ins_13" text="PNC" />
-                          <LinkAccount institution="ins_9" text="Capital One" />
-                          <LinkAccount institution="ins_22" text="BB&T" />
-                          <LinkAccount institution="ins_16" text="SunTrust" />
-                          <LinkAccount institution="ins_25" text="Ally Bank" />
-                          <LinkAccount
-                            institution="ins_10"
-                            text="American Express"
-                          />
-                          <br />
-                          <br />
-                          <p>Other Banks</p>
-                          <LinkAccount />
-                        </span>
-                      )
                     }
                   ]}
                 />
@@ -94,4 +94,4 @@ class SectionPills extends React.Component {
   }
 }
 
-export default withStyles(pillsStyle)(SectionPills);
+export default withStyles(pillsStyle)(DashboardTab);

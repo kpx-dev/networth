@@ -22,8 +22,6 @@ var (
 )
 
 func main() {
-	loadDotEnv()
-
 	accessToken = getEnv("PLAID_ACCESS_TOKEN")
 	jwtSecret = getEnv("JWT_SECRET")
 	plaidClientID = getEnv("PLAID_CLIENT_ID")

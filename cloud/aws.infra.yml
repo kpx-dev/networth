@@ -75,6 +75,8 @@ Resources:
   TokenTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      SSESpecification:
+        SSEEnabled: true
       KeySchema:
         -
           AttributeName: email
@@ -90,6 +92,8 @@ Resources:
   TransactionTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      SSESpecification:
+        SSEEnabled: true
       KeySchema:
         -
           AttributeName: email
@@ -111,6 +115,8 @@ Resources:
   HistoryTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      SSESpecification:
+        SSEEnabled: true
       KeySchema:
         -
           AttributeName: email

@@ -2,17 +2,17 @@ import React from "react";
 import classNames from "classnames";
 // import { Link } from "react-router-dom";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Header from "../../components/Header/Header.jsx";
-import Footer from "../../components/Footer/Footer.jsx";
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
 // import GridContainer from "components/Grid/GridContainer.jsx";
 // import GridItem from "components/Grid/GridItem.jsx";
 // import Button from "components/CustomButtons/Button.jsx";
 // import Parallax from "components/Parallax/Parallax.jsx";
-import HeaderLinks from "../../components/Header/HeaderLinks.jsx";
+import HeaderLinks from "../components/Header/HeaderLinks.jsx";
 // import SectionBasics from "./Sections/SectionBasics.jsx";
 // import SectionNavbars from "./Sections/SectionNavbars.jsx";
 // import SectionTabs from "./Sections/SectionTabs.jsx";
-import SectionPills from "./Sections/SectionPills.jsx";
+import DashboardTab from "./DashboardTab.jsx";
 // import SectionNotifications from "./Sections/SectionNotifications.jsx";
 // import SectionTypography from "./Sections/SectionTypography.jsx";
 // import SectionJavascript from "./Sections/SectionJavascript.jsx";
@@ -21,9 +21,9 @@ import SectionPills from "./Sections/SectionPills.jsx";
 // import SectionLogin from "./Sections/SectionLogin.jsx";
 // import SectionExamples from "./Sections/SectionExamples.jsx";
 // import SectionDownload from "./Sections/SectionDownload.jsx";
-import componentsStyle from "../../assets/jss/material-kit-react/views/components.jsx";
+import componentsStyle from "../assets/jss/material-kit-react/views/components.jsx";
 
-class Components extends React.Component {
+class Dashboard extends React.Component {
   render() {
     const { classes, ...rest } = this.props;
     return (
@@ -64,7 +64,7 @@ class Components extends React.Component {
 
         <div className={classNames(classes.main, classes.mainRaised)}>
           {/* <SectionBasics /> */}
-          <SectionPills />
+          <DashboardTab />
 
           {/* <SectionTabs /> */}
           {/* <SectionDownload /> */}
@@ -91,4 +91,4 @@ class Components extends React.Component {
   }
 }
 
-export default withStyles(componentsStyle)(Components);
+export default withStyles(componentsStyle)(Dashboard);

@@ -1,0 +1,49 @@
+version: '2'
+volumes:
+  networth-api-src:
+    driver_opts:
+      type: none
+      device: /Users/kienpham/go/src/github.com/networth-app/networth/api
+      o: bind
+
+  networth-web-src:
+    driver_opts:
+      type: none
+      device: /Users/kienpham/go/src/github.com/networth-app/networth/web/build
+      o: bind
+
+  networth-landing-src:
+    driver_opts:
+      type: none
+      device: /Users/kienpham/go/src/github.com/networth-app/networth/landing
+      o: bind
+
+services:
+  networth.dev:
+    image: networth.dev
+    ports:
+      - '443:443'
+    links:
+      - networth-web
+      - networth-server
+    depends_on:
+      - race-reports-ui
+      - race-reports-server
+
+  networth-web:
+    image: 'networth-web'
+    expose:
+      - '80'
+    volumes:
+      - 'networth-web-src:/usr/share/nginx/html'
+
+  networth-server:
+    image: 'networth-server:dev-local'
+    expose:
+      - '3000'
+    # env_file: configuration/networth-server/.env
+    command:
+      - run
+      - watch
+    volumes:
+      - 'networth-server-src:/usr/src/app'

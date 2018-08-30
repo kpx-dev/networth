@@ -27,22 +27,17 @@ class LinkAccount extends React.Component {
   }
 
   async handleOnSuccess(token, metadata) {
-    // console.log(metadata);
     const session = await Auth.currentSession();
-
     const exchangeUrl = "https://api.networth.app/tokens/exchange";
     const fetchOptions = {
       method: "POST",
-      mode: "no-cors",
-      headers: new Headers({
+      headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.idToken.jwtToken}`
-      }),
+      },
       body: JSON.stringify({ token })
     };
-    console.log("fetch opts ", fetchOptions);
     const res = await fetch(exchangeUrl, fetchOptions);
-    console.log("exchange res ", res);
   }
 
   // handleOnExit() {
@@ -61,13 +56,7 @@ class LinkAccount extends React.Component {
 
   render() {
     const { classes, institution, text } = this.props;
-
-    const plaidStyle = {
-      padding: 0,
-      // background: '#FFFFFF',
-      border: "none",
-      borderRadius: 0
-    };
+    const plaidStyle = { padding: 0, border: "none", borderRadius: 0 };
 
     return (
       <PlaidLink

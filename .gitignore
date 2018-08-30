@@ -1,3 +1,4 @@
+.env.json
 yarn.lock
 web/build
 gin-bin

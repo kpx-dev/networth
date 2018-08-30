@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -18,25 +17,24 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body TokenBody
 
-		err := json.NewDecoder(r.Body).Decode(&body)
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			errorResp(w, err.Error())
+			return
+		}
+
+		token, err := s.plaid.ExchangePublicToken(body.Token)
 
 		if err != nil {
 			errorResp(w, err.Error())
 			return
 		}
 
-		accessToken, err := s.plaid.ExchangePublicToken(body.Token)
-
-		if err != nil {
-			errorResp(w, err.Error())
-			return
+		jwtUsername := s.username(r.Header)
+		tokenMap := map[string]string{
+			"token": token.AccessToken,
 		}
 
-		errDb := s.db.Set(tokenTable, username, "", accessToken.AccessToken)
-
-		fmt.Println("db error ", errDb)
-
-		if errDb != nil {
+		if err := s.db.Set(tokenTable, jwtUsername, "", tokenMap); err != nil {
 			errorResp(w, err.Error())
 			return
 		}
@@ -68,6 +66,24 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 
 		successResp(w, raw)
 	}
+}
+
+func (s *NetworthAPI) username(headers http.Header) string {
+	type CognitoJWT struct {
+		Username string `json:"username"`
+	}
+
+	authHeader := headers.Get("Authorization")
+	jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
+	tok, err := jwt.ParseSigned(jwtKey)
+	if err != nil {
+		return ""
+	}
+
+	claim := &CognitoJWT{}
+	tok.UnsafeClaimsWithoutVerification(&claim)
+
+	return claim.Username
 }
 
 func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
