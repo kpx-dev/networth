@@ -16,7 +16,7 @@ Parameters:
   EnvPlaidSecret:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /networth/PLAID_SECRET
-  EnvSlackWebhookUrl:
+  EnvSlackWebhook:
     Type : 'AWS::SSM::Parameter::Value<String>'
     Default: /networth/SLACK_WEBHOOK_URL
 
@@ -110,11 +110,11 @@ Resources:
           KMS_KEY_ALIAS:
             Fn::ImportValue:
               !Join [-, [ !Ref AppName, kms, alias]]
+          SLACK_WEBHOOK_URL: !Ref EnvSlackWebhook
           PLAID_ENV: sandbox
           PLAID_PUBLIC_KEY: 7e599ac974fb8343f50fac8535fcf1
           PLAID_CLIENT_ID: !Ref EnvPlaidClientID
           PLAID_SECRET: !Ref EnvPlaidSecret
-          SLACK_WEBHOOK_URL: !Ref EnvSlackWebhookURL
       Events:
         GetApiProxyResource:
           Type: Api
@@ -135,7 +135,7 @@ Resources:
   #         !Join [-, [ !Ref AppName, lambda, role]]
   #     Environment:
   #       Variables:
-  #         SLACK_WEBHOOK_URL: !Ref EnvSlackWebhookURL
+  #         SLACK_WEBHOOK_URL: !Ref EnvSlackWebhook
   #     Events:
   #       Timer:
   #         Type: Schedule
