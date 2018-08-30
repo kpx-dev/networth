@@ -114,6 +114,7 @@ Resources:
           PLAID_PUBLIC_KEY: 7e599ac974fb8343f50fac8535fcf1
           PLAID_CLIENT_ID: !Ref EnvPlaidClientID
           PLAID_SECRET: !Ref EnvPlaidSecret
+          SLACK_WEBHOOK_URL: !Ref EnvSlackWebhookURL
       Events:
         GetApiProxyResource:
           Type: Api

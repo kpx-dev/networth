@@ -38,8 +38,8 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 			return
 		}
 
-		fmt.Println("webhook body is")
-
+		ips := r.Header.Get("X-Forwarded-For")
+		fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
 		alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode)
 		successResp(w, body)
 	}
