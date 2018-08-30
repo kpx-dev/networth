@@ -28,12 +28,16 @@ class LinkAccount extends React.Component {
 
   async handleOnSuccess(token, metadata) {
     const session = await Auth.currentSession();
+    // console.log('sesison key is ', session);
+    // console.log('accessToken key is ', session.accessToken.jwtToken);
+    // console.log('id token key is ', session.idToken.jwtToken);
+
     const exchangeUrl = "https://api.networth.app/tokens/exchange";
     const fetchOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.idToken.jwtToken}`
+        Authorization: session.idToken.jwtToken
       },
       body: JSON.stringify({ token })
     };

@@ -39,7 +39,10 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		}
 
 		fmt.Println("webhook body is")
-		fmt.Println(body.WebhookType, body.WebhookCode, body.ItemID)
+		fmt.Println("type ", body.WebhookType)
+		fmt.Println("code ", body.WebhookCode)
+		fmt.Println("item id ", body.ItemID)
+		fmt.Println("raw body ", body)
 
 		successResp(w, body)
 	}

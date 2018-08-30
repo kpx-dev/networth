@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -30,6 +31,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		jwtUsername := s.username(r.Header)
+		fmt.Println("jwtUsername ", jwtUsername)
 		tokenMap := map[string]string{
 			"token": token.AccessToken,
 		}
@@ -70,7 +72,8 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 
 func (s *NetworthAPI) username(headers http.Header) string {
 	type CognitoJWT struct {
-		Username string `json:"username"`
+		Username string `json:"cognito:username"`
+		Email    string `json:"email"`
 	}
 
 	authHeader := headers.Get("Authorization")
@@ -83,6 +86,7 @@ func (s *NetworthAPI) username(headers http.Header) string {
 	claim := &CognitoJWT{}
 	tok.UnsafeClaimsWithoutVerification(&claim)
 
+	fmt.Println("claim is ", claim)
 	return claim.Username
 }
 
