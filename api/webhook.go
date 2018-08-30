@@ -39,11 +39,8 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		}
 
 		fmt.Println("webhook body is")
-		fmt.Println("type ", body.WebhookType)
-		fmt.Println("code ", body.WebhookCode)
-		fmt.Println("item id ", body.ItemID)
-		fmt.Println("raw body ", body)
 
+		alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode)
 		successResp(w, body)
 	}
 }

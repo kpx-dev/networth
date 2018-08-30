@@ -5,7 +5,7 @@ import AddIcon from "@material-ui/icons/Add";
 import Button from "../../components/CustomButtons/Button.jsx";
 import withStyles from "@material-ui/core/styles/withStyles";
 import buttonStyle from "../../assets/jss/material-kit-react/components/buttonStyle.jsx";
-import { Auth } from "aws-amplify";
+import { post } from "../../helpers/helpers.js";
 
 class LinkAccount extends React.Component {
   constructor(props) {
@@ -27,21 +27,12 @@ class LinkAccount extends React.Component {
   }
 
   async handleOnSuccess(token, metadata) {
-    const session = await Auth.currentSession();
-    // console.log('sesison key is ', session);
-    // console.log('accessToken key is ', session.accessToken.jwtToken);
-    // console.log('id token key is ', session.idToken.jwtToken);
-
-    const exchangeUrl = "https://api.networth.app/tokens/exchange";
-    const fetchOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: session.idToken.jwtToken
-      },
-      body: JSON.stringify({ token })
+    const body = {
+      token,
+      institution_id: metadata.institution.institution_id,
+      institution_name: metadata.institution.name
     };
-    await fetch(exchangeUrl, fetchOptions);
+    await post('tokens/exchange', body);
   }
 
   // handleOnExit() {
