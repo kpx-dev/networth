@@ -1,4 +1,3 @@
-install: pip install awscli --upgrade --user
 test: true
 script: true
 
@@ -15,9 +14,11 @@ matrix:
     - language: node_js
       node_js: 10
       before_install: cd web
-      install: npm i
+      install:
+        - pip install awscli --upgrade --user
+        - npm i
       script:
-        # - npm test
+        - npm test
         - npm run build
 
       deploy:
