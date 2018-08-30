@@ -1,12 +1,9 @@
-test: true
-script: true
-
 matrix:
   include:
     - language: go
       before_script: cd api
       script: go test
-      after_script: cd ../
+      after_script: cd ${TRAVIS_BUILD_DIR}
       deploy:
         - provider: script
           script: make deploy-api
@@ -41,6 +38,3 @@ matrix:
       after_deploy:
         - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
         - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
-
-
-
