@@ -5,7 +5,9 @@ script: true
 matrix:
   include:
     - language: go
-      script: cd api && go test
+      before_script: cd api
+      script: go test
+      after_script: cd ../
       deploy:
         - provider: script
           script: make deploy-api
