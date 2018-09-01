@@ -1,3 +1,5 @@
+!.env.production
+.env*.local
 .env.json
 yarn.lock
 web/build

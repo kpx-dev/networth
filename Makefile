@@ -14,8 +14,9 @@ deploy-api:
 	aws cloudformation deploy --template-file /tmp/networth-api.yml --stack-name networth-api --capabilities CAPABILITY_IAM --region us-east-1
 
 start-api:
-	make api
-	cd api && sam local start-api --env-vars .env.json
+	cd api && gin --appPort 8000
+	# make api
+	# cd api && sam local start-api --env-vars .env.json
 
 start-web:
 	cd web && npm run start

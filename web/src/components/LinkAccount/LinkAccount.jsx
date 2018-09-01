@@ -6,6 +6,7 @@ import Button from "../../components/CustomButtons/Button.jsx";
 import withStyles from "@material-ui/core/styles/withStyles";
 import buttonStyle from "../../assets/jss/material-kit-react/components/buttonStyle.jsx";
 import { post } from "../../helpers/helpers.js";
+import { NW_API_BASE_URL } from "../../helpers/constants.js"
 
 class LinkAccount extends React.Component {
   constructor(props) {
@@ -26,13 +27,15 @@ class LinkAccount extends React.Component {
     );
   }
 
-  async handleOnSuccess(token, metadata) {
+  async handleOnSuccess(access_token, metadata) {
     const body = {
-      token,
+      access_token,
       institution_id: metadata.institution.institution_id,
-      institution_name: metadata.institution.name
+      institution_name: metadata.institution.name,
+      account_id: metadata.account_id, // for stripe later (https://plaid.com/docs/link/stripe/)
+      accounts: metadata.accounts || [],
     };
-    await post('tokens/exchange', body);
+    await post('/tokens/exchange', body);
   }
 
   // handleOnExit() {
@@ -58,7 +61,7 @@ class LinkAccount extends React.Component {
         style={plaidStyle}
         className="plaid-link"
         institution={institution}
-        webhook="https://api.networth.app/webhook"
+        webhook={`${NW_API_BASE_URL}/webhook`}
         clientName="networth.app"
         env="sandbox"
         product={["transactions"]}

@@ -36,12 +36,13 @@ class DashboardTab extends React.Component {
                       tabIcon: AddIcon,
                       tabContent: (
                         <span>
-                          <LinkAccount />
-                          {/* <p>Common Banks</p>
                           <LinkAccount
                             institution="ins_1"
                             text="Bank of America"
                           />
+                          <LinkAccount />
+                          {/* <p>Common Banks</p>
+
                           <LinkAccount institution="ins_3" text="Chase" />
                           <LinkAccount institution="ins_4" text="Wells Fargo" /> */}
 

@@ -3,10 +3,18 @@
 ## DynamoDB Table Schema
 
 Table: `networth_token`
-| email (partition key: string) | tokens (list) | accounts (list) |
+| email (partition key: string) | tokens (map) |
 | --- | --- | --- |
-| demo@networth.app | [ sandbox-access-token-abc, sandbox-access-token-xyz ] | [ account-01, account-02 ] |
-| user2@networth.com | [ sandbox-access-token-zzz ] | [ boa-01, chase-02 ] |
+| demo@networth.app |
+```json
+{ "ins_1":
+  {
+    "name": "Bank of America",
+    "tokens": ["encrypted_token_1", "encrypted_token_2"],
+    "accounts": [...]
+  }
+}
+```
 
 Table: `networth_history`
 

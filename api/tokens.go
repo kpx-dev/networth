@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -10,20 +10,46 @@ import (
 	"gopkg.in/square/go-jose.v2/jwt"
 )
 
+// Token hold the structure for saving to db
+type Token struct {
+	AccessTokens    []string `json:"access_tokens"`
+	Accounts        []string `json:"accounts"`
+	AccountID       string   `json:"account_id"`
+	InstitutionID   string   `json:"institution_id"`
+	InstitutionName string   `json:"institution_name"`
+}
+
+// IncomingToken body from api
+type IncomingToken struct {
+	AccessToken     string   `json:"access_token"`
+	Accounts        []string `json:"accounts"`
+	AccountID       string   `json:"account_id"`
+	InstitutionID   string   `json:"institution_id"`
+	InstitutionName string   `json:"institution_name"`
+}
+
 func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
-	type TokenBody struct {
-		Token string `json:"token"`
-	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		var body TokenBody
+		var body IncomingToken
 
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			errorResp(w, err.Error())
 			return
 		}
 
-		token, err := s.plaid.ExchangePublicToken(body.Token)
+		// validate body
+		if body.InstitutionID == "" || body.AccessToken == "" {
+			errorResp(w, "Missing required body fields.")
+			return
+		}
+
+		// TODO: remove fixture
+		publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
+		body.AccessToken = publicToken.PublicToken
+
+		token, err := s.plaid.ExchangePublicToken(body.AccessToken)
+		// fmt.Println(token)
 
 		if err != nil {
 			errorResp(w, err.Error())
@@ -31,12 +57,30 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		jwtUsername := s.username(r.Header)
-		fmt.Println("jwtUsername ", jwtUsername)
-		tokenMap := map[string]string{
-			"token": token.AccessToken,
+		tokenStore := &Token{
+			InstitutionName: body.InstitutionName,
+			AccessTokens:    []string{token.AccessToken},
+			Accounts:        body.Accounts,
+			AccountID:       body.AccountID,
 		}
 
-		if err := s.db.Set(tokenTable, jwtUsername, "", tokenMap); err != nil {
+		tokens := s.db.GetToken(jwtUsername)
+
+		for existingInstitutionID := range tokens {
+			if existingInstitutionID == body.InstitutionID {
+				// TODO: use Token struct intead of interface
+				existingToken := tokens[existingInstitutionID]
+				tokenMap := existingToken.(map[string]interface{})
+				accessTokens := tokenMap["access_tokens"]
+				tokensArray := accessTokens.([]interface{})
+
+				for oldToken := range tokensArray {
+					tokenStore.AccessTokens = append(tokenStore.AccessTokens, string(tokensArray[oldToken].(string)))
+				}
+			}
+		}
+
+		if err := s.db.SetToken(jwtUsername, body.InstitutionID, tokenStore); err != nil {
 			errorResp(w, err.Error())
 			return
 		}
@@ -80,13 +124,13 @@ func (s *NetworthAPI) username(headers http.Header) string {
 	jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
 	tok, err := jwt.ParseSigned(jwtKey)
 	if err != nil {
+		log.Println("Problem parsing jwt ", err)
 		return ""
 	}
 
-	claim := &CognitoJWT{}
+	var claim CognitoJWT
 	tok.UnsafeClaimsWithoutVerification(&claim)
 
-	fmt.Println("claim is ", claim)
 	return claim.Username
 }
 

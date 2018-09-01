@@ -85,6 +85,78 @@ func (d DynamoDBClient) SetNetworth(networth float64) error {
 	return err
 }
 
+// GetToken return tokens from db
+func (d DynamoDBClient) GetToken(username string) map[string]interface{} {
+	dbToken := make(map[string]interface{})
+
+	req := d.GetItemRequest(&dynamodb.GetItemInput{
+		TableName: aws.String(tokenTable),
+		Key: map[string]dynamodb.AttributeValue{
+			"email": {S: aws.String(username)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		log.Println("Problem getting tokens from db ", err)
+		// return err
+		// return tokenStorage
+	}
+
+	// fmt.Println("got item ", res.Item)
+	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbToken); err != nil {
+		log.Println("Problem converting token data from db ", err)
+		// return err
+		// return tokenStorage
+	}
+
+	return dbToken
+	// fmt.Println(token.AccessTokens, token.InstitutionName)
+
+	// TODO: decrypt token
+	// kmsClient := NewKMSClient()
+	// payload := []string{""}
+	// for k, v := range tokens {
+	// 	if strings.HasPrefix(k, "ins_") {
+	// 		decrypted := kmsClient.Decrypt(v.([]string)[0])
+	// 		payload = append(payload, decrypted)
+	// 	}
+	// }
+
+	// return nil
+	// return token
+}
+
+// SetToken save token to db
+func (d DynamoDBClient) SetToken(username string, instituionName string, tokenMap *Token) error {
+	data, err := dynamodbattribute.Marshal(tokenMap)
+	if err != nil {
+		fmt.Println("Problem marshalling token map into dyno format", err)
+		return err
+	}
+
+	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
+		Key: map[string]dynamodb.AttributeValue{
+			"email": {S: aws.String(username)},
+		},
+		TableName: aws.String(tokenTable),
+		ExpressionAttributeNames: map[string]string{
+			"#instituion": instituionName,
+		},
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":data": *data,
+		},
+		UpdateExpression: aws.String("SET #instituion = :data"),
+	})
+
+	if _, err := req.Send(); err != nil {
+		log.Println("Problem saving token to db ", err)
+		return err
+	}
+
+	return nil
+}
+
 // Get item
 func (d DynamoDBClient) Get(table string, partitionKey string, sortKey string) (float64, error) {
 	req := d.GetItemRequest(&dynamodb.GetItemInput{
@@ -172,39 +244,6 @@ func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, v
 // 	}
 
 // 	fmt.Println(res)
-// }
-
-// GetTokens return tokens from db
-// func (d DynamoDBClient) GetTokens(username string) []string {
-// 	req := d.GetItemRequest(&dynamodb.GetItemInput{
-// 		TableName: accountTable,
-// 		Key: map[string]dynamodb.AttributeValue{
-// 			"username": {S: aws.String(fmt.Sprintf("%s:tokens", username))},
-// 		},
-// 	})
-
-// 	res, err := req.Send()
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-
-// 	tokens := make(map[string]interface{})
-// 	if err := dynamodbattribute.UnmarshalMap(res.Item, &tokens); err != nil {
-// 		panic(err)
-// 	}
-
-// 	// TODO: might not be a right approach to init kms client here...
-// 	kmsClient := NewKMSClient()
-
-// 	payload := []string{""}
-// 	for k, v := range tokens {
-// 		if strings.HasPrefix(k, "ins_") {
-// 			decrypted := kmsClient.Decrypt(v.([]string)[0])
-// 			payload = append(payload, decrypted)
-// 		}
-// 	}
-
-// 	return payload
 // }
 
 // GetAccounts return accounts from db
