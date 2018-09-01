@@ -19,6 +19,7 @@ var (
 	plaidClientID  string
 	plaidSecret    string
 	plaidPublicKey string
+	kmsKeyAlias    string
 )
 
 func main() {
@@ -28,6 +29,7 @@ func main() {
 	plaidSecret = getEnv("PLAID_SECRET")
 	plaidPublicKey = getEnv("PLAID_PUBLIC_KEY")
 	plaidEnv = getEnv("PLAID_ENV", "sandbox")
+	kmsKeyAlias = getEnv("KMS_KEY_ALIAS", "alias/networth")
 	apiHost := getEnv("API_HOST", ":8000")
 
 	plaidClient := NewPlaidClient()

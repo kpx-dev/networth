@@ -49,17 +49,19 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		body.AccessToken = publicToken.PublicToken
 
 		token, err := s.plaid.ExchangePublicToken(body.AccessToken)
-		// fmt.Println(token)
 
 		if err != nil {
 			errorResp(w, err.Error())
 			return
 		}
 
+		kmsClient := NewKMSClient()
+		encryptedToken := kmsClient.Encrypt(token.AccessToken)
+
 		jwtUsername := s.username(r.Header)
 		tokenStore := &Token{
 			InstitutionName: body.InstitutionName,
-			AccessTokens:    []string{token.AccessToken},
+			AccessTokens:    []string{encryptedToken},
 			Accounts:        body.Accounts,
 			AccountID:       body.AccountID,
 		}

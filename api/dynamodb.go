@@ -99,32 +99,18 @@ func (d DynamoDBClient) GetToken(username string) map[string]interface{} {
 	res, err := req.Send()
 	if err != nil {
 		log.Println("Problem getting tokens from db ", err)
-		// return err
-		// return tokenStorage
+
+		return dbToken
 	}
 
 	// fmt.Println("got item ", res.Item)
 	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbToken); err != nil {
 		log.Println("Problem converting token data from db ", err)
-		// return err
-		// return tokenStorage
+
+		return dbToken
 	}
 
 	return dbToken
-	// fmt.Println(token.AccessTokens, token.InstitutionName)
-
-	// TODO: decrypt token
-	// kmsClient := NewKMSClient()
-	// payload := []string{""}
-	// for k, v := range tokens {
-	// 	if strings.HasPrefix(k, "ins_") {
-	// 		decrypted := kmsClient.Decrypt(v.([]string)[0])
-	// 		payload = append(payload, decrypted)
-	// 	}
-	// }
-
-	// return nil
-	// return token
 }
 
 // SetToken save token to db

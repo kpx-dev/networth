@@ -29,6 +29,10 @@ Outputs:
     Export:
       Name: !Join [-, [ !Ref AppName, token, table]]
     Value: !Ref TokenTable
+  TokenTableStream:
+    Export:
+      Name: !Join [-, [ !Ref AppName, token, table, stream]]
+    Value: !GetAtt TokenTable.StreamArn
 
   HistoryTable:
     Export:
@@ -75,6 +79,8 @@ Resources:
   TokenTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
       SSESpecification:
         SSEEnabled: true
       KeySchema:
