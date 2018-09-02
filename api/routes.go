@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"net/http"
 
+	"github.com/apex/gateway"
 	"github.com/rs/cors"
 )
 
@@ -25,6 +25,6 @@ func (s *NetworthAPI) Start(host string) {
 
 	log.Println("Starting api service on: ", host)
 
-	// log.Fatal(gateway.ListenAndServe(host, handler))
-	log.Fatal(http.ListenAndServe(host, handler))
+	log.Fatal(gateway.ListenAndServe(host, handler))
+	// log.Fatal(http.ListenAndServe(host, handler))
 }
