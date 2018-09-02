@@ -14,6 +14,7 @@ async function post(path, body) {
   };
 
   let absPath = path;
+  console.log('REACT_APP_NW_API_HOST ', NW_API_BASE_URL, process.env.NODE_ENV);
   if (NW_API_BASE_URL) absPath = `${NW_API_BASE_URL}${path}`;
 
   return fetch(absPath, fetchOptions);
