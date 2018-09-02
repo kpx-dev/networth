@@ -45,8 +45,8 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		// TODO: remove fixture
-		publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
-		body.AccessToken = publicToken.PublicToken
+		// publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
+		// body.AccessToken = publicToken.PublicToken
 
 		token, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
