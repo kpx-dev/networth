@@ -9,6 +9,15 @@ matrix:
     deploy:
     - provider: script
       script: make deploy-api
+  - language: go
+    install:
+    - pip install awscli --upgrade --user
+    before_script: cd api/token_observer
+    script: go test
+    before_deploy: cd ${TRAVIS_BUILD_DIR}
+    deploy:
+    - provider: script
+      script: make deploy-token-observer
   - language: node_js
     node_js: 10
     before_install: cd web
