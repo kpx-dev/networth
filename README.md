@@ -4,9 +4,9 @@ Get your real-time net worth!
 
 ![Product Gif](https://s3.amazonaws.com/creativetim_bucket/github/gif/black-dashboard.gif)
 
-## [Live Demo](https://networth.app/)
+## [Live Demo](https://app.networth.app/)
 
-[https://networth.app/](https://networth.app/)
+[https://app.networth.app/](https://app.networth.app/)
 
 username: `demo@networth.app`
 

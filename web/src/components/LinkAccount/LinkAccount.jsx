@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import PlaidLink from "react-plaid-link";
+import PlaidLinkButton from "react-plaid-link-button";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "../../components/CustomButtons/Button.jsx";
 import withStyles from "@material-ui/core/styles/withStyles";
 import buttonStyle from "../../assets/jss/material-kit-react/components/buttonStyle.jsx";
 import { post } from "../../helpers/helpers.js";
-import { NW_API_BASE_URL } from "../../helpers/constants.js"
+import { NW_API_BASE_URL, PLAID_CLIENT_NAME, PLAID_PUBLIC_KEY, PLAID_ENV, PLAID_PRODUCTS, PLAID_WEBHOOK } from "../../helpers/constants.js"
 
 class LinkAccount extends React.Component {
   constructor(props) {
@@ -55,19 +56,36 @@ class LinkAccount extends React.Component {
   render() {
     const { classes, institution, text } = this.props;
     const plaidStyle = { padding: 0, border: "none", borderRadius: 0 };
-    let webhook = 'http://networth.dev:3000/webhook';
-    if (NW_API_BASE_URL) webhook = `${NW_API_BASE_URL}/webhook`;
 
     return (
+
+      // <PlaidLinkButton
+      //   // buttonProps={{ className: 'some-class' }}
+      //   plaidLinkProps={{
+      //     clientName: PLAID_CLIENT_NAME,
+      //     key: PLAID_PUBLIC_KEY,
+      //     env: PLAID_ENV,
+      //     product: PLAID_PRODUCTS,
+      //     webhook: PLAID_WEBHOOK,
+      //     onSuccess: {handleOnSuccess},
+      //   }}
+      //   onScriptLoad={() => this.setState({ loaded: true })}
+      // >
+      //   this.state.loaded ? 'Click me to launch Plaid!' : 'Loading....'
+      //   {/* <Button size="sm" round>
+      //     <AddIcon className={classes.icons} /> {text}
+      //   </Button> */}
+      // </PlaidLinkButton>
+
       <PlaidLink
         style={plaidStyle}
         className="plaid-link"
         institution={institution}
-        webhook={webhook}
-        clientName="networth.app"
-        env="sandbox"
-        product={["transactions"]}
-        publicKey="7e599ac974fb8343f50fac8535fcf1"
+        webhook={PLAID_WEBHOOK}
+        clientName={PLAID_CLIENT_NAME}
+        env={PLAID_ENV}
+        product={PLAID_PRODUCTS}
+        publicKey={PLAID_PUBLIC_KEY}
         // onExit={this.handleOnExit}
         onSuccess={this.handleOnSuccess}
       >
