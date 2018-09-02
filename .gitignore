@@ -7,7 +7,7 @@ gin-bin
 yarn-error.log
 *.log
 node_modules
-bin/networth
+bin/*
 *.db
 api/gin-bin
 

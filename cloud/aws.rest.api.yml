@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: networth.app REST API Lambda
+
+Parameters:
+  AppName:
+    Type: String
+    Default: networth
+  DomainName:
+    Type: String
+    Default: networth.app
+  EnvPlaidClientID:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/PLAID_CLIENT_ID
+  # TODO: [SECURITY] encrypt using SecureString
+  EnvPlaidSecret:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/PLAID_SECRET
+  EnvSlackWebhook:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/SLACK_WEBHOOK_URL
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Ref AppName
+      StageName: latest
+      EndpointConfiguration: REGIONAL
+      Cors:
+        AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          title: !Ref AWS::StackName
+        securityDefinitions:
+          networth-cognito-authorizer:
+            type: apiKey
+            name: Authorization
+            in: header
+            x-amazon-apigateway-authtype: cognito_user_pools
+            x-amazon-apigateway-authorizer:
+              providerARNs:
+                - Fn::ImportValue:
+                    !Join ['-', [!Ref AppName, userpool]]
+              type: cognito_user_pools
+        paths:
+          /healthcheck:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthAPIFunction.Arn}/invocations
+          /webhook:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthAPIFunction.Arn}/invocations
+          /{proxy+}:
+            x-amazon-apigateway-any-method:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NetWorthAPIFunction.Arn}/invocations
+              security:
+                - networth-cognito-authorizer: []
+
+  APIGatewayBasePathMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    DependsOn: ApiGatewayApi
+    Properties:
+      DomainName: !Join ['.', [api, !Ref DomainName]]
+      RestApiId: !Ref ApiGatewayApi
+      Stage: latest
+
+  NetWorthAPIFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: go1.x
+      CodeUri: ../bin
+      Handler: networth-api
+      FunctionName: networth-rest-api
+      Description:  networth.app REST API
+      Role:
+        Fn::ImportValue:
+          !Join [-, [ !Ref AppName, lambda, role]]
+      Environment:
+        Variables:
+          TOKEN_TABLE:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, token, table]]
+          HISTORY_TABLE:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, history, table]]
+          TRANSACTION_TABLE:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, transaction, table]]
+          SNS_TOPIC_ARN:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, sns]]
+          KMS_KEY_ALIAS:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, kms, alias]]
+          SLACK_WEBHOOK_URL: !Ref EnvSlackWebhook
+          PLAID_ENV: sandbox
+          PLAID_PUBLIC_KEY: 7e599ac974fb8343f50fac8535fcf1
+          PLAID_CLIENT_ID: !Ref EnvPlaidClientID
+          PLAID_SECRET: !Ref EnvPlaidSecret
+      Events:
+        GetApiProxyResource:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+            RestApiId: !Ref ApiGatewayApi
+
