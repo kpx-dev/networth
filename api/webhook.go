@@ -15,8 +15,8 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 	}
 
 	type WebhookBody struct {
-		WebhookType         string       `json:"webhook_type"`         // "TRANSACTIONS",// INITIAL_UPDATE HISTORICAL_UPDATE DEFAULT_UPDATE TRANSACTIONS_REMOVED
-		WebhookCode         string       `json:"webhook_code"`         // "INITIAL_UPDATE",
+		WebhookType         string       `json:"webhook_type"`         // "TRANSACTIONS",
+		WebhookCode         string       `json:"webhook_code"`         // INITIAL_UPDATE HISTORICAL_UPDATE DEFAULT_UPDATE TRANSACTIONS_REMOVED
 		ItemID              string       `json:"item_id"`              // "wz666MBjYWTp2PDzzggYhM6oWWmBb",
 		Error               WebhookError `json:"error"`                // null,
 		NewTransactions     int          `json:"new_transactions"`     //19
@@ -39,7 +39,7 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		// TODO: check to make sure ip came from whitelist
 		// ips := r.Header.Get("X-Forwarded-For")
 		// fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
-		alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode)
+		alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode + " item id: " + body.ItemID)
 		successResp(w, body)
 	}
 }
