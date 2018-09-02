@@ -29,7 +29,8 @@ start-web:
 	cd web && npm run start
 
 start-token-observer:
-	sam local generate-event dynamodb
+	make token-observer
+	sam local generate-event dynamodb | sam local invoke "NetWorthTokenObserverFunction" --template cloud/aws.token.observer.yml
 
 token:
 	# reset pass
