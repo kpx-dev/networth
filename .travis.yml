@@ -1,44 +1,43 @@
 matrix:
   include:
-    - language: go
-      install:
-        - pip install awscli --upgrade --user
-      before_script: cd api
-      script: go test
-      before_deploy: cd ${TRAVIS_BUILD_DIR}
-      deploy:
-        - provider: script
-          script: make deploy-api
-
-    - language: node_js
-      node_js: 10
-      before_install: cd web
-      install:
-        - pip install awscli --upgrade --user
-        - npm i
-      script:
-        - npm test
-        - npm run build
-
-      before_deploy:
-        # after_deploy will run these twice
-        - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID} --paths '/*'
-        - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID} --paths '/*'
-
-      deploy:
-        - provider: s3
-          access_key_id: $AWS_ACCESS_KEY_ID
-          secret_access_key: $AWS_SECRET_ACCESS_KEY
-          bucket: networth.app
-          local-dir: ${TRAVIS_BUILD_DIR}/landing
-          acl: public_read
-          skip_cleanup: true
-
-        - provider: s3
-          access_key_id: $AWS_ACCESS_KEY_ID
-          secret_access_key: $AWS_SECRET_ACCESS_KEY
-          bucket: app.networth.app
-          local-dir: ${TRAVIS_BUILD_DIR}/web/build
-          acl: public_read
-          skip_cleanup: true
-
+  - language: go
+    install:
+    - pip install awscli --upgrade --user
+    before_script: cd api
+    script: go test
+    before_deploy: cd ${TRAVIS_BUILD_DIR}
+    deploy:
+    - provider: script
+      script: make deploy-api
+  - language: node_js
+    node_js: 10
+    before_install: cd web
+    install:
+    - pip install awscli --upgrade --user
+    - npm i
+    script:
+    - npm test
+    - npm run build
+    before_deploy:
+    - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID}
+      --paths '/*'
+    - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID}
+      --paths '/*'
+    deploy:
+    - provider: s3
+      access_key_id: "$AWS_ACCESS_KEY_ID"
+      secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+      bucket: networth.app
+      local-dir: "${TRAVIS_BUILD_DIR}/landing"
+      acl: public_read
+      skip_cleanup: true
+    - provider: s3
+      access_key_id: "$AWS_ACCESS_KEY_ID"
+      secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+      bucket: app.networth.app
+      local-dir: "${TRAVIS_BUILD_DIR}/web/build"
+      acl: public_read
+      skip_cleanup: true
+notifications:
+  slack:
+    secure: itT/JY6KPvtmcWAaVEpXzVskxGEihpDoLwpSQR2ftyffi43H9uNbtYPTplXc4OTe5Md/GnbEtW8l4TFjQFoV/8wnJqXg8nfqy/EWE4lbWY5Yn2CoiPjcnsCFG2dPFx6lIYFx3xu3OxWxwqTzyo7cLAsHUUOYc+jC/opaWp6/e7V64nryZps2gvCHyNSis5fYS8mhwkiAx2gjvfPrM9t6gQlRZR0ZoccDGdsv/AXT+d+5FKgVeKeDQ12LB3jPL0anhl1qz1hEMY45OzcrfRYnVzi2xzy/YjAwiYQOpevXznQ9wAEmJnK3/uV1HAiWGTXMDuSabEPt23iH/GmyHbvK0+TaXx41FwrCGPKsz3/F6qr5VlTczgDioI7g6wo8W1PEfmbYpkrye+FFXXSAXSUSaZFcUbN+/mWI+06me3x/ez6Dn+KPY7zSabo11ve+QGd1rVvrHNu5W8MDqTq/h6sFgmyXtJLnxrvtM6jqr3FT+NDbnK/d0uRenkvEZ6TeeL+l4asUD7qXhLSWdUkdxft48Xu1D0bqrFBJrMw4I671T4opTSj9Nc2ffcYAi4N5aI6uyiMSVsz1TKs53jOl4HPwkYzwZBZi/VJi2RR65rbq+XPY1PwGHPJ6ypybqDzIHOY9Amg5xYkpnJyqwQuKoeKChQkMrQVVS2FLvEPCS8Dr5Tg=
