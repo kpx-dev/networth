@@ -12,13 +12,11 @@ deploy-infra:
 
 deploy-api:
 	make api
-	aws cloudformation wait stack-update-complete --stack-name networth-api --region us-east-1
 	aws cloudformation package --template-file cloud/aws.rest.api.yml --s3-bucket lambda.networth.app --output-template-file /tmp/aws.rest.api.yml --s3-prefix networth-api
 	aws cloudformation deploy --template-file /tmp/aws.rest.api.yml --stack-name networth-api --capabilities CAPABILITY_IAM --region us-east-1
 
 deploy-token-observer:
 	make token-observer
-	# aws cloudformation wait stack-update-complete --stack-name networth-token-observer --region us-east-1
 	aws cloudformation package --template-file cloud/aws.token.observer.yml --s3-bucket lambda.networth.app --output-template-file /tmp/aws.token.observer.yml --s3-prefix networth-token-observer
 	aws cloudformation deploy --template-file /tmp/aws.token.observer.yml --stack-name networth-token-observer --capabilities CAPABILITY_IAM --region us-east-1
 

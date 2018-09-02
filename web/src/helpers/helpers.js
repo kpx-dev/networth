@@ -1,5 +1,5 @@
 import { Auth } from "aws-amplify";
-// import { NW_API_BASE_URL } from "./constants.js";
+import { NW_API_BASE_URL } from "./constants.js";
 
 async function post(path, body) {
   const session = await Auth.currentSession();
@@ -13,7 +13,10 @@ async function post(path, body) {
     body: JSON.stringify(body)
   };
 
-  return fetch(path, fetchOptions);
+  let absPath = path;
+  if (NW_API_BASE_URL) absPath = `${NW_API_BASE_URL}${path}`;
+
+  return fetch(absPath, fetchOptions);
 }
 
 export { post };

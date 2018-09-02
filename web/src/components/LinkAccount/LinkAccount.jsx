@@ -55,13 +55,15 @@ class LinkAccount extends React.Component {
   render() {
     const { classes, institution, text } = this.props;
     const plaidStyle = { padding: 0, border: "none", borderRadius: 0 };
+    let webhook = 'http://networth.dev:3000/webhook';
+    if (NW_API_BASE_URL) webhook = `${NW_API_BASE_URL}/webhook`;
 
     return (
       <PlaidLink
         style={plaidStyle}
         className="plaid-link"
         institution={institution}
-        webhook={`${NW_API_BASE_URL}/webhook`}
+        webhook={webhook}
         clientName="networth.app"
         env="sandbox"
         product={["transactions"]}
