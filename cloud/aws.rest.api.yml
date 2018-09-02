@@ -84,7 +84,7 @@ Resources:
       Runtime: go1.x
       CodeUri: ../bin
       Handler: networth-api
-      Timeout: 15
+      Timeout: 20
       FunctionName: networth-rest-api
       Description:  networth.app REST API
       Role:
