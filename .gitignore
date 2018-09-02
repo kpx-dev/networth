@@ -29,3 +29,4 @@ api/gin-bin
 !.env.development
 !.env.test
 !.env.production
+!web/.env
