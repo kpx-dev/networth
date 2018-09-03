@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/mux v1.6.2
 	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
+	github.com/networth-app/networth v0.0.0-20180903181054-189df585b474 // indirect
 	github.com/onsi/ginkgo v1.6.0 // indirect
 	github.com/onsi/gomega v1.4.1 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
