@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 )
 
-var kmsKeyAlias = "alias/networth"
+var kmsKeyAlias = GetEnv("KMS_KEY_ALIAS", "alias/networth")
 
 // KMSClient kms client struct
 type KMSClient struct {

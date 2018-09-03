@@ -7,19 +7,8 @@ import (
 	"strings"
 
 	"github.com/networth-app/networth/api/lib"
-	jose "gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
-
-// Token hold the structure for saving to db
-type Token struct {
-	ItemID          string   `json:"item_id"`
-	AccessTokens    []string `json:"access_tokens"`
-	Accounts        []string `json:"accounts"`
-	AccountID       string   `json:"account_id"`
-	InstitutionID   string   `json:"institution_id"`
-	InstitutionName string   `json:"institution_name"`
-}
 
 // IncomingToken body from api
 type IncomingToken struct {
@@ -61,7 +50,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		encryptedToken := kmsClient.Encrypt(token.AccessToken)
 
 		jwtUsername := s.username(r.Header)
-		tokenStore := &Token{
+		tokenStore := &nwlib.Token{
 			ItemID:          token.ItemID,
 			InstitutionName: body.InstitutionName,
 			AccessTokens:    []string{encryptedToken},
@@ -94,30 +83,30 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 	}
 }
 
-func (s *NetworthAPI) handleTokens() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		type claim struct {
-			Username string `json:"username"`
-		}
+// func (s *NetworthAPI) handleTokens() http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		type claim struct {
+// 			Username string `json:"username"`
+// 		}
 
-		key := []byte(jwtSecret)
-		sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: key}, (&jose.SignerOptions{}).WithType("JWT"))
-		if err != nil {
-			nwlib.ErrorResp(w, err.Error())
-			return
-		}
+// 		key := []byte(jwtSecret)
+// 		sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: key}, (&jose.SignerOptions{}).WithType("JWT"))
+// 		if err != nil {
+// 			nwlib.ErrorResp(w, err.Error())
+// 			return
+// 		}
 
-		myClaim := claim{username}
+// 		myClaim := claim{username}
 
-		raw, err := jwt.Signed(sig).Claims(myClaim).CompactSerialize()
-		if err != nil {
-			nwlib.ErrorResp(w, err.Error())
-			return
-		}
+// 		raw, err := jwt.Signed(sig).Claims(myClaim).CompactSerialize()
+// 		if err != nil {
+// 			nwlib.ErrorResp(w, err.Error())
+// 			return
+// 		}
 
-		nwlib.SuccessResp(w, raw)
-	}
-}
+// 		nwlib.SuccessResp(w, raw)
+// 	}
+// }
 
 func (s *NetworthAPI) username(headers http.Header) string {
 	type CognitoJWT struct {
@@ -145,23 +134,23 @@ func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 		h(w, r)
 		return
 
-		authHeader := r.Header.Get("Authorization")
-		jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
-		parsed, err := jwt.ParseSigned(jwtKey)
-		if err != nil {
-			w.WriteHeader(http.StatusForbidden)
-			nwlib.ErrorResp(w, "Invalid JWT format")
-			return
-		}
+		// authHeader := r.Header.Get("Authorization")
+		// jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
+		// parsed, err := jwt.ParseSigned(jwtKey)
+		// if err != nil {
+		// 	w.WriteHeader(http.StatusForbidden)
+		// 	nwlib.ErrorResp(w, "Invalid JWT format")
+		// 	return
+		// }
 
-		claim := jwt.Claims{}
-		key := []byte(jwtSecret)
-		if err := parsed.Claims(key, &claim); err != nil {
-			w.WriteHeader(http.StatusForbidden)
-			nwlib.ErrorResp(w, "Invalid JWT crypto")
-			return
-		}
+		// claim := jwt.Claims{}
+		// key := []byte(jwtSecret)
+		// if err := parsed.Claims(key, &claim); err != nil {
+		// 	w.WriteHeader(http.StatusForbidden)
+		// 	nwlib.ErrorResp(w, "Invalid JWT crypto")
+		// 	return
+		// }
 
-		h(w, r)
+		// h(w, r)
 	}
 }

@@ -1,4 +1,4 @@
-package main
+package nwlib
 
 import (
 	"fmt"
@@ -9,13 +9,22 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute"
-	"github.com/networth-app/networth/api/lib"
 )
 
+// Token hold the structure for saving to db
+type Token struct {
+	ItemID          string   `json:"item_id"`
+	AccessTokens    []string `json:"access_tokens"`
+	Accounts        []string `json:"accounts"`
+	AccountID       string   `json:"account_id"`
+	InstitutionID   string   `json:"institution_id"`
+	InstitutionName string   `json:"institution_name"`
+}
+
 var (
-	tokenTable       = nwlib.GetEnv("TOKEN_TABLE")
-	transactionTable = nwlib.GetEnv("TRANSACTION_TABLE")
-	historyTable     = nwlib.GetEnv("HISTORY_TABLE")
+	tokenTable       = GetEnv("TOKEN_TABLE")
+	transactionTable = GetEnv("TRANSACTION_TABLE")
+	historyTable     = GetEnv("HISTORY_TABLE")
 )
 
 // DynamoDBClient db client struct
@@ -30,14 +39,14 @@ type HistoryResp struct {
 
 // NewDynamoDBClient new dynamodb client
 func NewDynamoDBClient() *DynamoDBClient {
-	cfg := nwlib.LoadAWSConfig()
+	cfg := LoadAWSConfig()
 	table := dynamodb.New(cfg)
 
 	return &DynamoDBClient{table}
 }
 
 // GetNetworth return networth
-func (d DynamoDBClient) GetNetworth() float64 {
+func (d DynamoDBClient) GetNetworth(username string) float64 {
 	today := time.Now().UTC().Format("2006-01-02")
 
 	networth, err := d.Get(historyTable, username, today)
@@ -50,7 +59,7 @@ func (d DynamoDBClient) GetNetworth() float64 {
 }
 
 // SetNetworth value as of today date and current timestamp
-func (d DynamoDBClient) SetNetworth(networth float64) error {
+func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 	now := time.Now().UTC()
 	today := now.Format("2006-01-02")
 	timestamp := now.Format(time.RFC3339)

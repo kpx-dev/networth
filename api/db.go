@@ -1,13 +1,17 @@
 package main
 
+import (
+	"github.com/networth-app/networth/api/lib"
+)
+
 // DBClient client for db storage
 type DBClient struct {
-	*DynamoDBClient
+	*nwlib.DynamoDBClient
 }
 
 // NewDBClient new db client
 func NewDBClient() *DBClient {
-	client := NewDynamoDBClient()
+	client := nwlib.NewDynamoDBClient()
 
 	return &DBClient{client}
 }

@@ -8,6 +8,8 @@ import (
 
 func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: use real access_token
+		accessToken := "test"
 		accounts, err := s.plaid.GetAccounts(accessToken)
 
 		if err != nil {

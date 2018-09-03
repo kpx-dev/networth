@@ -16,7 +16,7 @@ func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
-			networth := s.db.GetNetworth()
+			networth := s.db.GetNetworth(username)
 			nwlib.SuccessResp(w, networth)
 			break
 		case "POST", "PUT":
@@ -34,7 +34,7 @@ func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 				return
 			}
 
-			err = s.db.SetNetworth(networth)
+			err = s.db.SetNetworth(username, networth)
 
 			if err != nil {
 				nwlib.ErrorResp(w, err.Error())

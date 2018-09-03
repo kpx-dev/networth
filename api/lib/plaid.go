@@ -1,4 +1,4 @@
-package main
+package nwlib
 
 import (
 	"net/http"
@@ -13,6 +13,11 @@ type PlaidClient struct {
 
 // NewPlaidClient new Plaid client
 func NewPlaidClient() *PlaidClient {
+	plaidClientID := GetEnv("PLAID_CLIENT_ID")
+	plaidSecret := GetEnv("PLAID_SECRET")
+	plaidPublicKey := GetEnv("PLAID_PUBLIC_KEY")
+	plaidEnv := GetEnv("PLAID_ENV", "sandbox")
+
 	plaidHost := plaid.Sandbox
 
 	switch plaidEnv {

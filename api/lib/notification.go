@@ -1,4 +1,4 @@
-package main
+package nwlib
 
 import (
 	"fmt"
@@ -6,11 +6,10 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
-	"github.com/networth-app/networth/api/lib"
 )
 
-var snsClient = sns.New(session.New(), aws.NewConfig().WithRegion(awsRegion))
-var snsTopicARN = nwlib.GetEnv("SNS_TOPIC_ARN", "")
+var snsClient = sns.New(session.New(), aws.NewConfig().WithRegion(AWSRegion))
+var snsTopicARN = GetEnv("SNS_TOPIC_ARN", "")
 
 // PublishSNS publish message to SNS topic
 func PublishSNS(message string) {
