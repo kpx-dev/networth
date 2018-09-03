@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/networth-app/networth/api/lib"
 )
 
 func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
@@ -9,7 +11,7 @@ func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 		accounts, err := s.plaid.GetAccounts(accessToken)
 
 		if err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
@@ -20,6 +22,6 @@ func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 		// payload, _ := json.Marshal(accounts.Accounts)
 		// fmt.Println(string(payload))
 		// json.NewEncoder(w).Encode()
-		successResp(w, accounts.Accounts)
+		nwlib.SuccessResp(w, accounts.Accounts)
 	}
 }

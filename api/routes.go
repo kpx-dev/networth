@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/apex/gateway"
+	"github.com/networth-app/networth/api/lib"
 	"github.com/rs/cors"
 )
 
@@ -26,7 +27,7 @@ func (s *NetworthAPI) Start(host string) {
 
 	log.Println("Starting api service on: ", host)
 
-	if getEnv("AWS_LAMBDA_FUNCTION_NAME") == "" {
+	if nwlib.GetEnv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		log.Fatal(http.ListenAndServe(host, handler))
 	} else {
 		log.Fatal(gateway.ListenAndServe(host, handler))

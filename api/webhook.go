@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/networth-app/networth/api/lib"
 )
 
 func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
@@ -32,7 +34,7 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		// }
 
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
@@ -40,6 +42,6 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		// ips := r.Header.Get("X-Forwarded-For")
 		// fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
 		alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode + " item id: " + body.ItemID)
-		successResp(w, body)
+		nwlib.SuccessResp(w, body)
 	}
 }

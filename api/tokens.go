@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/networth-app/networth/api/lib"
 	jose "gopkg.in/square/go-jose.v2"
 	"gopkg.in/square/go-jose.v2/jwt"
 )
@@ -35,13 +36,13 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		var body IncomingToken
 
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
 		// validate body
 		if body.InstitutionID == "" || body.AccessToken == "" {
-			errorResp(w, "Missing required body fields.")
+			nwlib.ErrorResp(w, "Missing required body fields.")
 			return
 		}
 
@@ -52,11 +53,11 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		token, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
 		if err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
-		kmsClient := NewKMSClient()
+		kmsClient := nwlib.NewKMSClient()
 		encryptedToken := kmsClient.Encrypt(token.AccessToken)
 
 		jwtUsername := s.username(r.Header)
@@ -85,11 +86,11 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		if err := s.db.SetToken(jwtUsername, body.InstitutionID, tokenStore); err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
-		successResp(w, "access token created")
+		nwlib.SuccessResp(w, "access token created")
 	}
 }
 
@@ -102,7 +103,7 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 		key := []byte(jwtSecret)
 		sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: key}, (&jose.SignerOptions{}).WithType("JWT"))
 		if err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
@@ -110,11 +111,11 @@ func (s *NetworthAPI) handleTokens() http.HandlerFunc {
 
 		raw, err := jwt.Signed(sig).Claims(myClaim).CompactSerialize()
 		if err != nil {
-			errorResp(w, err.Error())
+			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
-		successResp(w, raw)
+		nwlib.SuccessResp(w, raw)
 	}
 }
 
@@ -149,7 +150,7 @@ func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 		parsed, err := jwt.ParseSigned(jwtKey)
 		if err != nil {
 			w.WriteHeader(http.StatusForbidden)
-			errorResp(w, "Invalid JWT format")
+			nwlib.ErrorResp(w, "Invalid JWT format")
 			return
 		}
 
@@ -157,7 +158,7 @@ func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
 		key := []byte(jwtSecret)
 		if err := parsed.Claims(key, &claim); err != nil {
 			w.WriteHeader(http.StatusForbidden)
-			errorResp(w, "Invalid JWT crypto")
+			nwlib.ErrorResp(w, "Invalid JWT crypto")
 			return
 		}
 

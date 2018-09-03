@@ -21,17 +21,19 @@ var (
 	plaidSecret    string
 	plaidPublicKey string
 	kmsKeyAlias    string
+	awsRegion      string
 )
 
 func main() {
+	awsRegion = nwlib.GetEnv("AWS_REGION", "us-east-1")
 	accessToken = nwlib.GetEnv("PLAID_ACCESS_TOKEN")
-	jwtSecret = getEnv("JWT_SECRET")
-	plaidClientID = getEnv("PLAID_CLIENT_ID")
-	plaidSecret = getEnv("PLAID_SECRET")
-	plaidPublicKey = getEnv("PLAID_PUBLIC_KEY")
-	plaidEnv = getEnv("PLAID_ENV", "sandbox")
-	kmsKeyAlias = getEnv("KMS_KEY_ALIAS", "alias/networth")
-	apiHost := getEnv("API_HOST", ":8000")
+	jwtSecret = nwlib.GetEnv("JWT_SECRET")
+	plaidClientID = nwlib.GetEnv("PLAID_CLIENT_ID")
+	plaidSecret = nwlib.GetEnv("PLAID_SECRET")
+	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
+	plaidEnv = nwlib.GetEnv("PLAID_ENV", "sandbox")
+	kmsKeyAlias = nwlib.GetEnv("KMS_KEY_ALIAS", "alias/networth")
+	apiHost := nwlib.GetEnv("API_HOST", ":8000")
 
 	plaidClient := NewPlaidClient()
 	dbClient := NewDBClient()

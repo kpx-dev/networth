@@ -6,10 +6,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
+	"github.com/networth-app/networth/api/lib"
 )
 
-var snsClient = sns.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
-var snsTopicARN = getEnv("SNS_TOPIC_ARN", "")
+var snsClient = sns.New(session.New(), aws.NewConfig().WithRegion(awsRegion))
+var snsTopicARN = nwlib.GetEnv("SNS_TOPIC_ARN", "")
 
 // PublishSNS publish message to SNS topic
 func PublishSNS(message string) {

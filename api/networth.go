@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+
+	"github.com/networth-app/networth/api/lib"
 )
 
 func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
@@ -15,31 +17,31 @@ func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 		switch r.Method {
 		case "GET":
 			networth := s.db.GetNetworth()
-			successResp(w, networth)
+			nwlib.SuccessResp(w, networth)
 			break
 		case "POST", "PUT":
 			var body NetworthBody
 
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-				errorResp(w, err.Error())
+				nwlib.ErrorResp(w, err.Error())
 				return
 			}
 
 			networth, err := strconv.ParseFloat(body.Networth, 64)
 
 			if err != nil {
-				errorResp(w, err.Error())
+				nwlib.ErrorResp(w, err.Error())
 				return
 			}
 
 			err = s.db.SetNetworth(networth)
 
 			if err != nil {
-				errorResp(w, err.Error())
+				nwlib.ErrorResp(w, err.Error())
 				return
 			}
 
-			successResp(w, networth)
+			nwlib.SuccessResp(w, networth)
 			break
 		}
 	}

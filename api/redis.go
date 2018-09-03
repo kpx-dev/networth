@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis"
+	"github.com/networth-app/networth/api/lib"
 )
 
 // RedisClient redis client struct
@@ -15,7 +16,7 @@ type RedisClient struct {
 // NewRedisClient new redis client
 func NewRedisClient() *RedisClient {
 	client := redis.NewClient(&redis.Options{
-		Addr:     getEnv("REDIS_HOST", "localhost:6379"),
+		Addr:     nwlib.GetEnv("REDIS_HOST", "localhost:6379"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})

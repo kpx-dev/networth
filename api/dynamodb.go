@@ -9,12 +9,13 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute"
+	"github.com/networth-app/networth/api/lib"
 )
 
 var (
-	tokenTable       = getEnv("TOKEN_TABLE")
-	transactionTable = getEnv("TRANSACTION_TABLE")
-	historyTable     = getEnv("HISTORY_TABLE")
+	tokenTable       = nwlib.GetEnv("TOKEN_TABLE")
+	transactionTable = nwlib.GetEnv("TRANSACTION_TABLE")
+	historyTable     = nwlib.GetEnv("HISTORY_TABLE")
 )
 
 // DynamoDBClient db client struct
@@ -29,7 +30,7 @@ type HistoryResp struct {
 
 // NewDynamoDBClient new dynamodb client
 func NewDynamoDBClient() *DynamoDBClient {
-	cfg := loadAWSConfig()
+	cfg := nwlib.LoadAWSConfig()
 	table := dynamodb.New(cfg)
 
 	return &DynamoDBClient{table}
