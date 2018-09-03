@@ -2,14 +2,11 @@
 
 ## Install
 
-This api requires Golang 1.10 and up
+This api requires Golang 1.11 and up
 
 ```shell
-# install dep
-brew install dep
-
-# install go packages using dep
-dep ensure
+# install packages
+go mod download
 ```
 
 ## Start service
