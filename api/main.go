@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/networth-app/networth/api/lib"
 )
 
 // NetworthAPI nw api struct
@@ -23,6 +24,9 @@ var (
 )
 
 func main() {
+	test := nwlib.GetEnv("test")
+	fmt.Println("test")
+
 	accessToken = getEnv("PLAID_ACCESS_TOKEN")
 	jwtSecret = getEnv("JWT_SECRET")
 	plaidClientID = getEnv("PLAID_CLIENT_ID")

@@ -57,7 +57,7 @@ func SuccessResp(w http.ResponseWriter, message interface{}) {
 
 // GetAPIVersion api version
 func GetAPIVersion() string {
-	path := getRootDir() + "/api/Gopkg.toml"
+	path := GetRootDir() + "/api/Gopkg.toml"
 	file, _ := os.Open(path)
 	defer file.Close()
 
