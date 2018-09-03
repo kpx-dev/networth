@@ -5,63 +5,8 @@ github.com/aws/aws-lambda-go/events
 github.com/aws/aws-lambda-go/lambda
 github.com/aws/aws-lambda-go/lambda/messages
 github.com/aws/aws-lambda-go/lambdacontext
-# github.com/aws/aws-sdk-go v1.15.10
-github.com/aws/aws-sdk-go/aws
-github.com/aws/aws-sdk-go/aws/session
-github.com/aws/aws-sdk-go/service/sns
-github.com/aws/aws-sdk-go/aws/awserr
-github.com/aws/aws-sdk-go/aws/credentials
-github.com/aws/aws-sdk-go/aws/endpoints
-github.com/aws/aws-sdk-go/internal/sdkio
-github.com/aws/aws-sdk-go/aws/client
-github.com/aws/aws-sdk-go/aws/corehandlers
-github.com/aws/aws-sdk-go/aws/credentials/stscreds
-github.com/aws/aws-sdk-go/aws/csm
-github.com/aws/aws-sdk-go/aws/defaults
-github.com/aws/aws-sdk-go/aws/request
-github.com/aws/aws-sdk-go/aws/awsutil
-github.com/aws/aws-sdk-go/aws/client/metadata
-github.com/aws/aws-sdk-go/aws/signer/v4
-github.com/aws/aws-sdk-go/private/protocol
-github.com/aws/aws-sdk-go/private/protocol/query
-github.com/aws/aws-sdk-go/internal/shareddefaults
-github.com/aws/aws-sdk-go/internal/sdkrand
-github.com/aws/aws-sdk-go/service/sts
-github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds
-github.com/aws/aws-sdk-go/aws/credentials/endpointcreds
-github.com/aws/aws-sdk-go/aws/ec2metadata
-github.com/aws/aws-sdk-go/private/protocol/rest
-github.com/aws/aws-sdk-go/private/protocol/query/queryutil
-github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil
-github.com/aws/aws-sdk-go/internal/sdkuri
-# github.com/aws/aws-sdk-go-v2 v2.0.0-preview.4+incompatible
-github.com/aws/aws-sdk-go-v2/aws
-github.com/aws/aws-sdk-go-v2/aws/endpoints
-github.com/aws/aws-sdk-go-v2/aws/external
-github.com/aws/aws-sdk-go-v2/service/dynamodb
-github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute
-github.com/aws/aws-sdk-go-v2/service/kms
-github.com/aws/aws-sdk-go-v2/aws/awserr
-github.com/aws/aws-sdk-go-v2/internal/awsutil
-github.com/aws/aws-sdk-go-v2/internal/sdk
-github.com/aws/aws-sdk-go-v2/aws/defaults
-github.com/aws/aws-sdk-go-v2/aws/ec2metadata
-github.com/aws/aws-sdk-go-v2/aws/ec2rolecreds
-github.com/aws/aws-sdk-go-v2/aws/endpointcreds
-github.com/aws/aws-sdk-go-v2/aws/stscreds
-github.com/aws/aws-sdk-go-v2/service/sts
-github.com/aws/aws-sdk-go-v2/aws/signer/v4
-github.com/aws/aws-sdk-go-v2/private/protocol
-github.com/aws/aws-sdk-go-v2/private/protocol/jsonrpc
-github.com/aws/aws-sdk-go-v2/private/protocol/query
-github.com/aws/aws-sdk-go-v2/private/protocol/rest
-github.com/aws/aws-sdk-go-v2/private/protocol/json/jsonutil
-github.com/aws/aws-sdk-go-v2/private/protocol/query/queryutil
-github.com/aws/aws-sdk-go-v2/private/protocol/xml/xmlutil
 # github.com/coreos/bbolt v1.3.0
 github.com/coreos/bbolt
-# github.com/go-ini/ini v1.38.1
-github.com/go-ini/ini
 # github.com/go-redis/redis v6.13.2+incompatible
 github.com/go-redis/redis
 github.com/go-redis/redis/internal
@@ -75,13 +20,8 @@ github.com/go-redis/redis/internal/util
 github.com/gorilla/context
 # github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
-# github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
-github.com/jmespath/go-jmespath
 # github.com/pkg/errors v0.8.0
 github.com/pkg/errors
-# github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd
-github.com/plaid/plaid-go/plaid
-github.com/plaid/plaid-go/internal
 # github.com/rs/cors v1.5.0
 github.com/rs/cors
 # golang.org/x/crypto v0.0.0-20180808211826-de0752318171
@@ -91,7 +31,7 @@ golang.org/x/crypto/ed25519/internal/edwards25519
 # golang.org/x/sys v0.0.0-20180814072032-4e1fef560951
 golang.org/x/sys/unix
 # gopkg.in/square/go-jose.v2 v2.1.8
-gopkg.in/square/go-jose.v2
 gopkg.in/square/go-jose.v2/jwt
-gopkg.in/square/go-jose.v2/cipher
+gopkg.in/square/go-jose.v2
 gopkg.in/square/go-jose.v2/json
+gopkg.in/square/go-jose.v2/cipher
