@@ -24,10 +24,7 @@ var (
 )
 
 func main() {
-	test := nwlib.GetEnv("test")
-	fmt.Println("test")
-
-	accessToken = getEnv("PLAID_ACCESS_TOKEN")
+	accessToken = nwlib.GetEnv("PLAID_ACCESS_TOKEN")
 	jwtSecret = getEnv("JWT_SECRET")
 	plaidClientID = getEnv("PLAID_CLIENT_ID")
 	plaidSecret = getEnv("PLAID_SECRET")
