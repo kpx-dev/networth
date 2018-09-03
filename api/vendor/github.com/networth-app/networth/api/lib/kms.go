@@ -1,4 +1,4 @@
-package main
+package nwlib
 
 import (
 	"encoding/base64"
@@ -7,6 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/kms"
 	"github.com/aws/aws-sdk-go/aws"
 )
+
+var kmsKeyAlias = "alias/networth"
 
 // KMSClient kms client struct
 type KMSClient struct {

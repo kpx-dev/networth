@@ -18,7 +18,8 @@ type APIResponse struct {
 	Data interface{} `json:"data"`
 }
 
-func getEnv(params ...string) string {
+// GetEnv get environment variable with default fall back
+func GetEnv(params ...string) string {
 	if value, ok := os.LookupEnv(params[0]); ok {
 		return value
 	} else if len(params) >= 2 {
@@ -28,7 +29,8 @@ func getEnv(params ...string) string {
 	return ""
 }
 
-func errorResp(w http.ResponseWriter, message interface{}) {
+// ErrorResp error response helper for api
+func ErrorResp(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusBadRequest)
 
@@ -37,7 +39,8 @@ func errorResp(w http.ResponseWriter, message interface{}) {
 	json.NewEncoder(w).Encode(APIResponse{msg})
 }
 
-func successResp(w http.ResponseWriter, message interface{}) {
+// SuccessResp success response helper for api
+func SuccessResp(w http.ResponseWriter, message interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
@@ -52,7 +55,8 @@ func successResp(w http.ResponseWriter, message interface{}) {
 
 }
 
-func getAPIVersion() string {
+// GetAPIVersion api version
+func GetAPIVersion() string {
 	path := getRootDir() + "/api/Gopkg.toml"
 	file, _ := os.Open(path)
 	defer file.Close()
@@ -75,7 +79,8 @@ func getAPIVersion() string {
 	return ""
 }
 
-func getRootDir() string {
+// GetRootDir root dir
+func GetRootDir() string {
 	dir, _ := os.Getwd()
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
@@ -85,7 +90,7 @@ func getRootDir() string {
 }
 
 // TODO: remove in favor of Lambda ENV
-// func loadDotEnv() {
+// func LoadDotEnv() {
 // 	envPath := getRootDir() + "/.env"
 // 	file, _ := os.Open(envPath)
 // 	defer file.Close()
@@ -101,7 +106,8 @@ func getRootDir() string {
 // 	}
 // }
 
-func loadAWSConfig() aws.Config {
+// LoadAWSConfig set default aws config
+func LoadAWSConfig() aws.Config {
 	cfg, err := external.LoadDefaultAWSConfig()
 	if err != nil {
 		panic("Unable to load SDK config: " + err.Error())

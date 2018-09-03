@@ -128,6 +128,12 @@
   revision = "0b12d6b5"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/networth-app/networth"
+  packages = ["api/lib"]
+  revision = "cfe289d047138d2319752f5c5b3a93e68cd2dcc5"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
@@ -178,6 +184,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6385d325e40447efff089616c613470bb170cc759d15ea46d6046eb81b1037d5"
+  inputs-digest = "1b1332a3b9ee3d5fc4df13350b05ba2fbd14b118761876fbe84cb931c8b35d52"
   solver-name = "gps-cdcl"
   solver-version = 1

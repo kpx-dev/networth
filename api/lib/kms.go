@@ -17,7 +17,7 @@ type KMSClient struct {
 
 // NewKMSClient new instance of the kms client
 func NewKMSClient() *KMSClient {
-	cfg := loadAWSConfig()
+	cfg := LoadAWSConfig()
 	svc := kms.New(cfg)
 
 	return &KMSClient{svc}

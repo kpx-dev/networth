@@ -12,6 +12,7 @@ import (
 
 // Token hold the structure for saving to db
 type Token struct {
+	ItemID          string   `json:"item_id"`
 	AccessTokens    []string `json:"access_tokens"`
 	Accounts        []string `json:"accounts"`
 	AccountID       string   `json:"account_id"`
@@ -45,8 +46,8 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		// TODO: remove fixture
-		// publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
-		// body.AccessToken = publicToken.PublicToken
+		publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
+		body.AccessToken = publicToken.PublicToken
 
 		token, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
@@ -60,6 +61,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 
 		jwtUsername := s.username(r.Header)
 		tokenStore := &Token{
+			ItemID:          token.ItemID,
 			InstitutionName: body.InstitutionName,
 			AccessTokens:    []string{encryptedToken},
 			Accounts:        body.Accounts,
