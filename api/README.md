@@ -12,6 +12,9 @@ go mod download
 ## Start service
 
 ```shell
+# install gin
+go get -u github.com/gin-gonic/gin
+
 # start service locally
 make start-api
 
