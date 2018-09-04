@@ -86,25 +86,29 @@ func GetRootDir() string {
 		dir = strings.Replace(dir, "/api", "", 1)
 	}
 
+	if strings.HasSuffix(dir, "/lib") {
+		dir = strings.Replace(dir, "/lib", "", 1)
+	}
+
 	return dir
 }
 
-// TODO: remove in favor of Lambda ENV
-// func LoadDotEnv() {
-// 	envPath := getRootDir() + "/.env"
-// 	file, _ := os.Open(envPath)
-// 	defer file.Close()
+// LoadDotEnv load .env file. TODO: remove in favor of Lambda ENV
+func LoadDotEnv() {
+	envPath := GetRootDir() + "/.env"
+	file, _ := os.Open(envPath)
+	defer file.Close()
 
-// 	scanner := bufio.NewScanner(file)
-// 	for scanner.Scan() {
-// 		line := scanner.Text()
-// 		lineSplitted := strings.Split(line, "=")
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		lineSplitted := strings.Split(line, "=")
 
-// 		key := strings.TrimSpace(lineSplitted[0])
-// 		val := strings.TrimSpace(lineSplitted[1])
-// 		os.Setenv(key, val)
-// 	}
-// }
+		key := strings.TrimSpace(lineSplitted[0])
+		val := strings.TrimSpace(lineSplitted[1])
+		os.Setenv(key, val)
+	}
+}
 
 // LoadAWSConfig set default aws config
 func LoadAWSConfig() aws.Config {
