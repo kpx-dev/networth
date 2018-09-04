@@ -14,10 +14,11 @@ type NetworthAPI struct {
 
 var (
 	username = "demo@networth.app"
-	apiHost  = nwlib.GetEnv("API_HOST", ":8000")
 )
 
 func main() {
+	nwlib.LoadDotEnv()
+	apiHost := nwlib.GetEnv("API_HOST", ":8000")
 	plaidClient := nwlib.NewPlaidClient()
 	dbClient := NewDBClient()
 
