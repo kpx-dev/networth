@@ -27,7 +27,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 		case "INSERT", "MODIFY":
 			username, tokens := tokens(record)
 			transactions(username, tokens)
-			msg = fmt.Sprintf("Insert / modify event %s, %v", username, tokens)
+			// msg = fmt.Sprintf("Insert / modify event %s, %v", username, tokens)
 			break
 		case "REMOVE":
 			username, tokens := tokens(record)
