@@ -12,18 +12,43 @@ import (
 
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	for _, record := range e.Records {
-		msg := fmt.Sprintf("Dyno stream type %s, source %s, stream view type %s keys %v", record.EventName, record.EventSource, record.Change.StreamViewType, record.Change.Keys)
-		log.Println(msg)
-		nwlib.Alert(msg)
+		if record.Change.StreamViewType != "NEW_IMAGE" {
+			log.Println("Not a NEW_IMAGE stream view type")
+			return
+		}
 
-		for name, value := range record.Change.NewImage {
-			eachMsg := fmt.Sprintf("Each Dyno stream, name %s value %v, data type %v", name, value, value.DataType())
-			log.Println(eachMsg)
-			nwlib.Alert(eachMsg)
+		switch record.EventName {
+		case "INSERT":
+			for key := range record.Change.Keys {
+				msg := "insert key is " + key
+				log.Println(msg)
+				nwlib.Alert(msg)
+			}
 
-			// if value.DataType() == events.DataTypeString {
-			// 	fmt.Printf("Attribute name: %s, value: %s\n", name, value.String())
-			// }
+			for name, value := range record.Change.NewImage {
+				eachMsg := fmt.Sprintf("Each insert Dyno stream, name %s value %v, data type %v", name, value, value.DataType())
+				log.Println(eachMsg)
+				nwlib.Alert(eachMsg)
+
+				// if value.DataType() == events.DataTypeString {
+				// 	fmt.Printf("Attribute name: %s, value: %s\n", name, value.String())
+				// }
+			}
+
+			break
+		case "REMOVE":
+			for key := range record.Change.Keys {
+				msg := "remove key is " + key
+				log.Println(msg)
+				nwlib.Alert(msg)
+			}
+
+			for name, value := range record.Change.NewImage {
+				eachMsg := fmt.Sprintf("Each remove Dyno stream, name %s value %v, data type %v", name, value, value.DataType())
+				log.Println(eachMsg)
+				nwlib.Alert(eachMsg)
+			}
+			break
 		}
 	}
 }
