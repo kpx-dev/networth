@@ -10,46 +10,35 @@ import (
 	"github.com/networth-app/networth/api/lib"
 )
 
+var plaid = nwlib.NewPlaidClient()
+var db = nwlib.NewDynamoDBClient()
+
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
+	var msg string
 	for _, record := range e.Records {
 		if record.Change.StreamViewType != "NEW_IMAGE" {
-			log.Println("Not a NEW_IMAGE stream view type")
+			msg = fmt.Sprintf("Received %s. Not a NEW_IMAGE stream view type, ignoring.", record.Change.StreamViewType)
+			log.Println(msg)
+			nwlib.Alert(msg)
 			return
 		}
 
 		switch record.EventName {
-		case "INSERT":
-			for key := range record.Change.Keys {
-				msg := "insert key is " + key
-				log.Println(msg)
-				nwlib.Alert(msg)
-			}
-
-			for name, value := range record.Change.NewImage {
-				eachMsg := fmt.Sprintf("Each insert Dyno stream, name %s value %v, data type %v", name, value, value.DataType())
-				log.Println(eachMsg)
-				nwlib.Alert(eachMsg)
-
-				// if value.DataType() == events.DataTypeString {
-				// 	fmt.Printf("Attribute name: %s, value: %s\n", name, value.String())
-				// }
-			}
-
+		case "INSERT", "MODIFY":
+			username, tokens := tokens(record)
+			transactions(username, tokens)
+			msg = fmt.Sprintf("Insert / modify event %s, %v", username, tokens)
 			break
 		case "REMOVE":
-			for key := range record.Change.Keys {
-				msg := "remove key is " + key
-				log.Println(msg)
-				nwlib.Alert(msg)
-			}
-
-			for name, value := range record.Change.NewImage {
-				eachMsg := fmt.Sprintf("Each remove Dyno stream, name %s value %v, data type %v", name, value, value.DataType())
-				log.Println(eachMsg)
-				nwlib.Alert(eachMsg)
-			}
+			username, tokens := tokens(record)
+			msg = fmt.Sprintf("Remove event %s, %v", username, tokens)
 			break
+		default:
+			msg = fmt.Sprintf("Unknown event %s", record.EventName)
 		}
+
+		log.Println(msg)
+		nwlib.Alert(msg)
 	}
 }
 

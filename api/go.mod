@@ -3,6 +3,8 @@ module github.com/networth-app/networth/api
 require (
 	github.com/apex/gateway v1.1.1
 	github.com/aws/aws-lambda-go v1.6.0
+	github.com/aws/aws-sdk-go v1.15.26
+	github.com/aws/aws-sdk-go-v2 v2.0.0-preview.4+incompatible
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/coreos/bbolt v1.3.0
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
