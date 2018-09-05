@@ -8,12 +8,9 @@ import (
 
 func getRootDir() string {
 	dir, _ := os.Getwd()
-	if strings.HasSuffix(dir, "/api") {
-		dir = strings.Replace(dir, "/api", "", 1)
-	}
 
-	if strings.HasSuffix(dir, "/lib") {
-		dir = strings.Replace(dir, "/lib", "", 1)
+	if strings.HasSuffix(dir, "/api/lib/dotenv") {
+		dir = strings.Replace(dir, "/api/lib/dotenv", "", 1)
 	}
 
 	return dir

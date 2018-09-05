@@ -14,7 +14,7 @@ require (
 	github.com/gorilla/mux v1.6.2
 	github.com/hpcloud/tail v1.0.0 // indirect
 	github.com/joho/godotenv v1.2.0
-	github.com/networth-app/networth/api/lib v0.0.0-20180905012721-70c5093a665b
+	github.com/networth-app/networth/api/lib v0.0.0-20180905022610-2a1c02f19ba8
 	github.com/onsi/ginkgo v1.6.0 // indirect
 	github.com/onsi/gomega v1.4.1 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
