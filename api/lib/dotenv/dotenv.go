@@ -9,12 +9,13 @@ import (
 
 func init() {
 	dir, _ := os.Getwd()
-
+	fmt.Println("dir path ", dir)
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
 	}
 
 	envPath := fmt.Sprintf("%s/.env", dir)
+	fmt.Println("envPath path ", envPath)
 	file, _ := os.Open(envPath)
 	defer file.Close()
 
