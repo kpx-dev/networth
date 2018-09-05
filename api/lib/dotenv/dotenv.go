@@ -2,12 +2,14 @@ package dotenv
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
 
-func getRootDir() string {
+func init() {
 	dir, _ := os.Getwd()
+	fmt.Println("the .env root dir is", dir)
 
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
@@ -21,12 +23,8 @@ func getRootDir() string {
 		dir = strings.Replace(dir, "/dotenv", "", 1)
 	}
 
-	return dir
-}
-
-// LoadDotEnv load .env file. TODO: remove in favor of Lambda ENV
-func loadDotEnv() {
-	envPath := getRootDir() + "/.env"
+	envPath := fmt.Sprintf("%s/.env", dir)
+	fmt.Println("The .env path is ", envPath)
 	file, _ := os.Open(envPath)
 	defer file.Close()
 
@@ -39,8 +37,4 @@ func loadDotEnv() {
 		val := strings.TrimSpace(lineSplitted[1])
 		os.Setenv(key, val)
 	}
-}
-
-func init() {
-	loadDotEnv()
 }
