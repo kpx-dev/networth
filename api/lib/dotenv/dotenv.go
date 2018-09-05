@@ -10,6 +10,11 @@ import (
 func init() {
 	dir, _ := os.Getwd()
 	fmt.Println("dir path ", dir)
+
+	if strings.HasSuffix(dir, "/api/token_observer") {
+		dir = strings.Replace(dir, "/api/token_observer", "", 1)
+	}
+
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
 	}
