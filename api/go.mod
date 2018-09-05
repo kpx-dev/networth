@@ -3,8 +3,6 @@ module github.com/networth-app/networth/api
 require (
 	github.com/apex/gateway v1.1.1
 	github.com/aws/aws-lambda-go v1.6.0
-	github.com/aws/aws-sdk-go v1.15.26
-	github.com/aws/aws-sdk-go-v2 v2.0.0-preview.4+incompatible
 	github.com/boltdb/bolt v1.3.1 // indirect
 	github.com/coreos/bbolt v1.3.0
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
@@ -13,7 +11,7 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/hpcloud/tail v1.0.0 // indirect
-	github.com/networth-app/networth/api/lib v0.0.0-20180905033429-93b2ce783f54
+	github.com/networth-app/networth/api/lib v0.0.0-20180905044342-edb0f782e9a1
 	github.com/onsi/ginkgo v1.6.0 // indirect
 	github.com/onsi/gomega v1.4.1 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
