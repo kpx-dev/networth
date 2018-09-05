@@ -1,4 +1,4 @@
-package dotenv
+package main
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func init() {
+func main() {
 	dir, _ := os.Getwd()
 	fmt.Println("the .env root dir is", dir)
 
