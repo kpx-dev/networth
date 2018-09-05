@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"time"
-
-	"github.com/networth-app/networth/api/lib"
 )
 
 func transactions(username string, accessTokens []string) error {
@@ -16,21 +14,25 @@ func transactions(username string, accessTokens []string) error {
 
 	for _, token := range accessTokens {
 		trans, err := plaid.GetTransactions(token, last3MonthsStr, todayStr)
-		nwlib.Alert(token)
 
 		if err != nil {
 			log.Println("Problem getting trans ", err)
 			return err
 		}
 
-		msg := fmt.Sprintf("Total trans: %d", trans.TotalTransactions)
-		for _, tran := range trans.Transactions {
-			fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
-			fmt.Println(tran)
+		// msg := fmt.Sprintf("Total trans: %d", trans.TotalTransactions)
+		for _, account := range trans.Accounts {
+			// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
+			fmt.Println(account)
 		}
 
-		log.Println(msg)
-		nwlib.Alert(msg)
+		// for _, tran := range trans.Transactions {
+		// 	// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
+		// 	fmt.Println(tran)
+		// }
+
+		// log.Println(msg)
+		// nwlib.Alert(msg)
 	}
 
 	return nil
