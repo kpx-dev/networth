@@ -9,7 +9,6 @@ import (
 
 func init() {
 	dir, _ := os.Getwd()
-	fmt.Println("the .env root dir is", dir)
 
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
@@ -26,7 +25,6 @@ func init() {
 
 		key := strings.TrimSpace(lineSplitted[0])
 		val := strings.TrimSpace(lineSplitted[1])
-		fmt.Println("Settin env ", key, val)
 		os.Setenv(key, val)
 	}
 }

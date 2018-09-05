@@ -1,11 +1,12 @@
 package main
 
 import (
+	_ "github.com/networth-app/networth/api/lib/dotenv"
+
 	"fmt"
 
 	"github.com/gorilla/mux"
 	"github.com/networth-app/networth/api/lib"
-	_ "github.com/networth-app/networth/api/lib/dotenv"
 )
 
 // NetworthAPI nw api struct
