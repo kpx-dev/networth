@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/networth-app/networth/api/lib/dotenv"
+	_ "github.com/networth-app/networth/api/lib/dotenv"
+
 	"github.com/gorilla/mux"
 	"github.com/networth-app/networth/api/lib"
 )
@@ -18,6 +19,7 @@ var (
 )
 
 func main() {
+	// fmt.Println("TOKEN_TABLE", nwlib.GetEnv("TOKEN_TABLE"))
 	apiHost := nwlib.GetEnv("API_HOST", ":8000")
 	plaidClient := nwlib.NewPlaidClient()
 	dbClient := NewDBClient()
