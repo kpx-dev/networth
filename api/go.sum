@@ -32,6 +32,7 @@ github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 h1:12VvqtR6Ao
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/jtolds/gls v4.2.1+incompatible h1:fSuqC+Gmlu6l/ZYAoZzx2pyucC8Xza35fpRVWLVmUEE=
 github.com/jtolds/gls v4.2.1+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
+github.com/networth-app/networth v0.0.0-20180904200335-e279a0d05da9 h1:COoeyQ16Rwsebu/FuPZolEL2MFqZTDgwskITFiud++8=
 github.com/networth-app/networth/api/lib v0.0.0-20180903181513-830b7938decd h1:qBhDbqc2sh1vgnzM7NEOnWTJXYFz/1a1gUvCw/APSVs=
 github.com/networth-app/networth/api/lib v0.0.0-20180903181513-830b7938decd/go.mod h1:BxH3EIsj5mM1k3OAwkAELs8vNGPAFf15PrnVMLt59/Y=
 github.com/networth-app/networth/api/lib v0.0.0-20180904000051-91df3b13cdf8 h1:CnRsZLvGZblxkwRuLLGhZrgV+Xvxav42NsWIfaUffa8=
@@ -46,6 +47,7 @@ github.com/networth-app/networth/api/lib v0.0.0-20180904075135-176430a84b6c h1:n
 github.com/networth-app/networth/api/lib v0.0.0-20180904075135-176430a84b6c/go.mod h1:BxH3EIsj5mM1k3OAwkAELs8vNGPAFf15PrnVMLt59/Y=
 github.com/networth-app/networth/api/lib v0.0.0-20180904080350-1b19fc1131ad h1:yUjnCslgtjQyb1net+yDbOM4Rpq6byZBaY3XI1Arxlc=
 github.com/networth-app/networth/api/lib v0.0.0-20180904080350-1b19fc1131ad/go.mod h1:BxH3EIsj5mM1k3OAwkAELs8vNGPAFf15PrnVMLt59/Y=
+github.com/networth-app/networth/api/lib v0.0.0-20180904200335-e279a0d05da9 h1:X1nV0OoCwi4XODpJzWO6q23Opd1dO3aJWX+oHdWUchs=
 github.com/onsi/ginkgo v1.6.0 h1:Ix8l273rp3QzYgXSR+c8d1fTG7UPgYkOSELPhiY/YGw=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.4.1 h1:PZSj/UFNaVp3KxrzHOcS7oyuWA7LoOY/77yCTEFu21U=
