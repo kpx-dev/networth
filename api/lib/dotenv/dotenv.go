@@ -15,16 +15,7 @@ func init() {
 		dir = strings.Replace(dir, "/api", "", 1)
 	}
 
-	if strings.HasSuffix(dir, "/lib") {
-		dir = strings.Replace(dir, "/lib", "", 1)
-	}
-
-	if strings.HasSuffix(dir, "/dotenv") {
-		dir = strings.Replace(dir, "/dotenv", "", 1)
-	}
-
 	envPath := fmt.Sprintf("%s/.env", dir)
-	fmt.Println("The .env path is ", envPath)
 	file, _ := os.Open(envPath)
 	defer file.Close()
 
@@ -35,6 +26,7 @@ func init() {
 
 		key := strings.TrimSpace(lineSplitted[0])
 		val := strings.TrimSpace(lineSplitted[1])
+		fmt.Println("Settin env ", key, val)
 		os.Setenv(key, val)
 	}
 }
