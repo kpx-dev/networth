@@ -11,14 +11,19 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute"
 )
 
-// Token hold the structure for saving to db
+// Tokens hold the structure multiple tokens
+type Tokens struct {
+	Tokens []Token `json:"tokens"`
+}
+
+// Token holds the structure single token
 type Token struct {
 	ItemID          string   `json:"item_id"`
-	AccessTokens    []string `json:"access_tokens"`
-	Accounts        []string `json:"accounts"`
+	AccessToken     string   `json:"access_token"`
 	AccountID       string   `json:"account_id"`
 	InstitutionID   string   `json:"institution_id"`
 	InstitutionName string   `json:"institution_name"`
+	Accounts        []string `json:"accounts"`
 }
 
 var (
@@ -129,7 +134,7 @@ func (d DynamoDBClient) GetToken(username string, institution string) map[string
 }
 
 // SetToken save token to db
-func (d DynamoDBClient) SetToken(username string, instituionName string, tokenMap *Token) error {
+func (d DynamoDBClient) SetToken(username string, tokenMap *Token) error {
 	data, err := dynamodbattribute.Marshal(tokenMap)
 	if err != nil {
 		fmt.Println("Problem marshalling token map into dyno format", err)
@@ -138,16 +143,17 @@ func (d DynamoDBClient) SetToken(username string, instituionName string, tokenMa
 
 	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
 		Key: map[string]dynamodb.AttributeValue{
-			"key": {S: aws.String(username)},
+			"key":  {S: aws.String(fmt.Sprintf("%s:token", username))},
+			"sort": {S: aws.String(defaultSortValue)},
 		},
 		TableName: aws.String(networthTable),
-		ExpressionAttributeNames: map[string]string{
-			"#instituion": instituionName,
-		},
+		// ExpressionAttributeNames: map[string]string{
+		// 	"#institution": tokenMap.InstitutionID,
+		// },
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
 			":data": *data,
 		},
-		UpdateExpression: aws.String("SET #instituion = :data"),
+		UpdateExpression: aws.String("SET token = :data"),
 	})
 
 	if _, err := req.Send(); err != nil {

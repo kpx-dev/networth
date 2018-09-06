@@ -57,12 +57,13 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		tokenStore := &nwlib.Token{
 			ItemID:          token.ItemID,
 			InstitutionName: body.InstitutionName,
+			InstitutionID:   body.InstitutionID,
 			AccessTokens:    []string{encryptedToken},
 			Accounts:        body.Accounts,
 			AccountID:       body.AccountID,
 		}
 
-		tokens := s.db.GetToken(jwtUsername)
+		tokens := s.db.GetToken(jwtUsername, "")
 
 		for existingInstitutionID := range tokens {
 			if existingInstitutionID == body.InstitutionID {
@@ -78,7 +79,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			}
 		}
 
-		if err := s.db.SetToken(jwtUsername, body.InstitutionID, tokenStore); err != nil {
+		if err := s.db.SetToken(jwtUsername, tokenStore); err != nil {
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}
