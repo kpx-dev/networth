@@ -43,7 +43,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 		body.AccessToken = publicToken.PublicToken
 
-		token, err := s.plaid.ExchangePublicToken(body.AccessToken)
+		exchangedToken, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
 		if err != nil {
 			nwlib.ErrorResp(w, err.Error())
@@ -51,21 +51,27 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		kmsClient := nwlib.NewKMSClient()
-		encryptedToken := kmsClient.Encrypt(token.AccessToken)
+		encryptedToken := kmsClient.Encrypt(exchangedToken.AccessToken)
 
 		jwtUsername := s.username(r.Header)
-		tokenStore := &nwlib.Token{
-			ItemID:          token.ItemID,
-			InstitutionName: body.InstitutionName,
-			InstitutionID:   body.InstitutionID,
-			AccessTokens:    []string{encryptedToken},
-			Accounts:        body.Accounts,
+		token := nwlib.Token{
+			ItemID:          exchangedToken.ItemID,
+			AccessToken:     encryptedToken,
 			AccountID:       body.AccountID,
+			InstitutionID:   body.InstitutionID,
+			InstitutionName: body.InstitutionName,
+			Accounts:        body.Accounts,
 		}
 
-		tokens := s.db.GetToken(jwtUsername, "")
+		tokens := &nwlib.Tokens{
+			Tokens: []nwlib.Token{
+				token,
+			},
+		}
 
-		for existingInstitutionID := range tokens {
+		existingTokens := s.db.GetToken(jwtUsername, "")
+
+		for existingInstitutionID := range existingTokens {
 			if existingInstitutionID == body.InstitutionID {
 				// TODO: use Token struct intead of interface
 				existingToken := tokens[existingInstitutionID]

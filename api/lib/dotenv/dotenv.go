@@ -13,6 +13,10 @@ func init() {
 		dir = strings.Replace(dir, "/api/token_observer", "", 1)
 	}
 
+	if strings.HasSuffix(dir, "/api/lib") {
+		dir = strings.Replace(dir, "/api/lib", "", 1)
+	}
+
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
 	}

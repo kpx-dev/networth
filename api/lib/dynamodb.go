@@ -101,6 +101,8 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 
 // GetToken return tokens from db
 func (d DynamoDBClient) GetToken(username string, institution string) map[string]interface{} {
+	fmt.Println("networthTable ", networthTable)
+
 	dbToken := make(map[string]interface{})
 	key := fmt.Sprintf("%s:token", username)
 	sort := defaultSortValue
