@@ -25,24 +25,14 @@ Outputs:
       Name: !Join [-, [ !Ref AppName, userpool]]
     Value: !GetAtt UserPool.Arn
 
-  TokenTable:
+  NetworthTable:
     Export:
-      Name: !Join [-, [ !Ref AppName, token, table]]
-    Value: !Ref TokenTable
-  TokenTableStream:
+      Name: !Join [-, [ !Ref AppName, table]]
+    Value: !Ref NetworthTable
+  NetworthTableStream:
     Export:
-      Name: !Join [-, [ !Ref AppName, token, table, stream]]
-    Value: !GetAtt TokenTable.StreamArn
-
-  HistoryTable:
-    Export:
-      Name: !Join [-, [ !Ref AppName, history, table]]
-    Value: !Ref HistoryTable
-
-  TransactionTable:
-    Export:
-      Name: !Join [-, [ !Ref AppName, transaction, table]]
-    Value: !Ref TransactionTable
+      Name: !Join [-, [ !Ref AppName, table, stream]]
+    Value: !GetAtt NetworthTable.StreamArn
 
   LambdaRole:
     Export:
@@ -76,7 +66,7 @@ Resources:
       DisplayName: !Ref AppName
       TopicName: !Ref AppName
 
-  TokenTable:
+  NetworthTable:
     Type: AWS::DynamoDB::Table
     Properties:
       StreamSpecification:
@@ -85,57 +75,17 @@ Resources:
         SSEEnabled: true
       KeySchema:
         -
-          AttributeName: email
-          KeyType: HASH
-      AttributeDefinitions:
-        -
-          AttributeName: email
-          AttributeType: S
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
-  TransactionTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      SSESpecification:
-        SSEEnabled: true
-      KeySchema:
-        -
-          AttributeName: email
+          AttributeName: key
           KeyType: HASH
         -
-          AttributeName: datetime
+          AttributeName: sort
           KeyType: RANGE
       AttributeDefinitions:
         -
-          AttributeName: email
+          AttributeName: key
           AttributeType: S
         -
-          AttributeName: datetime
-          AttributeType: S
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
-  HistoryTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      SSESpecification:
-        SSEEnabled: true
-      KeySchema:
-        -
-          AttributeName: email
-          KeyType: HASH
-        -
-          AttributeName: datetime
-          KeyType: RANGE
-      AttributeDefinitions:
-        -
-          AttributeName: email
-          AttributeType: S
-        -
-          AttributeName: datetime
+          AttributeName: sort
           AttributeType: S
       ProvisionedThroughput:
         ReadCapacityUnits: 1
@@ -183,8 +133,8 @@ Resources:
       GenerateSecret: false
       UserPoolId: !Ref UserPool
       # TODO: [SECURITY] remove this later
-      ExplicitAuthFlows:
-        - USER_PASSWORD_AUTH
+      # ExplicitAuthFlows:
+      #   - USER_PASSWORD_AUTH
 
   UserPool:
     Type: AWS::Cognito::UserPool

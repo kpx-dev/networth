@@ -22,9 +22,8 @@ type Token struct {
 }
 
 var (
-	tokenTable       = GetEnv("TOKEN_TABLE")
-	transactionTable = GetEnv("TRANSACTION_TABLE")
-	historyTable     = GetEnv("HISTORY_TABLE")
+	networthTable    = GetEnv("NETWORTH_TABLE")
+	defaultSortValue = "latest"
 )
 
 // DynamoDBClient db client struct
@@ -49,7 +48,7 @@ func NewDynamoDBClient() *DynamoDBClient {
 func (d DynamoDBClient) GetNetworth(username string) float64 {
 	today := time.Now().UTC().Format("2006-01-02")
 
-	networth, err := d.Get(historyTable, username, today)
+	networth, err := d.Get(username, today)
 
 	if err != nil {
 		return 0.0
@@ -61,18 +60,18 @@ func (d DynamoDBClient) GetNetworth(username string) float64 {
 // SetNetworth value as of today date and current timestamp
 func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 	now := time.Now().UTC()
-	today := now.Format("2006-01-02")
+	// today := now.Format("2006-01-02")
 	timestamp := now.Format(time.RFC3339)
 	networthStr := aws.String(strconv.FormatFloat(networth, 'f', -1, 64))
 
 	req := d.BatchWriteItemRequest(&dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]dynamodb.WriteRequest{
-			historyTable: {
+			networthTable: {
 				{
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]dynamodb.AttributeValue{
-							"email":    {S: aws.String(username)},
-							"datetime": {S: aws.String(today)},
+							"key":      {S: aws.String(fmt.Sprintf("%s:networth", username))},
+							"sort":     {S: aws.String(timestamp)},
 							"networth": {N: networthStr},
 						},
 					},
@@ -80,8 +79,8 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 				{
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]dynamodb.AttributeValue{
-							"email":    {S: aws.String(username)},
-							"datetime": {S: aws.String(timestamp)},
+							"key":      {S: aws.String(username)},
+							"sort":     {S: aws.String(defaultSortValue)},
 							"networth": {N: networthStr},
 						},
 					},
@@ -96,30 +95,36 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 }
 
 // GetToken return tokens from db
-func (d DynamoDBClient) GetToken(username string) map[string]interface{} {
+func (d DynamoDBClient) GetToken(username string, institution string) map[string]interface{} {
 	dbToken := make(map[string]interface{})
+	key := fmt.Sprintf("%s:token", username)
+	sort := defaultSortValue
+	if len(institution) > 0 {
+		sort = institution
+	}
 
 	req := d.GetItemRequest(&dynamodb.GetItemInput{
-		TableName: aws.String(tokenTable),
+		TableName: aws.String(networthTable),
 		Key: map[string]dynamodb.AttributeValue{
-			"email": {S: aws.String(username)},
+			"key":  {S: aws.String(key)},
+			"sort": {S: aws.String(sort)},
 		},
 	})
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting tokens from db ", err)
+		log.Printf("Problem getting tokens from db using sort key %s %v", sort, err)
 
 		return dbToken
 	}
 
-	// fmt.Println("got item ", res.Item)
 	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbToken); err != nil {
 		log.Println("Problem converting token data from db ", err)
 
 		return dbToken
 	}
 
+	// TODO: return Token struct instead of interface
 	return dbToken
 }
 
@@ -133,9 +138,9 @@ func (d DynamoDBClient) SetToken(username string, instituionName string, tokenMa
 
 	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
 		Key: map[string]dynamodb.AttributeValue{
-			"email": {S: aws.String(username)},
+			"key": {S: aws.String(username)},
 		},
-		TableName: aws.String(tokenTable),
+		TableName: aws.String(networthTable),
 		ExpressionAttributeNames: map[string]string{
 			"#instituion": instituionName,
 		},
@@ -154,12 +159,12 @@ func (d DynamoDBClient) SetToken(username string, instituionName string, tokenMa
 }
 
 // Get item
-func (d DynamoDBClient) Get(table string, partitionKey string, sortKey string) (float64, error) {
+func (d DynamoDBClient) Get(partitionKey string, sortKey string) (float64, error) {
 	req := d.GetItemRequest(&dynamodb.GetItemInput{
-		TableName: aws.String(table),
+		TableName: aws.String(networthTable),
 		Key: map[string]dynamodb.AttributeValue{
-			"email":    {S: aws.String(partitionKey)},
-			"datetime": {S: aws.String(sortKey)},
+			"key":  {S: aws.String(partitionKey)},
+			"sort": {S: aws.String(sortKey)},
 		},
 	})
 
@@ -182,7 +187,7 @@ func (d DynamoDBClient) Get(table string, partitionKey string, sortKey string) (
 // Set key / val to db
 func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, valMap map[string]string) error {
 	items := map[string]dynamodb.AttributeValue{
-		"email": {S: aws.String(partitionKey)},
+		"key": {S: aws.String(partitionKey)},
 	}
 
 	if len(sortKey) > 0 {

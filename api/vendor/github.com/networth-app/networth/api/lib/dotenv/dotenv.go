@@ -9,8 +9,6 @@ import (
 
 func init() {
 	dir, _ := os.Getwd()
-	fmt.Println("dir path ", dir)
-
 	if strings.HasSuffix(dir, "/api/token_observer") {
 		dir = strings.Replace(dir, "/api/token_observer", "", 1)
 	}
@@ -20,7 +18,6 @@ func init() {
 	}
 
 	envPath := fmt.Sprintf("%s/.env", dir)
-	fmt.Println("envPath path ", envPath)
 	file, _ := os.Open(envPath)
 	defer file.Close()
 
