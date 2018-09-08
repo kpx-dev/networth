@@ -11,7 +11,7 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/hpcloud/tail v1.0.0 // indirect
-	github.com/networth-app/networth/api/lib v0.0.0-20180906052927-d49e7ab6419d
+	github.com/networth-app/networth/api/lib v0.0.0-20180906073650-8f081b61a82b
 	github.com/onsi/ginkgo v1.6.0 // indirect
 	github.com/onsi/gomega v1.4.1 // indirect
 	github.com/pkg/errors v0.8.0 // indirect

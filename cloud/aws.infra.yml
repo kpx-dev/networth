@@ -49,15 +49,10 @@ Outputs:
       Name: !Join [-, [ !Ref AppName, s3, landing, bucket]]
     Value: !Ref LandingS3Bucket
 
-  CloudFrontLanding:
+  CloudFrontResource:
     Export:
       Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
-    Value: !Ref CloudFrontLanding
-
-  CloudFrontWebApp:
-    Export:
-      Name: !Join [-, [ !Ref AppName, cloudfront, webapp]]
-    Value: !Ref CloudFrontWebApp
+    Value: !Ref CloudFrontResource
 
 Resources:
   SNSTopic:
@@ -211,7 +206,7 @@ Resources:
               Service:
                 - lambda.amazonaws.com
       Policies:
-      - PolicyName: ApiDeploy
+      - PolicyName: LambdaApi
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -223,7 +218,6 @@ Resources:
               - dynamodb:Scan
               - dynamodb:PutItem
               - dynamodb:UpdateItem
-
               - dynamodb:GetRecords
               - dynamodb:GetShardIterator
               - dynamodb:DescribeStream
@@ -293,7 +287,7 @@ Resources:
     Properties:
       BucketName: !Join ['.', [log, !Ref DomainName]]
 
-  CloudFrontLanding:
+  CloudFrontResource:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -322,96 +316,38 @@ Resources:
             Id: landing
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
+          - DomainName: !GetAtt WebAppS3Bucket.DomainName
+            Id: webapp
+            S3OriginConfig:
+              OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
+          # TODO: link /api here as well
         DefaultCacheBehavior:
           Compress: true
           ViewerProtocolPolicy: redirect-to-https
           ForwardedValues:
             QueryString: false
           TargetOriginId: landing
+        CacheBehaviors:
+          - TargetOriginId: webapp
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+            PathPattern: /app*
+            ViewerProtocolPolicy: redirect-to-https
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref Certificate
           SslSupportMethod: sni-only
-
-  CloudFrontWebApp:
-    Type: AWS::CloudFront::Distribution
-    Properties:
-      DistributionConfig:
-        CustomErrorResponses:
-        -
-          ErrorCode: 404
-          ResponseCode: 404
-          ResponsePagePath: '/404.html'
-        -
-          ErrorCode: 403
-          ResponseCode: 404
-          ResponsePagePath: '/404.html'
-        Aliases:
-          - !Join ['.', [app, !Ref DomainName]]
-        Comment: !Join ['.', [app, !Ref DomainName]]
-        DefaultRootObject: index.html
-        Enabled: true
-        HttpVersion: http2
-        Logging:
-          Bucket: !GetAtt LoggingS3Bucket.DomainName
-          IncludeCookies: true
-          Prefix: !Join ['.', [app, !Ref DomainName]]
-        Origins:
-          - DomainName: !GetAtt WebAppS3Bucket.DomainName
-            Id: webapp
-            S3OriginConfig:
-              OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
-        DefaultCacheBehavior:
-          Compress: true
-          ViewerProtocolPolicy: redirect-to-https
-          ForwardedValues:
-            QueryString: false
-          TargetOriginId: webapp
-        PriceClass: PriceClass_100
-        ViewerCertificate:
-          AcmCertificateArn: !Ref Certificate
-          SslSupportMethod: sni-only
-
-  APIGatewayDomainName:
-    Type: AWS::ApiGateway::DomainName
-    Properties:
-      DomainName: !Join ['.', [api, !Ref DomainName]]
-      EndpointConfiguration:
-        Types:
-          - REGIONAL
-      RegionalCertificateArn: !Ref Certificate
 
   ARecordLanding:
     Type: AWS::Route53::RecordSet
     Properties:
       AliasTarget:
-        DNSName: !GetAtt CloudFrontLanding.DomainName
+        DNSName: !GetAtt CloudFrontResource.DomainName
         EvaluateTargetHealth: true
         HostedZoneId: Z2FDTNDATAQYW2
       HostedZoneName: !Join ['', [!Ref DomainName, '.']]
       Name: !Ref DomainName
-      Type: A
-
-  ARecordWebApp:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      AliasTarget:
-        DNSName: !GetAtt CloudFrontWebApp.DomainName
-        EvaluateTargetHealth: true
-        HostedZoneId: Z2FDTNDATAQYW2
-      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      Name: !Join ['.', [app, !Ref DomainName]]
-      Type: A
-
-  ARecordAPI:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      AliasTarget:
-        DNSName: !GetAtt APIGatewayDomainName.RegionalDomainName
-        EvaluateTargetHealth: true
-        HostedZoneId: !GetAtt APIGatewayDomainName.RegionalHostedZoneId
-      HostedZoneName: !Join ['', [!Ref DomainName, '.']]
-      Name: !Join ['.', [api, !Ref DomainName]]
       Type: A
 
   MXRecord:

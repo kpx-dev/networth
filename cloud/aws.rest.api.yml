@@ -75,13 +75,13 @@ Resources:
               security:
                 - networth-cognito-authorizer: []
 
-  APIGatewayBasePathMapping:
-    Type: AWS::ApiGateway::BasePathMapping
-    DependsOn: ApiGatewayApi
-    Properties:
-      DomainName: !Join ['.', [api, !Ref DomainName]]
-      RestApiId: !Ref ApiGatewayApi
-      Stage: latest
+  # APIGatewayBasePathMapping:
+  #   Type: AWS::ApiGateway::BasePathMapping
+  #   DependsOn: ApiGatewayApi
+  #   Properties:
+  #     DomainName: !Join ['.', [api, !Ref DomainName]]
+  #     RestApiId: !Ref ApiGatewayApi
+  #     Stage: latest
 
   NetWorthAPIFunction:
     Type: AWS::Serverless::Function

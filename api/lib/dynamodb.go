@@ -100,14 +100,12 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 }
 
 // GetToken return tokens from db
-func (d DynamoDBClient) GetToken(username string, institution string) map[string]interface{} {
-	fmt.Println("networthTable ", networthTable)
-
-	dbToken := make(map[string]interface{})
+func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens {
+	dbTokens := &Tokens{}
 	key := fmt.Sprintf("%s:token", username)
 	sort := defaultSortValue
-	if len(institution) > 0 {
-		sort = institution
+	if len(institutionID) > 0 {
+		sort = institutionID
 	}
 
 	req := d.GetItemRequest(&dynamodb.GetItemInput{
@@ -122,17 +120,16 @@ func (d DynamoDBClient) GetToken(username string, institution string) map[string
 	if err != nil {
 		log.Printf("Problem getting tokens from db using sort key %s %v", sort, err)
 
-		return dbToken
+		return dbTokens
 	}
 
-	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbToken); err != nil {
+	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbTokens); err != nil {
 		log.Println("Problem converting token data from db ", err)
 
-		return dbToken
+		return dbTokens
 	}
 
-	// TODO: return Token struct instead of interface
-	return dbToken
+	return dbTokens
 }
 
 // SetToken save token to db
