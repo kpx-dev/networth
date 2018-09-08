@@ -54,7 +54,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		encryptedToken := kmsClient.Encrypt(exchangedToken.AccessToken)
 
 		jwtUsername := s.username(r.Header)
-		token := nwlib.Token{
+		newToken := nwlib.Token{
 			ItemID:          exchangedToken.ItemID,
 			AccessToken:     encryptedToken,
 			AccountID:       body.AccountID,
@@ -63,29 +63,23 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			Accounts:        body.Accounts,
 		}
 
-		tokens := &nwlib.Tokens{
-			Tokens: []nwlib.Token{
-				token,
-			},
-		}
+		res := s.db.GetToken(jwtUsername, body.InstitutionID)
+		existingTokens := res.Tokens
 
-		existingTokens := s.db.GetToken(jwtUsername, "")
+		newTokens := []nwlib.Token{}
 
-		for existingInstitutionID := range existingTokens {
-			if existingInstitutionID == body.InstitutionID {
-				// TODO: use Token struct intead of interface
-				existingToken := tokens[existingInstitutionID]
-				tokenMap := existingToken.(map[string]interface{})
-				accessTokens := tokenMap["access_tokens"]
-				tokensArray := accessTokens.([]interface{})
-
-				for oldToken := range tokensArray {
-					tokenStore.AccessTokens = append(tokenStore.AccessTokens, string(tokensArray[oldToken].(string)))
-				}
+		// user already linked in insitution before
+		if len(existingTokens) > 0 {
+			for _, existingToken := range existingTokens {
+				newTokens = append(newTokens, existingToken)
 			}
 		}
 
-		if err := s.db.SetToken(jwtUsername, tokenStore); err != nil {
+		tokensPayload := &nwlib.Tokens{
+			Tokens: newTokens,
+		}
+
+		if err := s.db.SetToken(jwtUsername, body.InstitutionID, tokensPayload); err != nil {
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}

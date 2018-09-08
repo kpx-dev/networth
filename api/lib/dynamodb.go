@@ -28,7 +28,7 @@ type Token struct {
 
 var (
 	networthTable    = GetEnv("NETWORTH_TABLE")
-	defaultSortValue = "latest"
+	defaultSortValue = "all"
 )
 
 // DynamoDBClient db client struct
@@ -133,7 +133,7 @@ func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens 
 }
 
 // SetToken save token to db
-func (d DynamoDBClient) SetToken(username string, tokenMap *Token) error {
+func (d DynamoDBClient) SetToken(username string, institutionID string, tokenMap *Tokens) error {
 	data, err := dynamodbattribute.Marshal(tokenMap)
 	if err != nil {
 		fmt.Println("Problem marshalling token map into dyno format", err)
@@ -143,16 +143,13 @@ func (d DynamoDBClient) SetToken(username string, tokenMap *Token) error {
 	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
 		Key: map[string]dynamodb.AttributeValue{
 			"key":  {S: aws.String(fmt.Sprintf("%s:token", username))},
-			"sort": {S: aws.String(defaultSortValue)},
+			"sort": {S: aws.String(institutionID)},
 		},
 		TableName: aws.String(networthTable),
-		// ExpressionAttributeNames: map[string]string{
-		// 	"#institution": tokenMap.InstitutionID,
-		// },
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
 			":data": *data,
 		},
-		UpdateExpression: aws.String("SET token = :data"),
+		UpdateExpression: aws.String("SET tokens = :data"),
 	})
 
 	if _, err := req.Send(); err != nil {

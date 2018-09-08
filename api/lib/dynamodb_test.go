@@ -11,9 +11,33 @@ import (
 func TestGetToken(t *testing.T) {
 	db := NewDynamoDBClient()
 	username := "test@networth.app"
+	institutionID := "ins_1"
+	invalidInstitutionID := "ins_1_invalid"
 
+	// get without ins_id
 	tokens := db.GetToken(username, "")
+	assert.Equal(t, tokens.Tokens[0].InstitutionID, institutionID)
 
-	assert.Equal(t, len(tokens.Tokens) > 0, true)
-	assert.Equal(t, tokens.Tokens[0].InstitutionID, "ins_1")
+	// get using ins_id
+	tokens = db.GetToken(username, institutionID)
+	assert.Equal(t, tokens.Tokens[0].InstitutionID, institutionID)
+
+	// get using invalid ins_id
+	tokens = db.GetToken(username, invalidInstitutionID)
+	assert.Equal(t, len(tokens.Tokens) == 0, true)
+}
+
+func TestSetToken(t *testing.T) {
+	db := NewDynamoDBClient()
+	username := "test_set@networth.app"
+	institutionID := "ins_1"
+
+	tokens := &Tokens{
+		Tokens: []Token{},
+	}
+
+	// set for all ins
+	if err := db.SetToken(username, institutionID, tokens); err != nil {
+		t.Errorf("Cannot set token %v", err)
+	}
 }
