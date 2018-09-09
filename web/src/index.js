@@ -4,12 +4,12 @@ import Amplify from "aws-amplify";
 import "./assets/scss/material-kit-react.css?v=1.2.0";
 import App from "./App";
 import registerServiceWorker from "./registerServiceWorker";
-
+import { AWS_REGION, COGNITO_CLIENT_ID, COGNITO_POOL_ID } from "./helpers/constants.js";
 Amplify.configure({
   Auth: {
-    region: "us-east-1",
-    userPoolId: "us-east-1_5cJz62UiG",
-    userPoolWebClientId: "2tam11a22g38in2vqcd5kge3cu",
+    region: AWS_REGION,
+    userPoolId: COGNITO_POOL_ID,
+    userPoolWebClientId: COGNITO_CLIENT_ID,
     mandatorySignIn: false
   }
 });

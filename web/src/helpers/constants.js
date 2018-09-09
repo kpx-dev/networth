@@ -4,3 +4,6 @@ export const PLAID_PUBLIC_KEY = "7e599ac974fb8343f50fac8535fcf1";
 export const PLAID_ENV = "sandbox";
 export const PLAID_PRODUCTS = ["transactions"];
 export const PLAID_WEBHOOK = process.env.REACT_APP_PLAID_WEBHOOK_URL;
+export const COGNITO_CLIENT_ID = "5a1pls13n4igqenffk3s8cnb00";
+export const COGNITO_POOL_ID = "us-east-1_JQllcYtjE";
+export const AWS_REGION = "us-east-1";
