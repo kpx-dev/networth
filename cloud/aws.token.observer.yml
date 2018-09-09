@@ -40,15 +40,9 @@ Resources:
           !Join [-, [ !Ref AppName, lambda, role]]
       Environment:
         Variables:
-          TOKEN_TABLE:
+          NETWORTH_TABLE:
             Fn::ImportValue:
-              !Join [-, [ !Ref AppName, token, table]]
-          HISTORY_TABLE:
-            Fn::ImportValue:
-              !Join [-, [ !Ref AppName, history, table]]
-          TRANSACTION_TABLE:
-            Fn::ImportValue:
-              !Join [-, [ !Ref AppName, transaction, table]]
+              !Join [-, [ !Ref AppName, table]]
           SNS_TOPIC_ARN:
             Fn::ImportValue:
               !Join [-, [ !Ref AppName, sns]]
@@ -66,6 +60,6 @@ Resources:
           Properties:
             Stream:
               Fn::ImportValue:
-                !Join [-, [ !Ref AppName, token, table, stream]]
+                !Join [-, [ !Ref AppName, table, stream]]
             StartingPosition: LATEST
             BatchSize: 10

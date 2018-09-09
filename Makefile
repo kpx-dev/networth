@@ -20,8 +20,8 @@ deploy-infra:
 
 deploy-api:
 	make api
-	aws cloudformation package --template-file cloud/aws.rest.api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.rest.api.yml --s3-prefix ${APP_NAME}-api --no-fail-on-empty-changeset
-	aws cloudformation deploy --template-file /tmp/aws.rest.api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION}
+	aws cloudformation package --template-file cloud/aws.rest.api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.rest.api.yml --s3-prefix ${APP_NAME}-api
+	aws cloudformation deploy --template-file /tmp/aws.rest.api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 
 deploy-token-observer:
 	make token-observer
