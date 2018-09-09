@@ -97,9 +97,6 @@ Resources:
           !Join [-, [ !Ref AppName, lambda, role]]
       Environment:
         Variables:
-          TOKEN_TABLE:
-            Fn::ImportValue:
-              !Join [-, [ !Ref AppName, token, table]]
           NETWORTH_TABLE:
             Fn::ImportValue:
               !Join [-, [ !Ref AppName, table]]

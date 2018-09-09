@@ -15,18 +15,18 @@ create-infra:
 	aws cloudformation create-stack --template-body file://cloud/aws.infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
 
 deploy-infra:
-	aws cloudformation deploy --template-file cloud/aws.infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
+	aws cloudformation deploy --template-file cloud/aws.infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 	aws cloudformation wait stack-create-complete
 
 deploy-api:
 	make api
-	aws cloudformation package --template-file cloud/aws.rest.api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.rest.api.yml --s3-prefix ${APP_NAME}-api
+	aws cloudformation package --template-file cloud/aws.rest.api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.rest.api.yml --s3-prefix ${APP_NAME}-api --no-fail-on-empty-changeset
 	aws cloudformation deploy --template-file /tmp/aws.rest.api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION}
 
 deploy-token-observer:
 	make token-observer
 	aws cloudformation package --template-file cloud/aws.token.observer.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.token.observer.yml --s3-prefix ${APP_NAME}-token-observer
-	aws cloudformation deploy --template-file /tmp/aws.token.observer.yml --stack-name ${APP_NAME}-token-observer --capabilities CAPABILITY_IAM --region ${REGION}
+	aws cloudformation deploy --template-file /tmp/aws.token.observer.yml --stack-name ${APP_NAME}-token-observer --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 
 start-api:
 	cd api && gin --appPort 8000
