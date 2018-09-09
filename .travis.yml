@@ -45,10 +45,7 @@ matrix:
     - npm test
     - npm run build
     before_deploy:
-    - aws cloudfront create-invalidation --distribution-id ${WEBAPP_DISTRIBUTION_ID}
-      --paths '/*'
-    - aws cloudfront create-invalidation --distribution-id ${LANDING_DISTRIBUTION_ID}
-      --paths '/*'
+    - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths '*'
     deploy:
     - provider: s3
       access_key_id: "$AWS_ACCESS_KEY_ID"
