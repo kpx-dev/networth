@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "main": "dist/index.js",
-  "homepage": "https://app.networth.app",
+  "homepage": "https://networth.app/app",
   "dependencies": {
     "@material-ui/core": "^3.0.1",
     "@material-ui/icons": "^3.0.1",

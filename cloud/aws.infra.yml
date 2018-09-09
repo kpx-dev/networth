@@ -127,9 +127,9 @@ Resources:
       ClientName: !Join [-, [ !Ref AppName, ui]]
       GenerateSecret: false
       UserPoolId: !Ref UserPool
-      # TODO: [SECURITY] remove this later
-      # ExplicitAuthFlows:
-      #   - USER_PASSWORD_AUTH
+      # TODO: [SECURITY] remove this later. This is for easy to reset user / pass
+      ExplicitAuthFlows:
+        - USER_PASSWORD_AUTH
 
   UserPool:
     Type: AWS::Cognito::UserPool
