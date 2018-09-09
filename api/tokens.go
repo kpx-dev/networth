@@ -54,7 +54,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		encryptedToken := kmsClient.Encrypt(exchangedToken.AccessToken)
 
 		jwtUsername := s.username(r.Header)
-		newToken := nwlib.Token{
+		newToken := &nwlib.Token{
 			ItemID:          exchangedToken.ItemID,
 			AccessToken:     encryptedToken,
 			AccountID:       body.AccountID,
@@ -66,7 +66,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		res := s.db.GetToken(jwtUsername, body.InstitutionID)
 		existingTokens := res.Tokens
 
-		newTokens := []nwlib.Token{}
+		newTokens := []*nwlib.Token{}
 		newTokens = append(newTokens, newToken)
 
 		// user already linked in insitution before
