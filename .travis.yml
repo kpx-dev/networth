@@ -11,12 +11,11 @@ matrix:
       script: make deploy-api
     notifications:
       slack:
+        rooms:
+          secure: RmGyc1xhWY5gMl+tShUCxY/1l3U+EBzOJmfoTgpdxgV6es2YUV3HeO85Bj6AZpDvH5WiSunRPu3eAIXtZprs8EUIvQO5xwbOPQJaQWQxXqe1boen7rKnAAbH3XoVE5m9UTdoCUxOTpoduZEmzgqw2rb4X5xu0/YnkZH7rCBytq74eR2VChQW1hJLxFlMRN8mNHozViJ8jL9D+jBX/q3+9NZEgVOrQehM36Er4Y13k+5ZyxvtEvgixeh+sK9Rw0kmjnDwmfhd8Fca53tNf/OgPrF8v6cwXLYh00Xja0pWeeR4r2cZqgY4g3knDQ5hmdC6G+wFQV5jawgF48Ju/2h0XyBI95kixmpkjuFIH3FQuUsEALlzszbnL5JdDDKOQQDnQlW6yq0sSDQgGC84CjaAQrzO3ZRvbdB+2K6IyMwu1d57sCfqNR5MZQaX0WsyIfO1pmrQ82edl6Y32t4s8FBpJbVbBdWbf1WuA/xsS1SP7bCiul2u2rWkl5wjQuNGtEhPpRy0vdn7wmicm8scflRAynKslRHINCPQS8BQdDSlonW3pK5JDNtEl1XFMb5DR+OBy3HPP4s7/MGyLmBrpDmhBsbhNcmM/hJH0G6TNgEivw/3aG21uD9N16DwfrNMn9I93nay/ZYqu8F/x8wyhqINmiXZ19sKRhPWvSHlRwWpeEc=
         on_pull_requests: false
         on_failure: always
-        # TODO: turn off success, don't care about it later on
         on_success: always
-        rooms:
-          secure: dEFMC9FX5OsadDdVU854GEN1ehZ5ZtwhcB64TAlhxnqqOFHC2WOg5QSThhchXC+EuzvGhy5/saM/sL2VE2dHSrn952PF9sDwa5crAOmu539X+o4or8LNqoQ/XKh/ORoZ/jyQ/+MA0YZQgzU2G+iB3k2HdjYt8xG4Clt6pB/SDJhaQKIcTyqiheMpq5Vsa1KlI8HpbC5YUIGoedffckRGFD7+2toxIMor2zp/e+fFnqvltT3rI63hjUPB/2QhsutpJI1I3L1p34xgP60t4+nZ2QvvoqEH4Xt2CijlV09sHUktz9donjXGaKMUD5x6xDlS5ydIj2VhVTUnranNqv/QkZA21ONICunq8TDl/Oqr88B/pZcze9/DVWYePJdWmv83dfoAr/K30Dej1EJWeHsA7sqmgPOrplZ2mDildHdjs7pGTnxws3AhXM3PQ3HnlUefa43rwip7Ghdc5jTH7Qrcv66zPlGbY6RQyz1IL+dMpvIFuPyRP3/XHicOzledmkoZUy1uQ+LSxBqw82ikGg8opgr5c7pvS6l/X9UPEu+j7FS4MjPxjTuPLB1y2wXx+V09DSpmduEDYVMwy2AwJ1A4FdlNMm3imgUUq36KBp/GvTO1vruSyZmwDjuHTsxyU/AI/ZtqCX4ak76UxOjRX9TwgHDImH9dZ/V0kMOq7lsOGRs=
 
   - language: go
     install:
@@ -30,11 +29,9 @@ matrix:
     slack:
       on_pull_requests: false
       on_failure: always
-      # TODO: turn off success, don't care about it later on
       on_success: always
       rooms:
-        secure: dEFMC9FX5OsadDdVU854GEN1ehZ5ZtwhcB64TAlhxnqqOFHC2WOg5QSThhchXC+EuzvGhy5/saM/sL2VE2dHSrn952PF9sDwa5crAOmu539X+o4or8LNqoQ/XKh/ORoZ/jyQ/+MA0YZQgzU2G+iB3k2HdjYt8xG4Clt6pB/SDJhaQKIcTyqiheMpq5Vsa1KlI8HpbC5YUIGoedffckRGFD7+2toxIMor2zp/e+fFnqvltT3rI63hjUPB/2QhsutpJI1I3L1p34xgP60t4+nZ2QvvoqEH4Xt2CijlV09sHUktz9donjXGaKMUD5x6xDlS5ydIj2VhVTUnranNqv/QkZA21ONICunq8TDl/Oqr88B/pZcze9/DVWYePJdWmv83dfoAr/K30Dej1EJWeHsA7sqmgPOrplZ2mDildHdjs7pGTnxws3AhXM3PQ3HnlUefa43rwip7Ghdc5jTH7Qrcv66zPlGbY6RQyz1IL+dMpvIFuPyRP3/XHicOzledmkoZUy1uQ+LSxBqw82ikGg8opgr5c7pvS6l/X9UPEu+j7FS4MjPxjTuPLB1y2wXx+V09DSpmduEDYVMwy2AwJ1A4FdlNMm3imgUUq36KBp/GvTO1vruSyZmwDjuHTsxyU/AI/ZtqCX4ak76UxOjRX9TwgHDImH9dZ/V0kMOq7lsOGRs=
-
+        secure: RmGyc1xhWY5gMl+tShUCxY/1l3U+EBzOJmfoTgpdxgV6es2YUV3HeO85Bj6AZpDvH5WiSunRPu3eAIXtZprs8EUIvQO5xwbOPQJaQWQxXqe1boen7rKnAAbH3XoVE5m9UTdoCUxOTpoduZEmzgqw2rb4X5xu0/YnkZH7rCBytq74eR2VChQW1hJLxFlMRN8mNHozViJ8jL9D+jBX/q3+9NZEgVOrQehM36Er4Y13k+5ZyxvtEvgixeh+sK9Rw0kmjnDwmfhd8Fca53tNf/OgPrF8v6cwXLYh00Xja0pWeeR4r2cZqgY4g3knDQ5hmdC6G+wFQV5jawgF48Ju/2h0XyBI95kixmpkjuFIH3FQuUsEALlzszbnL5JdDDKOQQDnQlW6yq0sSDQgGC84CjaAQrzO3ZRvbdB+2K6IyMwu1d57sCfqNR5MZQaX0WsyIfO1pmrQ82edl6Y32t4s8FBpJbVbBdWbf1WuA/xsS1SP7bCiul2u2rWkl5wjQuNGtEhPpRy0vdn7wmicm8scflRAynKslRHINCPQS8BQdDSlonW3pK5JDNtEl1XFMb5DR+OBy3HPP4s7/MGyLmBrpDmhBsbhNcmM/hJH0G6TNgEivw/3aG21uD9N16DwfrNMn9I93nay/ZYqu8F/x8wyhqINmiXZ19sKRhPWvSHlRwWpeEc=
   - language: node_js
     node_js: 10
     before_install: cd web
@@ -45,27 +42,29 @@ matrix:
     - npm test
     - npm run build
     before_deploy:
-    - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths '*'
+    - aws cloudfront create-invalidation --paths '*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
     deploy:
     - provider: s3
-      access_key_id: "$AWS_ACCESS_KEY_ID"
-      secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+      access_key_id: $AWS_ACCESS_KEY_ID
+      secret_access_key: $AWS_SECRET_ACCESS_KEY
       bucket: networth.app
-      local-dir: "${TRAVIS_BUILD_DIR}/landing"
+      local-dir: ${TRAVIS_BUILD_DIR}/landing
       acl: public_read
       skip_cleanup: true
     - provider: s3
-      access_key_id: "$AWS_ACCESS_KEY_ID"
-      secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+      access_key_id: $AWS_ACCESS_KEY_ID
+      secret_access_key: $AWS_SECRET_ACCESS_KEY
       bucket: app.networth.app
-      local-dir: "${TRAVIS_BUILD_DIR}/web/build"
+      local-dir: ${TRAVIS_BUILD_DIR}/web/build
       acl: public_read
       skip_cleanup: true
     slack:
       on_pull_requests: false
       on_failure: always
-      # TODO: turn off success, don't care about it later on
       on_success: always
       rooms:
-        secure: dEFMC9FX5OsadDdVU854GEN1ehZ5ZtwhcB64TAlhxnqqOFHC2WOg5QSThhchXC+EuzvGhy5/saM/sL2VE2dHSrn952PF9sDwa5crAOmu539X+o4or8LNqoQ/XKh/ORoZ/jyQ/+MA0YZQgzU2G+iB3k2HdjYt8xG4Clt6pB/SDJhaQKIcTyqiheMpq5Vsa1KlI8HpbC5YUIGoedffckRGFD7+2toxIMor2zp/e+fFnqvltT3rI63hjUPB/2QhsutpJI1I3L1p34xgP60t4+nZ2QvvoqEH4Xt2CijlV09sHUktz9donjXGaKMUD5x6xDlS5ydIj2VhVTUnranNqv/QkZA21ONICunq8TDl/Oqr88B/pZcze9/DVWYePJdWmv83dfoAr/K30Dej1EJWeHsA7sqmgPOrplZ2mDildHdjs7pGTnxws3AhXM3PQ3HnlUefa43rwip7Ghdc5jTH7Qrcv66zPlGbY6RQyz1IL+dMpvIFuPyRP3/XHicOzledmkoZUy1uQ+LSxBqw82ikGg8opgr5c7pvS6l/X9UPEu+j7FS4MjPxjTuPLB1y2wXx+V09DSpmduEDYVMwy2AwJ1A4FdlNMm3imgUUq36KBp/GvTO1vruSyZmwDjuHTsxyU/AI/ZtqCX4ak76UxOjRX9TwgHDImH9dZ/V0kMOq7lsOGRs=
+        secure: RmGyc1xhWY5gMl+tShUCxY/1l3U+EBzOJmfoTgpdxgV6es2YUV3HeO85Bj6AZpDvH5WiSunRPu3eAIXtZprs8EUIvQO5xwbOPQJaQWQxXqe1boen7rKnAAbH3XoVE5m9UTdoCUxOTpoduZEmzgqw2rb4X5xu0/YnkZH7rCBytq74eR2VChQW1hJLxFlMRN8mNHozViJ8jL9D+jBX/q3+9NZEgVOrQehM36Er4Y13k+5ZyxvtEvgixeh+sK9Rw0kmjnDwmfhd8Fca53tNf/OgPrF8v6cwXLYh00Xja0pWeeR4r2cZqgY4g3knDQ5hmdC6G+wFQV5jawgF48Ju/2h0XyBI95kixmpkjuFIH3FQuUsEALlzszbnL5JdDDKOQQDnQlW6yq0sSDQgGC84CjaAQrzO3ZRvbdB+2K6IyMwu1d57sCfqNR5MZQaX0WsyIfO1pmrQ82edl6Y32t4s8FBpJbVbBdWbf1WuA/xsS1SP7bCiul2u2rWkl5wjQuNGtEhPpRy0vdn7wmicm8scflRAynKslRHINCPQS8BQdDSlonW3pK5JDNtEl1XFMb5DR+OBy3HPP4s7/MGyLmBrpDmhBsbhNcmM/hJH0G6TNgEivw/3aG21uD9N16DwfrNMn9I93nay/ZYqu8F/x8wyhqINmiXZ19sKRhPWvSHlRwWpeEc=
 
+notifications:
+  slack:
+    secure: RmGyc1xhWY5gMl+tShUCxY/1l3U+EBzOJmfoTgpdxgV6es2YUV3HeO85Bj6AZpDvH5WiSunRPu3eAIXtZprs8EUIvQO5xwbOPQJaQWQxXqe1boen7rKnAAbH3XoVE5m9UTdoCUxOTpoduZEmzgqw2rb4X5xu0/YnkZH7rCBytq74eR2VChQW1hJLxFlMRN8mNHozViJ8jL9D+jBX/q3+9NZEgVOrQehM36Er4Y13k+5ZyxvtEvgixeh+sK9Rw0kmjnDwmfhd8Fca53tNf/OgPrF8v6cwXLYh00Xja0pWeeR4r2cZqgY4g3knDQ5hmdC6G+wFQV5jawgF48Ju/2h0XyBI95kixmpkjuFIH3FQuUsEALlzszbnL5JdDDKOQQDnQlW6yq0sSDQgGC84CjaAQrzO3ZRvbdB+2K6IyMwu1d57sCfqNR5MZQaX0WsyIfO1pmrQ82edl6Y32t4s8FBpJbVbBdWbf1WuA/xsS1SP7bCiul2u2rWkl5wjQuNGtEhPpRy0vdn7wmicm8scflRAynKslRHINCPQS8BQdDSlonW3pK5JDNtEl1XFMb5DR+OBy3HPP4s7/MGyLmBrpDmhBsbhNcmM/hJH0G6TNgEivw/3aG21uD9N16DwfrNMn9I93nay/ZYqu8F/x8wyhqINmiXZ19sKRhPWvSHlRwWpeEc=
