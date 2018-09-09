@@ -2,7 +2,7 @@ matrix:
   include:
   - language: go
     install:
-    - pip install awscli --upgrade
+    - pip install awscli
     before_script: cd api
     script: go test
     before_deploy: cd ${TRAVIS_BUILD_DIR}
@@ -19,7 +19,7 @@ matrix:
 
   - language: go
     install:
-    - pip install awscli --upgrade
+    - pip install awscli
     before_script: cd api/token_observer
     script: go test
     before_deploy: cd ${TRAVIS_BUILD_DIR}
@@ -36,7 +36,7 @@ matrix:
     node_js: 10
     before_install: cd web
     install:
-    - pip install awscli --upgrade
+    - pip install awscli
     - npm i
     script:
     - npm test
