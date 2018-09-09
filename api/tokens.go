@@ -67,6 +67,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		existingTokens := res.Tokens
 
 		newTokens := []nwlib.Token{}
+		newTokens = append(newTokens, newToken)
 
 		// user already linked in insitution before
 		if len(existingTokens) > 0 {

@@ -13,7 +13,7 @@ import (
 
 // Tokens hold the structure multiple tokens
 type Tokens struct {
-	Tokens []Token `json:"tokens"`
+	Tokens []*Token `json:"tokens"`
 }
 
 // Token holds the structure single token
@@ -134,7 +134,7 @@ func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens 
 
 // SetToken save token to db
 func (d DynamoDBClient) SetToken(username string, institutionID string, tokenMap *Tokens) error {
-	data, err := dynamodbattribute.Marshal(tokenMap)
+	data, err := dynamodbattribute.Marshal(tokenMap.Tokens)
 	if err != nil {
 		fmt.Println("Problem marshalling token map into dyno format", err)
 		return err
