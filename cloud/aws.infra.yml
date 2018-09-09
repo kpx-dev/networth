@@ -263,7 +263,7 @@ Resources:
   WebAppS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join ['.', [app, !Ref DomainName]]
+      BucketName: !Join ['.', [webapp, !Ref DomainName]]
 
   WebAppS3BucketPublicReadPolicy:
     Type: AWS::S3::BucketPolicy

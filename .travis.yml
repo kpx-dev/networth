@@ -47,14 +47,14 @@ matrix:
     - provider: s3
       access_key_id: $AWS_ACCESS_KEY_ID
       secret_access_key: $AWS_SECRET_ACCESS_KEY
-      bucket: networth.app
+      bucket: ${LANDING_S3_BUCKET}
       local-dir: ${TRAVIS_BUILD_DIR}/landing
       acl: public_read
       skip_cleanup: true
     - provider: s3
       access_key_id: $AWS_ACCESS_KEY_ID
       secret_access_key: $AWS_SECRET_ACCESS_KEY
-      bucket: app.networth.app
+      bucket: ${WEBAPP_S3_BUCKET}
       local-dir: ${TRAVIS_BUILD_DIR}/web/build
       acl: public_read
       skip_cleanup: true
