@@ -34,23 +34,17 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 			key := record.Change.Keys["key"].String()
 			sort := record.Change.Keys["sort"].String()
 
-			nwlib.PublishSNS(snsARN, fmt.Sprintf("key %s", key))
-
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
-				token := record.Change.NewImage["tokens"].Map()
-
-				nwlib.PublishSNS(snsARN, fmt.Sprintf("token %+v", token))
-				nwlib.PublishSNS(snsARN, fmt.Sprintf("access_token %s", token["access_token"]))
-				// appendToken(key, token)
+				// TODO: https://github.com/aws/aws-lambda-go/issues/58
+				tokens := record.Change.NewImage["tokens"].List()
+				newToken := tokens[len(tokens)-1].Map()
+				// accessToken := token["access_token"].String()
+				appendToken(key, newToken)
 			}
 
 			// username, tokens := tokens(record)
 			// transactions(username, tokens)
 			break
-		// case "REMOVE":
-		// 	username, tokens := tokens(record)
-		// 	msg = fmt.Sprintf("Remove event %s, %v", username, tokens)
-		// 	break
 		default:
 			msg = fmt.Sprintf("DynamoDB stream unknown event %s %+v", record.EventName, record)
 		}

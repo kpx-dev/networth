@@ -9,12 +9,13 @@ import (
 // }
 
 // append token from single institution to the "all" institution sort key
-// func appendToken(key string, token *nwlib.Token) error {
-// 	username := strings.Split(key, ":")
-// 	err := db.SetToken(username[0], nwlib.DefaultSortValue, token)
+func appendToken(key string, token map[string]events.DynamoDBAttributeValue) error {
+	// username := strings.Split(key, ":")
+	// err := db.SetToken(username[0], nwlib.DefaultSortValue, token)
 
-// 	return err
-// }
+	return nil
+	// return err
+}
 
 func tokens(record events.DynamoDBEventRecord) (username string, tokens []string) {
 	var email string
