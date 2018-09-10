@@ -1,5 +1,5 @@
-.PHONY: api deploy-infra deploy-api start-api token-observer create-infra token notification deploy-notification update-lib
-.SILENT: api deploy-infra deploy-api start-api token-observer create-infra token notification deploy-notification update-lib
+.PHONY: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
+.SILENT: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
 
 REGION = us-east-1
 APP_NAME = networth
@@ -8,33 +8,33 @@ LAMBDA_BUCKET = lambda.${APP_NAME}.app
 api:
 	rm -rf bin/* && cd api && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../bin/${APP_NAME}-api .
 
-token-observer:
-	rm -rf bin/* && cd api/token_observer && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-token-observer .
+dbstream:
+	rm -rf bin/* && cd api/dbstream && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-dbstream .
 
 notification:
 	rm -rf bin/* && cd api/notification && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-notification .
 
 create-infra:
-	aws cloudformation create-stack --template-body file://cloud/aws.infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
+	aws cloudformation create-stack --template-body file://cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
 
 deploy-infra:
-	aws cloudformation deploy --template-file cloud/aws.infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws cloudformation deploy --template-file cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 	aws cloudformation wait stack-create-complete
 
 deploy-api:
 	make api
-	aws cloudformation package --template-file cloud/aws.rest.api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.rest.api.yml --s3-prefix ${APP_NAME}-api
-	aws cloudformation deploy --template-file /tmp/aws.rest.api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws cloudformation package --template-file cfn/api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/api.yml --s3-prefix ${APP_NAME}-api
+	aws cloudformation deploy --template-file /tmp/api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 
-deploy-token-observer:
-	make token-observer
-	aws cloudformation package --template-file cloud/aws.token.observer.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.token.observer.yml --s3-prefix ${APP_NAME}-token-observer
-	aws cloudformation deploy --template-file /tmp/aws.token.observer.yml --stack-name ${APP_NAME}-token-observer --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+deploy-dbstream:
+	make dbstream
+	aws cloudformation package --template-file cfn/dbstream.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/dbstream.yml --s3-prefix ${APP_NAME}-dbstream
+	aws cloudformation deploy --template-file /tmp/dbstream.yml --stack-name ${APP_NAME}-dbstream --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 
 deploy-notification:
 	make notification
-	aws cloudformation package --template-file cloud/aws.notification.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/aws.notification.yml --s3-prefix ${APP_NAME}-notification
-	aws cloudformation deploy --template-file /tmp/aws.notification.yml --stack-name ${APP_NAME}-notification --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws cloudformation package --template-file cfn/notification.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/notification.yml --s3-prefix ${APP_NAME}-notification
+	aws cloudformation deploy --template-file /tmp/notification.yml --stack-name ${APP_NAME}-notification --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
 
 deploy-landing:
 	aws s3 sync landing/* networth.app
@@ -51,9 +51,9 @@ start-api:
 start-web:
 	cd web && npm run start
 
-start-token-observer:
-	make token-observer
-	sam local generate-event dynamodb | sam local invoke "NetWorthTokenObserverFunction" --template cloud/aws.token.observer.yml
+start-dbstream:
+	make dbstream
+	sam local generate-event dynamodb | sam local invoke "NetWorthDbStreamFunction" --template cfn/dbstream.yml
 
 token:
 	# reset pass
@@ -61,5 +61,5 @@ token:
 	aws cognito-idp initiate-auth --client-id 5a1pls13n4igqenffk3s8cnb00 --auth-flow USER_PASSWORD_AUTH --auth-parameters USERNAME=demo@networth.app,PASSWORD=Testing!!1234. | jq -r .AuthenticationResult.IdToken
 
 update-lib:
-	cd api/notification && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor
-	cd api/token_observer && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor
+	cd api/notification && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor && cd ../
+	cd api/token_observer && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor && cd ../

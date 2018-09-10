@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
-Description: networth.app Token Observer
+Description: networth.app DB Stream
 
 Parameters:
   AppName:
@@ -31,10 +31,10 @@ Resources:
     Properties:
       Runtime: go1.x
       CodeUri: ../bin
-      Handler: networth-token-observer
+      Handler: networth-dbstream
       Timeout: 20
-      FunctionName: networth-token-observer
-      Description:  networth.app Token Observer
+      FunctionName: networth-dbstream
+      Description:  networth.app DB Stream
       Role:
         Fn::ImportValue:
           !Join [-, [ !Ref AppName, lambda, role]]
@@ -55,7 +55,7 @@ Resources:
           PLAID_CLIENT_ID: !Ref EnvPlaidClientID
           PLAID_SECRET: !Ref EnvPlaidSecret
       Events:
-        DynamoDBStreamTokenEvent:
+        DynamoDBStreamEvent:
           Type: DynamoDB
           Properties:
             Stream:
