@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: networth.app Notification
+
+Parameters:
+  AppName:
+    Type: String
+    Default: networth
+  DomainName:
+    Type: String
+    Default: networth.app
+  EnvSlackWebhook:
+    Type : 'AWS::SSM::Parameter::Value<String>'
+    Default: /networth/SLACK_WEBHOOK_URL
+
+Resources:
+  NetWorthNotificationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: go1.x
+      CodeUri: ../bin
+      Handler: networth-notification
+      FunctionName: networth-notification
+      Description:  networth.app Notification
+      Role:
+        Fn::ImportValue:
+          !Join [-, [ !Ref AppName, lambda, role]]
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN:
+            Fn::ImportValue:
+              !Join [-, [ !Ref AppName, sns]]
+          SLACK_WEBHOOK_URL: !Ref EnvSlackWebhook
+      Events:
+        Notification:
+          Type: SNS
+          Properties:
+            Topic:
+              Fn::ImportValue:
+                !Join [-, [ !Ref AppName, sns]]

@@ -10,7 +10,7 @@ import (
 
 var (
 	slackWebhookURL = nwlib.GetEnv("SLACK_WEBHOOK_URL")
-	slackChannel    = nwlib.GetEnv("SLACK_CHANNEL")
+	slackChannel    = nwlib.GetEnv("SLACK_CHANNEL", "sns")
 )
 
 func handleSNSNotification(ctx context.Context, snsEvent events.SNSEvent) {
@@ -20,7 +20,6 @@ func handleSNSNotification(ctx context.Context, snsEvent events.SNSEvent) {
 	}
 
 	nwlib.PublishSlack(slackWebhookURL, messages, slackChannel)
-
 }
 
 func main() {

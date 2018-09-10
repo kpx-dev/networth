@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/networth-app/networth/api/lib"
 )
+
+var snsARN = nwlib.GetEnv("SNS_TOPIC_ARN")
 
 func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 	type WebhookError struct {
@@ -41,7 +44,7 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		// TODO: check to make sure ip came from whitelist
 		// ips := r.Header.Get("X-Forwarded-For")
 		// fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
-		nwlib.Alert("New webhook, type:" + body.WebhookType + " code: " + body.WebhookCode + " item id: " + body.ItemID)
+		nwlib.PublishSNS(snsARN, fmt.Sprintf("New webhook, type: %s, code: %s, item: %s", body.WebhookType, body.WebhookCode, body.ItemID))
 		nwlib.SuccessResp(w, body)
 	}
 }

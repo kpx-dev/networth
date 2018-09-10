@@ -32,6 +32,22 @@ matrix:
       on_success: always
       rooms:
         secure: RmGyc1xhWY5gMl+tShUCxY/1l3U+EBzOJmfoTgpdxgV6es2YUV3HeO85Bj6AZpDvH5WiSunRPu3eAIXtZprs8EUIvQO5xwbOPQJaQWQxXqe1boen7rKnAAbH3XoVE5m9UTdoCUxOTpoduZEmzgqw2rb4X5xu0/YnkZH7rCBytq74eR2VChQW1hJLxFlMRN8mNHozViJ8jL9D+jBX/q3+9NZEgVOrQehM36Er4Y13k+5ZyxvtEvgixeh+sK9Rw0kmjnDwmfhd8Fca53tNf/OgPrF8v6cwXLYh00Xja0pWeeR4r2cZqgY4g3knDQ5hmdC6G+wFQV5jawgF48Ju/2h0XyBI95kixmpkjuFIH3FQuUsEALlzszbnL5JdDDKOQQDnQlW6yq0sSDQgGC84CjaAQrzO3ZRvbdB+2K6IyMwu1d57sCfqNR5MZQaX0WsyIfO1pmrQ82edl6Y32t4s8FBpJbVbBdWbf1WuA/xsS1SP7bCiul2u2rWkl5wjQuNGtEhPpRy0vdn7wmicm8scflRAynKslRHINCPQS8BQdDSlonW3pK5JDNtEl1XFMb5DR+OBy3HPP4s7/MGyLmBrpDmhBsbhNcmM/hJH0G6TNgEivw/3aG21uD9N16DwfrNMn9I93nay/ZYqu8F/x8wyhqINmiXZ19sKRhPWvSHlRwWpeEc=
+  - language: go
+    install:
+    - pip install --user awscli
+    before_script: cd api/notification
+    script: go test
+    before_deploy: cd ${TRAVIS_BUILD_DIR}
+    deploy:
+    - provider: script
+      script: make deploy-notification
+    slack:
+      on_pull_requests: false
+      on_failure: always
+      on_success: always
+      rooms:
+        secure: RmGyc1xhWY5gMl+tShUCxY/1l3U+EBzOJmfoTgpdxgV6es2YUV3HeO85Bj6AZpDvH5WiSunRPu3eAIXtZprs8EUIvQO5xwbOPQJaQWQxXqe1boen7rKnAAbH3XoVE5m9UTdoCUxOTpoduZEmzgqw2rb4X5xu0/YnkZH7rCBytq74eR2VChQW1hJLxFlMRN8mNHozViJ8jL9D+jBX/q3+9NZEgVOrQehM36Er4Y13k+5ZyxvtEvgixeh+sK9Rw0kmjnDwmfhd8Fca53tNf/OgPrF8v6cwXLYh00Xja0pWeeR4r2cZqgY4g3knDQ5hmdC6G+wFQV5jawgF48Ju/2h0XyBI95kixmpkjuFIH3FQuUsEALlzszbnL5JdDDKOQQDnQlW6yq0sSDQgGC84CjaAQrzO3ZRvbdB+2K6IyMwu1d57sCfqNR5MZQaX0WsyIfO1pmrQ82edl6Y32t4s8FBpJbVbBdWbf1WuA/xsS1SP7bCiul2u2rWkl5wjQuNGtEhPpRy0vdn7wmicm8scflRAynKslRHINCPQS8BQdDSlonW3pK5JDNtEl1XFMb5DR+OBy3HPP4s7/MGyLmBrpDmhBsbhNcmM/hJH0G6TNgEivw/3aG21uD9N16DwfrNMn9I93nay/ZYqu8F/x8wyhqINmiXZ19sKRhPWvSHlRwWpeEc=
+
   - language: node_js
     node_js: 10
     before_install: cd web
