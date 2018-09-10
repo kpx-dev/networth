@@ -10,8 +10,11 @@ import (
 	"github.com/networth-app/networth/api/lib"
 )
 
-var plaid = nwlib.NewPlaidClient()
-var db = nwlib.NewDynamoDBClient()
+var (
+	plaid  = nwlib.NewPlaidClient()
+	db     = nwlib.NewDynamoDBClient()
+	snsARN = nwlib.GetEnv("SNS_TOPIC_ARN")
+)
 
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	var msg string
@@ -19,7 +22,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 		if record.Change.StreamViewType != "NEW_IMAGE" {
 			msg = fmt.Sprintf("Received %s. Not a NEW_IMAGE stream view type, ignoring.", record.Change.StreamViewType)
 			log.Println(msg)
-			nwlib.Alert(msg)
+			nwlib.PublishSNS(snsARN, msg)
 			return
 		}
 
@@ -38,7 +41,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 		}
 
 		log.Println(msg)
-		nwlib.Alert(msg)
+		nwlib.PublishSNS(snsARN, msg)
 	}
 }
 

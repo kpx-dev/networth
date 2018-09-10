@@ -3,6 +3,7 @@ package nwlib
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -23,6 +24,10 @@ var snsClient = sns.New(session.New(), aws.NewConfig().WithRegion(AWSRegion))
 
 // PublishSNS publish message to SNS topic
 func PublishSNS(arn string, message string) error {
+	if message == "" {
+		return errors.New("cannot publish SNS, empty message")
+	}
+
 	fmt.Printf("Publishing message to SNS: %s\n", message)
 	input := &sns.PublishInput{
 		Message:  &message,
@@ -38,6 +43,10 @@ func PublishSNS(arn string, message string) error {
 
 // PublishSlack publish message to Slack
 func PublishSlack(webhook string, message string, channel string) error {
+	if message == "" {
+		return errors.New("cannot publish Slack, empty message")
+	}
+
 	fmt.Printf("Publishing message to Slack: %s\n", message)
 
 	slackBody := &SlackBody{

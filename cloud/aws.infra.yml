@@ -9,52 +9,20 @@ Parameters:
     Type: String
     Default: networth.app
 
-Outputs:
-  KMS:
-    Export:
-      Name: !Join [-, [ !Ref AppName, kms]]
-    Value: !GetAtt KMSKey.Arn
-
-  KMSAlias:
-    Export:
-      Name: !Join [-, [ !Ref AppName, kms, alias]]
-    Value: !Ref KMSAlias
-
-  UserPool:
-    Export:
-      Name: !Join [-, [ !Ref AppName, userpool]]
-    Value: !GetAtt UserPool.Arn
-
-  NetworthTable:
-    Export:
-      Name: !Join [-, [ !Ref AppName, table]]
-    Value: !Ref NetworthTable
-  NetworthTableStream:
-    Export:
-      Name: !Join [-, [ !Ref AppName, table, stream]]
-    Value: !GetAtt NetworthTable.StreamArn
-
-  LambdaRole:
-    Export:
-      Name: !Join [-, [ !Ref AppName, lambda, role]]
-    Value: !GetAtt LambdaRole.Arn
-
-  SNSTopic:
-    Export:
-      Name: !Join [-, [ !Ref AppName, sns]]
-    Value: !Ref SNSTopic
-
-  LandingS3:
-    Export:
-      Name: !Join [-, [ !Ref AppName, s3, landing, bucket]]
-    Value: !Ref LandingS3Bucket
-
-  CloudFrontResource:
-    Export:
-      Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
-    Value: !Ref CloudFrontResource
-
 Resources:
+  EnvSlackChannelResource:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ['/', ['', !Ref AppName, SLACK_CHANNEL]]
+      Type: String
+      Value: "sns"
+  EnvPlaidEnvResource:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ['/', ['', !Ref AppName, PLAID_ENV]]
+      Type: String
+      Value: "sandbox"
+
   SNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -99,7 +67,6 @@ Resources:
             Principal:
               Service:
                 - cognito-idp.amazonaws.com
-
   CognitoIdentityPoolRoleAttach:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
     Properties:
@@ -107,7 +74,6 @@ Resources:
       Roles:
         authenticated: !GetAtt CognitoIdentityPoolRole.Arn
         unauthenticated: !GetAtt CognitoIdentityPoolRole.Arn
-
   CognitoIdentityPool:
     Type: AWS::Cognito::IdentityPool
     Properties:
@@ -120,7 +86,6 @@ Resources:
           ProviderName: !Sub
             - cognito-idp.${AWS::Region}.amazonaws.com/${UserPoolId}
             - { UserPoolId: !Ref UserPool }
-
   UserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -364,4 +329,52 @@ Resources:
       - 20 alt2.gmr-smtp-in.l.google.com.
       - 30 alt3.gmr-smtp-in.l.google.com.
       - 40 alt4.gmr-smtp-in.l.google.com.
+
+Outputs:
+  KMS:
+    Export:
+      Name: !Join [-, [ !Ref AppName, kms]]
+    Value: !GetAtt KMSKey.Arn
+  KMSAlias:
+    Export:
+      Name: !Join [-, [ !Ref AppName, kms, alias]]
+    Value: !Ref KMSAlias
+  UserPool:
+    Export:
+      Name: !Join [-, [ !Ref AppName, userpool]]
+    Value: !GetAtt UserPool.Arn
+  NetworthTable:
+    Export:
+      Name: !Join [-, [ !Ref AppName, table]]
+    Value: !Ref NetworthTable
+  NetworthTableStream:
+    Export:
+      Name: !Join [-, [ !Ref AppName, table, stream]]
+    Value: !GetAtt NetworthTable.StreamArn
+  LambdaRole:
+    Export:
+      Name: !Join [-, [ !Ref AppName, lambda, role]]
+    Value: !GetAtt LambdaRole.Arn
+  SNSTopic:
+    Export:
+      Name: !Join [-, [ !Ref AppName, sns]]
+    Value: !Ref SNSTopic
+  LandingS3:
+    Export:
+      Name: !Join [-, [ !Ref AppName, s3, landing, bucket]]
+    Value: !Ref LandingS3Bucket
+  CloudFrontResource:
+    Export:
+      Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
+    Value: !Ref CloudFrontResource
+  EnvSlackChannelOutput:
+    Export:
+      Name: !Join [-, [ !Ref AppName, slack, channel]]
+    Value: !GetAtt EnvSlackChannelResource.Value
+  EnvPlaidEnvResourceOutput:
+    Export:
+      Name: !Join [-, [ !Ref AppName, plaid, env]]
+    Value: !GetAtt EnvPlaidEnvResource.Value
+
+
 
