@@ -86,7 +86,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]dynamodb.AttributeValue{
 							"key":      {S: aws.String(username)},
-							"sort":     {S: aws.String(defaultSortValue)},
+							"sort":     {S: aws.String(DefaultSortValue)},
 							"networth": {N: networthStr},
 						},
 					},
@@ -104,7 +104,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens {
 	dbTokens := &Tokens{}
 	key := fmt.Sprintf("%s:token", username)
-	sort := defaultSortValue
+	sort := DefaultSortValue
 	if len(institutionID) > 0 {
 		sort = institutionID
 	}
