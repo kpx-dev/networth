@@ -100,6 +100,8 @@ github.com/networth-app/networth/api/lib v0.0.0-20180910014058-143e13297770 h1:O
 github.com/networth-app/networth/api/lib v0.0.0-20180910014058-143e13297770/go.mod h1:oBC2pMJmUnVZ9feno6EF7Qwxa6KiC2QQJr9x791+tbA=
 github.com/networth-app/networth/api/lib v0.0.0-20180910043447-e0168b1ab69b h1:nqhmceujcpQ8THedxyQ1w0v0kTT8bBr7yx+9eCs1hSc=
 github.com/networth-app/networth/api/lib v0.0.0-20180910043447-e0168b1ab69b/go.mod h1:oBC2pMJmUnVZ9feno6EF7Qwxa6KiC2QQJr9x791+tbA=
+github.com/networth-app/networth/api/lib v0.0.0-20180910162536-15c44eec2d85 h1:EV94HqXMmsGuMTr2ezJiw33pZ4IfSk48fvb8C/2txsw=
+github.com/networth-app/networth/api/lib v0.0.0-20180910162536-15c44eec2d85/go.mod h1:oBC2pMJmUnVZ9feno6EF7Qwxa6KiC2QQJr9x791+tbA=
 github.com/onsi/ginkgo v1.6.0 h1:Ix8l273rp3QzYgXSR+c8d1fTG7UPgYkOSELPhiY/YGw=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.4.1 h1:PZSj/UFNaVp3KxrzHOcS7oyuWA7LoOY/77yCTEFu21U=

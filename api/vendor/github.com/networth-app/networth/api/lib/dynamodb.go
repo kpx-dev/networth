@@ -133,10 +133,12 @@ func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens 
 }
 
 // SetToken save token to db
-func (d DynamoDBClient) SetToken(username string, institutionID string, tokenMap *Tokens) error {
-	data, err := dynamodbattribute.Marshal(tokenMap.Tokens)
+func (d DynamoDBClient) SetToken(username string, institutionID string, token *Token) error {
+	tokenList := [1]*Token{token}
+
+	tokenAttr, err := dynamodbattribute.Marshal(tokenList)
 	if err != nil {
-		fmt.Println("Problem marshalling token map into dyno format", err)
+		fmt.Println("Problem marshalling token struct into dyno format", err)
 		return err
 	}
 
@@ -147,9 +149,9 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, tokenMap
 		},
 		TableName: aws.String(networthTable),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":data": *data,
+			":token": *tokenAttr,
 		},
-		UpdateExpression: aws.String("SET tokens = :data"),
+		UpdateExpression: aws.String("SET tokens = list_append(tokens, :token)"),
 	})
 
 	if _, err := req.Send(); err != nil {

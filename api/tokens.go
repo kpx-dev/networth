@@ -54,7 +54,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		encryptedToken := kmsClient.Encrypt(exchangedToken.AccessToken)
 
 		jwtUsername := s.username(r.Header)
-		newToken := &nwlib.Token{
+		token := &nwlib.Token{
 			ItemID:          exchangedToken.ItemID,
 			AccessToken:     encryptedToken,
 			AccountID:       body.AccountID,
@@ -63,29 +63,12 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			Accounts:        body.Accounts,
 		}
 
-		res := s.db.GetToken(jwtUsername, body.InstitutionID)
-		existingTokens := res.Tokens
-
-		newTokens := []*nwlib.Token{}
-		newTokens = append(newTokens, newToken)
-
-		// user already linked in insitution before
-		if len(existingTokens) > 0 {
-			for _, existingToken := range existingTokens {
-				newTokens = append(newTokens, existingToken)
-			}
-		}
-
-		tokensPayload := &nwlib.Tokens{
-			Tokens: newTokens,
-		}
-
-		if err := s.db.SetToken(jwtUsername, body.InstitutionID, tokensPayload); err != nil {
+		if err := s.db.SetToken(jwtUsername, body.InstitutionID, token); err != nil {
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
-		payload := newToken
+		payload := token
 		payload.AccessToken = "*redacted*"
 		nwlib.SuccessResp(w, payload)
 	}
