@@ -1,5 +1,5 @@
-.PHONY: api deploy-infra deploy-api start-api token-observer create-infra token notification deploy-notification
-.SILENT: api deploy-infra deploy-api start-api token-observer create-infra token notification deploy-notification
+.PHONY: api deploy-infra deploy-api start-api token-observer create-infra token notification deploy-notification update-lib
+.SILENT: api deploy-infra deploy-api start-api token-observer create-infra token notification deploy-notification update-lib
 
 REGION = us-east-1
 APP_NAME = networth
