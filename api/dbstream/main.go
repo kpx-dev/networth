@@ -28,16 +28,16 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
+			msg = fmt.Sprintf("DynamoDB stream insert / modify: %s, event %+v", record.EventName, record)
 			username, tokens := tokens(record)
 			transactions(username, tokens)
-			// msg = fmt.Sprintf("Insert / modify event %s, %v", username, tokens)
 			break
-		case "REMOVE":
-			username, tokens := tokens(record)
-			msg = fmt.Sprintf("Remove event %s, %v", username, tokens)
-			break
+		// case "REMOVE":
+		// 	username, tokens := tokens(record)
+		// 	msg = fmt.Sprintf("Remove event %s, %v", username, tokens)
+		// 	break
 		default:
-			msg = fmt.Sprintf("Unknown event %s", record.EventName)
+			msg = fmt.Sprintf("DynamoDB stream unknown event %s %+v", record.EventName, record)
 		}
 
 		log.Println(msg)

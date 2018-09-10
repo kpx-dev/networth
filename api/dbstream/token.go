@@ -7,6 +7,15 @@ import (
 
 var kms = nwlib.NewKMSClient()
 
+func decryptTokens() tokens []string {
+
+}
+
+// append token from single institution to the "all" institution sort key
+func appendToken(token) error {
+
+}
+
 func tokens(record events.DynamoDBEventRecord) (username string, tokens []string) {
 	var email string
 	var decryptedAccessTokens []string

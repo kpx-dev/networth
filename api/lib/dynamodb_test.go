@@ -12,22 +12,12 @@ func TestSetToken(t *testing.T) {
 	db := NewDynamoDBClient()
 	username := "test_set@networth.app"
 	institutionID := "ins_1"
-
-	tokensList := []*Token{}
-	token1 := &Token{
+	token := &Token{
 		AccessToken: "1",
 	}
-	token2 := &Token{
-		AccessToken: "2",
-	}
-	tokensList = append(tokensList, token1)
-	tokensList = append(tokensList, token2)
-	tokens := &Tokens{
-		Tokens: tokensList,
-	}
 
-	// set for all ins
-	if err := db.SetToken(username, institutionID, tokens); err != nil {
+	// set for specific ins
+	if err := db.SetToken(username, institutionID, token); err != nil {
 		t.Errorf("Cannot set token %v", err)
 	}
 }
