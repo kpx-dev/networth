@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -11,6 +12,7 @@ import (
 )
 
 var (
+	kms    = nwlib.NewKMSClient()
 	plaid  = nwlib.NewPlaidClient()
 	db     = nwlib.NewDynamoDBClient()
 	snsARN = nwlib.GetEnv("SNS_TOPIC_ARN")
@@ -29,8 +31,21 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 		switch record.EventName {
 		case "INSERT", "MODIFY":
 			msg = fmt.Sprintf("DynamoDB stream insert / modify: %s, event %+v", record.EventName, record)
-			username, tokens := tokens(record)
-			transactions(username, tokens)
+			key := record.Change.Keys["key"].String()
+			sort := record.Change.Keys["sort"].String()
+
+			nwlib.PublishSNS(snsARN, fmt.Sprintf("key %s", key))
+
+			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
+				token := record.Change.NewImage["tokens"].Map()
+
+				nwlib.PublishSNS(snsARN, fmt.Sprintf("token %+v", token))
+				nwlib.PublishSNS(snsARN, fmt.Sprintf("access_token %s", token["access_token"]))
+				// appendToken(key, token)
+			}
+
+			// username, tokens := tokens(record)
+			// transactions(username, tokens)
 			break
 		// case "REMOVE":
 		// 	username, tokens := tokens(record)

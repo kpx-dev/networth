@@ -2,19 +2,19 @@ package main
 
 import (
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/networth-app/networth/api/lib"
 )
 
-var kms = nwlib.NewKMSClient()
+// func decryptTokens() tokens []string {
 
-func decryptTokens() tokens []string {
-
-}
+// }
 
 // append token from single institution to the "all" institution sort key
-func appendToken(token) error {
+// func appendToken(key string, token *nwlib.Token) error {
+// 	username := strings.Split(key, ":")
+// 	err := db.SetToken(username[0], nwlib.DefaultSortValue, token)
 
-}
+// 	return err
+// }
 
 func tokens(record events.DynamoDBEventRecord) (username string, tokens []string) {
 	var email string

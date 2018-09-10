@@ -27,8 +27,9 @@ type Token struct {
 }
 
 var (
-	networthTable    = GetEnv("NETWORTH_TABLE")
-	defaultSortValue = "all"
+	networthTable = GetEnv("NETWORTH_TABLE")
+	// DefaultSortValue default sort key value
+	DefaultSortValue = "all"
 )
 
 // DynamoDBClient db client struct
