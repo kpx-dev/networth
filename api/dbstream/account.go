@@ -5,19 +5,16 @@ import (
 	"log"
 )
 
-func accounts(username string, accessTokens []string) error {
-	for _, token := range accessTokens {
-		accounts, err := plaid.GetAccounts(token)
+func syncAccounts(username string, token string) error {
+	accounts, err := plaid.GetAccounts(token)
 
-		if err != nil {
-			log.Println("Problem getting accounts ", err)
-			return err
-		}
+	if err != nil {
+		log.Println("syncAccounts() Problem getting accounts ", err)
+		return err
+	}
 
-		// msg := fmt.Sprintf("Total trans: %d", trans.TotalTransactions)
-		for _, account := range accounts.Accounts {
-			fmt.Println(account)
-		}
+	for _, account := range accounts.Accounts {
+		fmt.Println("sync account ", account)
 	}
 
 	return nil

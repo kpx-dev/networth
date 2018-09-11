@@ -32,17 +32,24 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 		case "INSERT", "MODIFY":
 			msg = fmt.Sprintf("DynamoDB stream insert / modify: %s", record.EventName)
 			key := record.Change.Keys["key"].String()
+			username := strings.Split(key, ":")[0]
 			sort := record.Change.Keys["sort"].String()
 
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
 				// TODO: https://github.com/aws/aws-lambda-go/issues/58
 				tokens := record.Change.NewImage["tokens"].List()
 				newToken := tokens[len(tokens)-1].Map()
-				appendToken(key, newToken)
-			}
+				go appendToken(username, newToken)
 
-			// username, tokens := tokens(record)
-			// transactions(username, tokens)
+				accessToken, err := kms.Decrypt(newToken["access_token"].String())
+
+				if err != nil {
+					return
+				}
+
+				go syncAccounts(username, accessToken)
+				go syncTransactions(username, accessToken)
+			}
 			break
 		default:
 			msg = fmt.Sprintf("DynamoDB stream unknown event %s %+v", record.EventName, record)

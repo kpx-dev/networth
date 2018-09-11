@@ -51,7 +51,12 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		kmsClient := nwlib.NewKMSClient()
-		encryptedToken := kmsClient.Encrypt(exchangedToken.AccessToken)
+		encryptedToken, err := kmsClient.Encrypt(exchangedToken.AccessToken)
+
+		if err != nil {
+			nwlib.ErrorResp(w, err.Error())
+			return
+		}
 
 		jwtUsername := s.username(r.Header)
 		token := &nwlib.Token{
