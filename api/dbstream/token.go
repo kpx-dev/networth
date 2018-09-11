@@ -21,7 +21,6 @@ func appendToken(key string, tokenMap map[string]events.DynamoDBAttributeValue) 
 		InstitutionID:   tokenMap["institution_id"].String(),
 		InstitutionName: tokenMap["institution_name"].String(),
 	}
-	// fmt.Printf("token is %+v", token)
+
 	return db.SetToken(username[0], nwlib.DefaultSortValue, token)
-	// return nil
 }
