@@ -30,7 +30,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
-			msg = fmt.Sprintf("DynamoDB stream insert / modify: %s, event %+v", record.EventName, record)
+			msg = fmt.Sprintf("DynamoDB stream insert / modify: %s", record.EventName)
 			key := record.Change.Keys["key"].String()
 			sort := record.Change.Keys["sort"].String()
 
@@ -38,7 +38,6 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 				// TODO: https://github.com/aws/aws-lambda-go/issues/58
 				tokens := record.Change.NewImage["tokens"].List()
 				newToken := tokens[len(tokens)-1].Map()
-				// accessToken := token["access_token"].String()
 				appendToken(key, newToken)
 			}
 

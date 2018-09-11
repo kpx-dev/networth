@@ -152,11 +152,11 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, token *T
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
 			":token": *tokenAttr,
 		},
-		UpdateExpression: aws.String("SET tokens = list_append(tokens, :token)"),
+		UpdateExpression: aws.String("SET tokens = list_append(if_not_exists(tokens, :token), :token)"),
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem saving token to db ", err)
+		log.Println("Problem SetToken ", err)
 		return err
 	}
 
