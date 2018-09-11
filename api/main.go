@@ -15,12 +15,16 @@ type NetworthAPI struct {
 }
 
 var (
-	username = "demo@networth.app"
+	username       = "demo@networth.app"
+	plaidClientID  = nwlib.GetEnv("PLAID_CLIENT_ID")
+	plaidSecret    = nwlib.GetEnv("PLAID_SECRET")
+	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
+	plaidEnv       = nwlib.GetEnv("PLAID_ENV", "sandbox")
+	plaidClient    = nwlib.NewPlaidClient(plaidClientID, plaidSecret, plaidPublicKey, plaidEnv)
 )
 
 func main() {
 	apiHost := nwlib.GetEnv("API_HOST", ":8000")
-	plaidClient := nwlib.NewPlaidClient()
 	dbClient := NewDBClient()
 
 	api := &NetworthAPI{
