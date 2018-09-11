@@ -12,10 +12,14 @@ import (
 )
 
 var (
-	kms    = nwlib.NewKMSClient()
-	plaid  = nwlib.NewPlaidClient()
-	db     = nwlib.NewDynamoDBClient()
-	snsARN = nwlib.GetEnv("SNS_TOPIC_ARN")
+	plaidClientID  = nwlib.GetEnv("PLAID_CLIENT_ID")
+	plaidSecret    = nwlib.GetEnv("PLAID_SECRET")
+	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
+	plaidEnv       = nwlib.GetEnv("PLAID_ENV", "sandbox")
+	kms            = nwlib.NewKMSClient()
+	plaid          = nwlib.NewPlaidClient(plaidClientID, plaidSecret, plaidPublicKey, plaidEnv)
+	db             = nwlib.NewDynamoDBClient()
+	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
 )
 
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {

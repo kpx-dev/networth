@@ -6,14 +6,17 @@ import (
 	_ "github.com/networth-app/networth/api/lib/dotenv"
 )
 
+// var (
+// 	snsTopicARN     = GetEnv("SNS_TOPIC_ARN")
+// 	slackWebhookURL = GetEnv("SLACK_WEBHOOK_URL")
+// 	slackChannel    = GetEnv("SLACK_CHANNEL")
+// )
+
 func TestAccounts(t *testing.T) {
 	username := "test@networth.app"
-	accessTokens := []string{
-		"access-sandbox-f9a0d88f-622b-4763-98e5-707692762a50",
-		// "access-sandbox-4dcbbdd7-5fa9-480a-8825-fc526169a073",
-	}
+	token := "access-sandbox-f9a0d88f-622b-4763-98e5-707692762a50"
 
-	if err := accounts(username, accessTokens); err != nil {
+	if err := syncAccounts(username, token); err != nil {
 		t.Error("Failed to parse accounts", err)
 	}
 }
