@@ -24,7 +24,7 @@ func NewKMSClient() *KMSClient {
 }
 
 // Encrypt key
-func (k KMSClient) Encrypt(token string) string {
+func (k KMSClient) Encrypt(token string) (string, error) {
 	input := &kms.EncryptInput{
 		KeyId:     aws.String(kmsKeyAlias),
 		Plaintext: []byte(token),
@@ -35,14 +35,14 @@ func (k KMSClient) Encrypt(token string) string {
 
 	if err != nil {
 		log.Println("Problem encrypting key ", err)
-		return ""
+		return "", err
 	}
 
-	return base64.StdEncoding.EncodeToString(res.CiphertextBlob)
+	return base64.StdEncoding.EncodeToString(res.CiphertextBlob), nil
 }
 
 // Decrypt decrypt kms token
-func (k KMSClient) Decrypt(token string) string {
+func (k KMSClient) Decrypt(token string) (string, error) {
 	decoded, _ := base64.StdEncoding.DecodeString(token)
 	input := &kms.DecryptInput{
 		CiphertextBlob: []byte(decoded),
@@ -52,8 +52,9 @@ func (k KMSClient) Decrypt(token string) string {
 	res, err := req.Send()
 
 	if err != nil {
-		panic(err)
+		log.Println("Problem decrypting key ", err)
+		return "", err
 	}
 
-	return string(res.Plaintext)
+	return string(res.Plaintext), nil
 }

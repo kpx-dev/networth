@@ -8,10 +8,6 @@ import (
 	"github.com/networth-app/networth/api/lib"
 )
 
-// func decryptTokens() tokens []string {
-
-// }
-
 // append token from single institution to the "all" institution sort key
 func appendToken(key string, tokenMap map[string]events.DynamoDBAttributeValue) error {
 	username := strings.Split(key, ":")
@@ -28,27 +24,4 @@ func appendToken(key string, tokenMap map[string]events.DynamoDBAttributeValue) 
 	// fmt.Printf("token is %+v", token)
 	return db.SetToken(username[0], nwlib.DefaultSortValue, token)
 	// return nil
-}
-
-func tokens(record events.DynamoDBEventRecord) (username string, tokens []string) {
-	var email string
-	var decryptedAccessTokens []string
-
-	for name, value := range record.Change.NewImage {
-		if name == "email" {
-			email = value.String()
-		}
-
-		if value.DataType() == events.DataTypeMap {
-			val := value.Map()
-			tokens := val["access_tokens"].List()
-
-			for _, token := range tokens {
-				decryptedToken := kms.Decrypt(token.String())
-				decryptedAccessTokens = append(decryptedAccessTokens, decryptedToken)
-			}
-		}
-	}
-
-	return email, decryptedAccessTokens
 }
