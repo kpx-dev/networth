@@ -14,7 +14,7 @@ func syncAccounts(username string, token string) error {
 	}
 
 	for _, account := range accounts.Accounts {
-		fmt.Println("sync account ", account)
+		fmt.Printf("sync account %+v", account)
 	}
 
 	return nil

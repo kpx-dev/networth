@@ -19,18 +19,16 @@ func syncTransactions(username string, token string) error {
 		return err
 	}
 
-	// msg := fmt.Sprintf("Total trans: %d", trans.TotalTransactions)
-	for _, account := range trans.Accounts {
-		// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
-		fmt.Println(account)
-	}
-
-	// for _, tran := range trans.Transactions {
+	fmt.Printf("Total trans: %d", trans.TotalTransactions)
+	// for _, account := range trans.Accounts {
 	// 	// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
-	// 	fmt.Println(tran)
+	// 	fmt.Println("sync accounts" account)
 	// }
 
-	// log.Println(msg)
-	// nwlib.Alert(msg)
+	for _, tran := range trans.Transactions {
+		// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
+		fmt.Printf("sync transaction %+v", tran)
+	}
+
 	return nil
 }

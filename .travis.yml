@@ -20,12 +20,12 @@ matrix:
   - language: go
     install:
     - pip install --user awscli
-    before_script: cd api/token_observer
+    before_script: cd api/dbstream
     script: go test
     before_deploy: cd ${TRAVIS_BUILD_DIR}
     deploy:
     - provider: script
-      script: make deploy-token-observer
+      script: make deploy-dbstream
     slack:
       on_pull_requests: false
       on_failure: always

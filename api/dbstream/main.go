@@ -30,7 +30,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
-			msg = fmt.Sprintf("DynamoDB stream insert / modify: %s", record.EventName)
+			msg = fmt.Sprintf("DynamoDB stream: %s", record.EventName)
 			key := record.Change.Keys["key"].String()
 			username := strings.Split(key, ":")[0]
 			sort := record.Change.Keys["sort"].String()
@@ -47,8 +47,8 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 					return
 				}
 
-				go syncAccounts(username, accessToken)
 				go syncTransactions(username, accessToken)
+				go syncAccounts(username, accessToken)
 			}
 			break
 		default:
