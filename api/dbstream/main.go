@@ -16,8 +16,8 @@ var (
 	plaidSecret    = nwlib.GetEnv("PLAID_SECRET")
 	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
 	plaidEnv       = nwlib.GetEnv("PLAID_ENV", "sandbox")
-	kms            = nwlib.NewKMSClient()
 	plaid          = nwlib.NewPlaidClient(plaidClientID, plaidSecret, plaidPublicKey, plaidEnv)
+	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
 )
@@ -52,7 +52,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 				}
 
 				go syncTransactions(username, accessToken)
-				go syncAccounts(username, accessToken)
+				go syncAccounts(plaid, username, accessToken)
 			}
 			break
 		default:
