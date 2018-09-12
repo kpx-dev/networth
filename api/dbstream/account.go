@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/networth-app/networth/api/lib"
+	"github.com/plaid/plaid-go/plaid"
 )
 
 func syncAccounts(username string, institutionID string, token string) error {
@@ -25,13 +26,13 @@ func syncAccounts(username string, institutionID string, token string) error {
 // append token from single institution to the "all" institution sort key
 func appendAccount(username string, accounts []events.DynamoDBAttributeValue) error {
 	for _, account := range accounts {
-		fmt.Println(account)
-		account := plaid.Account{
-			AccountID: account["account_id"].String(),
+		accountMap := account.Map()
+
+		newAccount := &plaid.Account{
+			AccountID: accountMap["account_id"].String(),
 		}
 
-		// db.SetAccount(username, nwlib.DefaultSortValue, account)
-		// db.SetAccount(username, institutionID, &account)
+		db.SetAccount(username, nwlib.DefaultSortValue, newAccount)
 	}
 
 	return nil

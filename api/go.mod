@@ -11,10 +11,11 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/hpcloud/tail v1.0.0 // indirect
-	github.com/networth-app/networth/api/lib v0.0.0-20180912161827-103705227492
+	github.com/networth-app/networth/api/lib v0.0.0-20180912162126-c4ed8cd83972
 	github.com/onsi/ginkgo v1.6.0 // indirect
 	github.com/onsi/gomega v1.4.1 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
+	github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd
 	github.com/rs/cors v1.5.0
 	github.com/tj/assert v0.0.0-20171129193455-018094318fb0 // indirect
 	golang.org/x/crypto v0.0.0-20180808211826-de0752318171 // indirect
