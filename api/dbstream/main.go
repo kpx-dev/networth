@@ -23,6 +23,8 @@ var (
 )
 
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
+	// TODO: https://github.com/aws/aws-lambda-go/issues/58
+
 	var msg string
 	for _, record := range e.Records {
 		if record.Change.StreamViewType != "NEW_IMAGE" {
@@ -40,12 +42,10 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 			sort := record.Change.Keys["sort"].String()
 
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
-				// TODO: https://github.com/aws/aws-lambda-go/issues/58
 				// each user have at least 2 keys for token, 1 for "all", 1 for instutution specific
 				tokens := record.Change.NewImage["tokens"].List()
 				newToken := tokens[len(tokens)-1].Map()
 				go appendToken(username, newToken)
-
 				accessToken, err := kms.Decrypt(newToken["access_token"].String())
 
 				if err != nil {
@@ -56,9 +56,9 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 				go syncAccounts(username, sort, accessToken)
 			} else if strings.HasSuffix(key, ":account") && strings.HasPrefix(sort, "ins_") {
 				// each user have at least 2 keys for account, 1 for "all", 1 for instutution specific
-				// accounts := record.Change.NewImage["accounts"].List()
+				accounts := record.Change.NewImage["accounts"].List()
 				// newAccount := accounts[len(accounts)-1].Map()
-				// go appendAccount(username, newAccount)
+				go appendAccount(username, accounts)
 				nwlib.PublishSNS(snsARN, "about to append new account ")
 			}
 			break
