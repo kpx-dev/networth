@@ -12,7 +12,7 @@ func syncTransactions(username string, token string) error {
 	startDate := endDate.AddDate(0, -3, 0)
 	startDateStr := startDate.Format("2006-01-02")
 
-	trans, err := plaid.GetTransactions(token, startDateStr, endDateStr)
+	trans, err := plaidClient.GetTransactions(token, startDateStr, endDateStr)
 
 	if err != nil {
 		log.Println("syncTransactions() Problem getting trans ", err)

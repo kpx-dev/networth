@@ -9,7 +9,7 @@ import (
 // PlaidClient plaid client
 type PlaidClient struct {
 	Client  *plaid.Client
-	Account plaid.Account
+	Account *plaid.Account
 }
 
 // NewPlaidClient new Plaid client

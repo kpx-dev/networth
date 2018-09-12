@@ -17,6 +17,7 @@ var (
 	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
 	plaidEnv       = nwlib.GetEnv("PLAID_ENV", "sandbox")
 	plaid          = nwlib.NewPlaidClient(plaidClientID, plaidSecret, plaidPublicKey, plaidEnv)
+	plaidClient    = plaid.Client
 	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
