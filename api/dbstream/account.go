@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+
+	"github.com/networth-app/networth/api/lib"
 )
 
-func syncAccounts(username string, token string) error {
+func syncAccounts(username string, institutionID string, token string) error {
 	accounts, err := plaid.GetAccounts(token)
 
 	if err != nil {
@@ -15,6 +17,7 @@ func syncAccounts(username string, token string) error {
 
 	for _, account := range accounts.Accounts {
 		fmt.Printf("sync account %+v", account)
+		go nwlib.SetAccount(username, institutionID, &account)
 	}
 
 	return nil
