@@ -54,13 +54,17 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 				go syncTransactions(username, accessToken)
 				go syncAccounts(username, sort, accessToken)
-			} else if strings.HasSuffix(key, ":account") && strings.HasPrefix(sort, "ins_") {
-				// each user have at least 2 keys for account, 1 for "all", 1 for instutution specific
-				accounts := record.Change.NewImage["accounts"].List()
-				// newAccount := accounts[len(accounts)-1].Map()
-				go appendAccount(username, accounts)
-				nwlib.PublishSNS(snsARN, "about to append new account ")
+			} else if strings.HasSuffix(key, ":account") {
+				if sort == nwlib.DefaultSortValue {
+					nwlib.PublishSNS(snsARN, "about to sync networth ")
+					// go syncNetworth(username)
+				} else if strings.HasPrefix(sort, "ins_") {
+					// each user have at least 2 keys for account, 1 for "all", 1 for instutution specific
+					accounts := record.Change.NewImage["accounts"].List()
+					go appendAccount(username, accounts)
+				}
 			}
+
 			break
 		default:
 			msg = fmt.Sprintf("DynamoDB stream unknown event %s %+v", record.EventName, record)

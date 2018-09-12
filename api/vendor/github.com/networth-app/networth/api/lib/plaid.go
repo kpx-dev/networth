@@ -8,8 +8,7 @@ import (
 
 // PlaidClient plaid client
 type PlaidClient struct {
-	Client  *plaid.Client
-	Account *plaid.Account
+	*plaid.Client
 }
 
 // NewPlaidClient new Plaid client
@@ -39,5 +38,5 @@ func NewPlaidClient(clientID string, secret string, publicKey string, environmen
 	}
 	client, _ := plaid.NewClient(clientOptions)
 
-	return &PlaidClient{Client: client, Account: &plaid.Account{}}
+	return &PlaidClient{client}
 }
