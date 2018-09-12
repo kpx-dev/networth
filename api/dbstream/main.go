@@ -52,7 +52,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 				}
 
 				go syncTransactions(username, accessToken)
-				go syncAccounts(plaid, username, accessToken)
+				go syncAccounts(username, accessToken)
 			}
 			break
 		default:

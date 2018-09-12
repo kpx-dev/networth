@@ -56,7 +56,7 @@ Accounts for a user
 {
   "key": "demo@networth.app:account",
   "sort": "all",
-  "account": [
+  "accounts": [
     {
       "id": "xxx",
       "balances": {
@@ -83,7 +83,7 @@ Accounts for a user at a bank
 {
   "key": "demo@networth.app:account",
   "sort": "ins_1",
-  "account": [
+  "accounts": [
     {
       "id": "xxx",
       "balances": {

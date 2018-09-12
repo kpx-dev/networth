@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-
-	"github.com/networth-app/networth/api/lib"
 )
 
-func syncAccounts(plaidClient *nwlib.PlaidClient, username string, token string) error {
-	accounts, err := plaidClient.GetAccounts(token)
+func syncAccounts(username string, token string) error {
+	accounts, err := plaid.GetAccounts(token)
 
 	if err != nil {
 		log.Println("syncAccounts() Problem getting accounts ", err)

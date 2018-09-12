@@ -9,8 +9,8 @@ import (
 
 func init() {
 	dir, _ := os.Getwd()
-	if strings.HasSuffix(dir, "/api/token_observer") {
-		dir = strings.Replace(dir, "/api/token_observer", "", 1)
+	if strings.HasSuffix(dir, "/api/dbstream") {
+		dir = strings.Replace(dir, "/api/dbstream", "", 1)
 	}
 
 	if strings.HasSuffix(dir, "/api/lib") {

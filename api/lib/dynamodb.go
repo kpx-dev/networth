@@ -9,11 +9,17 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/dynamodbattribute"
+	"github.com/plaid/plaid-go/plaid"
 )
 
-// Tokens hold the structure multiple tokens
+// Tokens holds the structure multiple tokens
 type Tokens struct {
 	Tokens []*Token `json:"tokens"`
+}
+
+// Accounts hols the structure for multiple plaid account
+type Accounts struct {
+	Accounts []*plaid.Account `json:"accounts"`
 }
 
 // Token holds the structure single token
@@ -157,6 +163,36 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, token *T
 
 	if _, err := req.Send(); err != nil {
 		log.Println("Problem SetToken ", err)
+		return err
+	}
+
+	return nil
+}
+
+// SetAccount save account to db
+func (d DynamoDBClient) SetAccount(username string, institutionID string, account *plaid.Account) error {
+	accounts := [1]*plaid.Account{account}
+
+	accountAttr, err := dynamodbattribute.Marshal(accounts)
+	if err != nil {
+		fmt.Println("Problem marshalling account struct into dyno format", err)
+		return err
+	}
+
+	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
+		Key: map[string]dynamodb.AttributeValue{
+			"key":  {S: aws.String(fmt.Sprintf("%s:account", username))},
+			"sort": {S: aws.String(institutionID)},
+		},
+		TableName: aws.String(networthTable),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":account": *accountAttr,
+		},
+		UpdateExpression: aws.String("SET accounts = list_append(if_not_exists(accounts, :account), :account)"),
+	})
+
+	if _, err := req.Send(); err != nil {
+		log.Println("Problem SetAccount ", err)
 		return err
 	}
 

@@ -3,10 +3,29 @@ package nwlib
 import (
 	"testing"
 
+	"github.com/plaid/plaid-go/plaid"
 	"github.com/stretchr/testify/assert"
 
 	_ "github.com/networth-app/networth/api/lib/dotenv"
 )
+
+var (
+	db            = NewDynamoDBClient()
+	institutionID = "ins_1"
+)
+
+func TestSetAccount(t *testing.T) {
+	username := "test_set_account@networth.app"
+	account := &plaid.Account{
+		AccountID: "1",
+		Name:      "test",
+	}
+
+	// set for specific ins
+	if err := db.SetAccount(username, institutionID, account); err != nil {
+		t.Errorf("Cannot set account %v", err)
+	}
+}
 
 func TestSetToken(t *testing.T) {
 	db := NewDynamoDBClient()
