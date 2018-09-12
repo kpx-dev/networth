@@ -41,6 +41,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
 				// TODO: https://github.com/aws/aws-lambda-go/issues/58
+				// each user have at least 2 keys for token, 1 for "all", 1 for instutution specific
 				tokens := record.Change.NewImage["tokens"].List()
 				newToken := tokens[len(tokens)-1].Map()
 				go appendToken(username, newToken)
@@ -53,6 +54,12 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 				go syncTransactions(username, accessToken)
 				go syncAccounts(username, sort, accessToken)
+			} else if strings.HasSuffix(key, ":account") && strings.HasPrefix(sort, "ins_") {
+				// each user have at least 2 keys for account, 1 for "all", 1 for instutution specific
+				// accounts := record.Change.NewImage["accounts"].List()
+				// newAccount := accounts[len(accounts)-1].Map()
+				// go appendAccount(username, newAccount)
+				nwlib.PublishSNS(snsARN, "about to append new account ")
 			}
 			break
 		default:

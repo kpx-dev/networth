@@ -11,7 +11,7 @@ var (
 )
 
 func TestAccounts(t *testing.T) {
-	username := "test@networth.app"
+	username := "test_sync_account@networth.app"
 	token := "access-sandbox-f9a0d88f-622b-4763-98e5-707692762a50"
 
 	if err := syncAccounts(username, institutionID, token); err != nil {
