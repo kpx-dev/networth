@@ -39,5 +39,5 @@ func NewPlaidClient(clientID string, secret string, publicKey string, environmen
 	}
 	client, _ := plaid.NewClient(clientOptions)
 
-	return &PlaidClient{Client: client}
+	return &PlaidClient{Client: client, Account: &plaid.Account{}}
 }
