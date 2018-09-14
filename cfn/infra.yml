@@ -252,6 +252,11 @@ Resources:
     Properties:
       BucketName: !Join ['.', [log, !Ref DomainName]]
 
+  APIGatewayResource:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: !Ref AppName
+
   CloudFrontResource:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -285,7 +290,10 @@ Resources:
             Id: webapp
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
-          # TODO: link /api here as well
+          - DomainName: !Join ['', [!Ref APIGatewayResource, .execute-api.us-east-1.amazonaws.com/latest]]
+            Id: api
+            CustomOriginConfig:
+              OriginProtocolPolicy: https-only
         DefaultCacheBehavior:
           Compress: true
           ViewerProtocolPolicy: redirect-to-https
@@ -299,6 +307,12 @@ Resources:
               QueryString: true
             PathPattern: /app*
             ViewerProtocolPolicy: redirect-to-https
+          - TargetOriginId: api
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+            PathPattern: /api*
+            ViewerProtocolPolicy: https-only
         PriceClass: PriceClass_100
         ViewerCertificate:
           AcmCertificateArn: !Ref Certificate
@@ -375,6 +389,10 @@ Outputs:
     Export:
       Name: !Join [-, [ !Ref AppName, plaid, env]]
     Value: !GetAtt EnvPlaidEnvResource.Value
+  APIGatewayOutput:
+    Export:
+      Name: !Join [-, [ !Ref AppName, apigateway]]
+    Value: !Ref APIGatewayResource
 
 
 

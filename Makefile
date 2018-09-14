@@ -16,10 +16,11 @@ notification:
 
 create-infra:
 	aws cloudformation create-stack --template-body file://cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
+	aws cloudformation wait stack-create-complete
 
 deploy-infra:
 	aws cloudformation deploy --template-file cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
-	aws cloudformation wait stack-create-complete
+	aws cloudformation wait stack-update-complete
 
 deploy-api:
 	make api
@@ -41,7 +42,8 @@ deploy-landing:
 
 deploy-webapp:
 	cd web && npm run build
-	aws s3 sync landing/build/* networth.app
+	aws s3 sync web/build s3://webapp.networth.app/app --delete --acl public-read
+	aws cloudfront create-invalidation --paths '/app*' --distribution-id ECY2KX8HDKDAN
 
 start-api:
 	cd api && gin --appPort 8000
