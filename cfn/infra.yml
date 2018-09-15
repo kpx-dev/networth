@@ -15,13 +15,37 @@ Resources:
     Properties:
       Name: !Join ['/', ['', !Ref AppName, SLACK_CHANNEL]]
       Type: String
-      Value: "sns"
+      Value: sns
   EnvPlaidEnvResource:
     Type: AWS::SSM::Parameter
     Properties:
       Name: !Join ['/', ['', !Ref AppName, PLAID_ENV]]
       Type: String
-      Value: "sandbox"
+      Value: sandbox
+  EnvPlaidClientIDResource:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ['/', ['', !Ref AppName, PLAID_CLIENT_ID]]
+      Type: String
+      Value: ' '
+  EnvPlaidSecretResource:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ['/', ['', !Ref AppName, PLAID_SECRET]]
+      Type: String
+      Value: ' '
+  EnvPlaidPublicKeyResource:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ['/', ['', !Ref AppName, PLAID_PUBLIC_KEY]]
+      Type: String
+      Value: ' '
+  EnvSlackWebhookURLResource:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Join ['/', ['', !Ref AppName, SLACK_WEBHOOK_URL]]
+      Type: String
+      Value: ' '
 
   SNSTopic:
     Type: AWS::SNS::Topic
@@ -290,8 +314,9 @@ Resources:
             Id: webapp
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
-          - DomainName: !Join ['', [!Ref APIGatewayResource, .execute-api.us-east-1.amazonaws.com/latest]]
-            Id: api
+          - DomainName: !Join ['', [!Ref APIGatewayResource, '.execute-api.us-east-1.amazonaws.com']]
+            Id: api-infra
+            OriginPath: /latest
             CustomOriginConfig:
               OriginProtocolPolicy: https-only
         DefaultCacheBehavior:
@@ -307,11 +332,11 @@ Resources:
               QueryString: true
             PathPattern: /app*
             ViewerProtocolPolicy: redirect-to-https
-          - TargetOriginId: api
+          - TargetOriginId: api-infra
             Compress: true
             ForwardedValues:
               QueryString: true
-            PathPattern: /api*
+            PathPattern: /api-infra*
             ViewerProtocolPolicy: https-only
         PriceClass: PriceClass_100
         ViewerCertificate:
@@ -381,18 +406,3 @@ Outputs:
     Export:
       Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
     Value: !Ref CloudFrontResource
-  EnvSlackChannelOutput:
-    Export:
-      Name: !Join [-, [ !Ref AppName, slack, channel]]
-    Value: !GetAtt EnvSlackChannelResource.Value
-  EnvPlaidEnvResourceOutput:
-    Export:
-      Name: !Join [-, [ !Ref AppName, plaid, env]]
-    Value: !GetAtt EnvPlaidEnvResource.Value
-  APIGatewayOutput:
-    Export:
-      Name: !Join [-, [ !Ref AppName, apigateway]]
-    Value: !Ref APIGatewayResource
-
-
-

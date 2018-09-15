@@ -57,7 +57,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 			} else if strings.HasSuffix(key, ":account") {
 				if sort == nwlib.DefaultSortValue {
 					nwlib.PublishSNS(snsARN, "about to sync networth ")
-					// go syncNetworth(username)
+					go syncNetworth(username)
 				} else if strings.HasPrefix(sort, "ins_") {
 					// each user have at least 2 keys for account, 1 for "all", 1 for instutution specific
 					accounts := record.Change.NewImage["accounts"].List()
@@ -70,8 +70,8 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 			msg = fmt.Sprintf("DynamoDB stream unknown event %s %+v", record.EventName, record)
 		}
 
-		log.Println(msg)
-		nwlib.PublishSNS(snsARN, msg)
+		// log.Println(msg)
+		// nwlib.PublishSNS(snsARN, msg)
 	}
 }
 

@@ -32,7 +32,7 @@ Resources:
       Runtime: go1.x
       CodeUri: ../bin
       Handler: networth-dbstream
-      Timeout: 20
+      Timeout: 10
       FunctionName: networth-dbstream
       Description:  networth.app DB Stream
       Role:
@@ -62,4 +62,4 @@ Resources:
               Fn::ImportValue:
                 !Join [-, [ !Ref AppName, table, stream]]
             StartingPosition: LATEST
-            BatchSize: 10
+            BatchSize: 5
