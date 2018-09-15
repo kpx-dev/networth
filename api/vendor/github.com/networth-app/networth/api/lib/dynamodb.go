@@ -12,14 +12,13 @@ import (
 	"github.com/plaid/plaid-go/plaid"
 )
 
+// Networth holds networth info
+type Networth struct {
+}
+
 // Tokens holds the structure multiple tokens
 type Tokens struct {
 	Tokens []*Token `json:"tokens"`
-}
-
-// Accounts hols the structure for multiple plaid account
-type Accounts struct {
-	Accounts []*plaid.Account `json:"accounts"`
 }
 
 // Token holds the structure single token
@@ -30,6 +29,16 @@ type Token struct {
 	InstitutionID   string   `json:"institution_id"`
 	InstitutionName string   `json:"institution_name"`
 	Accounts        []string `json:"accounts"`
+}
+
+// Account wrapper struct for plaid.Account
+type Account struct {
+	plaid.Account
+}
+
+// Accounts hols the structure for multiple plaid account
+type Accounts struct {
+	Accounts []*Account `json:"accounts"`
 }
 
 var (
@@ -289,26 +298,28 @@ func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, v
 // }
 
 // GetAccounts return accounts from db
-// func (d DynamoDBClient) GetAccounts(username string) map[string]interface{} {
-// 	req := d.GetItemRequest(&dynamodb.GetItemInput{
-// 		TableName: accountTable,
-// 		Key: map[string]dynamodb.AttributeValue{
-// 			"username": {S: aws.String(fmt.Sprintf("%s:accounts", username))},
-// 		},
-// 	})
+func (d DynamoDBClient) GetAccounts(username string, sort string) (Accounts, error) {
+	var accounts Accounts
+	key := fmt.Sprintf("%s:account", username)
+	req := d.GetItemRequest(&dynamodb.GetItemInput{
+		TableName: aws.String(networthTable),
+		Key: map[string]dynamodb.AttributeValue{
+			"key":  {S: aws.String(key)},
+			"sort": {S: aws.String(sort)},
+		},
+	})
 
-// 	res, err := req.Send()
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
+	res, err := req.Send()
+	if err != nil {
+		return accounts, err
+	}
 
-// 	account := make(map[string]interface{})
-// 	if err := dynamodbattribute.UnmarshalMap(res.Item, &account); err != nil {
-// 		panic(err)
-// 	}
+	if err := dynamodbattribute.UnmarshalMap(res.Item, &accounts); err != nil {
+		return accounts, err
+	}
 
-// 	return account
-// }
+	return accounts, nil
+}
 
 // UpsertAccounts update or insert accounts to db
 // func (d DynamoDBClient) UpsertAccounts(username string, account Account) {

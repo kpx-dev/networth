@@ -370,10 +370,6 @@ Resources:
       - 40 alt4.gmr-smtp-in.l.google.com.
 
 Outputs:
-  KMS:
-    Export:
-      Name: !Join [-, [ !Ref AppName, kms]]
-    Value: !GetAtt KMSKey.Arn
   KMSAlias:
     Export:
       Name: !Join [-, [ !Ref AppName, kms, alias]]
@@ -398,11 +394,3 @@ Outputs:
     Export:
       Name: !Join [-, [ !Ref AppName, sns]]
     Value: !Ref SNSTopic
-  LandingS3:
-    Export:
-      Name: !Join [-, [ !Ref AppName, s3, landing, bucket]]
-    Value: !Ref LandingS3Bucket
-  CloudFrontResource:
-    Export:
-      Name: !Join [-, [ !Ref AppName, cloudfront, landing]]
-    Value: !Ref CloudFrontResource

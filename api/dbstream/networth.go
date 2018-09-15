@@ -16,8 +16,10 @@ func syncNetworth(username string) {
 	}
 
 	accountCache := make(map[string]string)
+	fmt.Println(accountCache)
+
 	// var payload
-	for _, account := range accounts {
+	for _, account := range accounts.Accounts {
 		fmt.Println(account)
 	}
 }
