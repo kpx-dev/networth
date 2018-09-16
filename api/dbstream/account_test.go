@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	_ "github.com/networth-app/networth/api/lib/dotenv"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -16,9 +17,8 @@ var (
 func TestSyncAccounts(t *testing.T) {
 	username := "test_sync_account@networth.app"
 
-	if err := syncAccounts(username, institutionID, token); err != nil {
-		t.Error("Failed to parse accounts", err)
-	}
+	err := syncAccounts(username, institutionID, token)
+	assert.Equal(t, nil, err)
 }
 
 func TestAppendAccount(t *testing.T) {
@@ -38,7 +38,6 @@ func TestAppendAccount(t *testing.T) {
 		account,
 	}
 
-	if err := appendAccount(username, accounts); err != nil {
-		t.Error("Failed to parse accounts", err)
-	}
+	err := appendAccount(username, accounts)
+	assert.Equal(t, nil, err)
 }

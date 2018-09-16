@@ -17,6 +17,7 @@ require (
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd
 	github.com/rs/cors v1.5.0
+	github.com/stretchr/testify v1.2.2
 	github.com/tj/assert v0.0.0-20171129193455-018094318fb0 // indirect
 	golang.org/x/crypto v0.0.0-20180808211826-de0752318171 // indirect
 	golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f // indirect

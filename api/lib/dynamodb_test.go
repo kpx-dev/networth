@@ -12,6 +12,7 @@ import (
 var (
 	db            = NewDynamoDBClient()
 	institutionID = "ins_1"
+	testUsername  = "test@networth.app"
 )
 
 func TestSetAccount(t *testing.T) {
@@ -22,43 +23,44 @@ func TestSetAccount(t *testing.T) {
 	}
 
 	// set for specific ins
-	if err := db.SetAccount(username, institutionID, account); err != nil {
-		t.Errorf("Cannot set account %v", err)
-	}
+	err := db.SetAccount(username, institutionID, account)
+	assert.Equal(t, err, nil)
+
+	// set for all
+	err = db.SetAccount(username, DefaultSortValue, account)
+	assert.Equal(t, err, nil)
 }
 
 func TestSetToken(t *testing.T) {
 	db := NewDynamoDBClient()
-	username := "test_set@networth.app"
+	username := "test_set_token@networth.app"
 	token := &Token{
 		AccessToken: "1",
 	}
 
-	// set for default sort key
-	// err := db.SetToken(username, DefaultSortValue, token)
-	// fmt.Println(err)
-	// assert.Equal(t, err, nil)
-
 	// set for specific ins
 	err := db.SetToken(username, institutionID, token)
+	assert.Equal(t, err, nil)
+
+	// set for default sort key
+	err = db.SetToken(username, DefaultSortValue, token)
 	assert.Equal(t, err, nil)
 }
 
 func TestGetToken(t *testing.T) {
 	db := NewDynamoDBClient()
-	username := "test@networth.app"
 	invalidInstitutionID := "ins_1_invalid"
 
 	// get without ins_id
-	tokens := db.GetToken(username, "")
+	tokens := db.GetToken(testUsername, "")
 	assert.Equal(t, tokens.Tokens[0].InstitutionID, institutionID)
 
 	// get using ins_id
-	tokens = db.GetToken(username, institutionID)
+	tokens = db.GetToken(testUsername, institutionID)
 	assert.Equal(t, tokens.Tokens[0].InstitutionID, institutionID)
 
 	// get using invalid ins_id
-	tokens = db.GetToken(username, invalidInstitutionID)
+	tokens = db.GetToken(testUsername, invalidInstitutionID)
 	assert.Equal(t, len(tokens.Tokens) == 0, true)
 }
 
@@ -86,5 +88,5 @@ func TestGetAccounts(t *testing.T) {
 	// get using default sort key
 	accounts, err = db.GetAccounts(usernameExist, DefaultSortValue)
 	assert.Equal(t, err, nil)
-	assert.Equal(t, len(accounts.Accounts), 0)
+	assert.Equal(t, true, len(accounts.Accounts) > 0)
 }

@@ -74,8 +74,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		payload := token
-		// TODO: [sec] enable
-		// payload.AccessToken = "*redacted*"
+		payload.AccessToken = "*redacted*"
 		nwlib.SuccessResp(w, payload)
 	}
 }
