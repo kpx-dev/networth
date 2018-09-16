@@ -7,6 +7,39 @@ import (
 	"github.com/networth-app/networth/api/lib"
 )
 
+func syncNetworth(username string) {
+	assets := 0.0
+	liabilities := 0.0
+	accountCache := make(map[string]bool)
+	accounts, err := db.GetAccounts(username, nwlib.DefaultSortValue)
+
+	if err != nil {
+		log.Println("Problem getting accounts ", err)
+		return
+	}
+
+	for _, account := range accounts.Accounts {
+		if _, ok := accountCache[account.AccountID]; !ok {
+			if isAsset(account) {
+				assets = assets + account.Balances.Current
+			} else {
+				liabilities = liabilities + account.Balances.Current
+			}
+			accountCache[account.AccountID] = true
+		}
+	}
+
+	networth := assets - liabilities
+	msg := fmt.Sprintf("user %s networth %f assets %f liabilities %f\n", username, networth, assets, liabilities)
+	log.Printf(msg)
+	if err := db.SetNetworth(username, networth, assets, liabilities); err != nil {
+		log.Println("Problem setting networth ", err)
+		return
+	}
+
+	nwlib.PublishSNS(snsARN, msg)
+}
+
 func isAsset(account *nwlib.Account) bool {
 	switch account.Type {
 	case "brokerage", "depository":
@@ -23,39 +56,4 @@ func isAsset(account *nwlib.Account) bool {
 	}
 
 	return false
-}
-
-func syncNetworth(username string) {
-	asset := 0.0
-	liability := 0.0
-	accountCache := make(map[string]bool)
-	accounts, err := db.GetAccounts(username, nwlib.DefaultSortValue)
-
-	if err != nil {
-		log.Println("Problem getting accounts ", err)
-		return
-	}
-
-	for _, account := range accounts.Accounts {
-		fmt.Printf("debug account %+v", account)
-
-		if _, ok := accountCache[account.AccountID]; !ok {
-			if isAsset(account) {
-				asset = asset + account.Balances.Current
-			} else {
-				liability = liability + account.Balances.Current
-			}
-			accountCache[account.AccountID] = true
-		}
-	}
-
-	networth := asset - liability
-	msg := fmt.Sprintf("Networth for %s is %f\n", username, networth)
-	log.Printf(msg)
-	if err := db.SetNetworth(username, networth); err != nil {
-		log.Println("Problem setting networth ", err)
-		return
-	}
-
-	nwlib.PublishSNS(snsARN, msg)
 }

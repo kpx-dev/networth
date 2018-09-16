@@ -34,7 +34,7 @@ func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 				return
 			}
 
-			err = s.db.SetNetworth(username, networth)
+			err = s.db.SetNetworth(username, networth, 0.0, 0.0)
 
 			if err != nil {
 				nwlib.ErrorResp(w, err.Error())
