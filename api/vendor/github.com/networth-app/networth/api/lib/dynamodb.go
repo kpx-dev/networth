@@ -81,9 +81,9 @@ func (d DynamoDBClient) GetNetworth(username string) float64 {
 // SetNetworth value as of today date and current timestamp
 func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 	now := time.Now().UTC()
-	// today := now.Format("2006-01-02")
 	timestamp := now.Format(time.RFC3339)
 	networthStr := aws.String(strconv.FormatFloat(networth, 'f', -1, 64))
+	key := fmt.Sprintf("%s:networth", username)
 
 	req := d.BatchWriteItemRequest(&dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]dynamodb.WriteRequest{
@@ -91,7 +91,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 				{
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]dynamodb.AttributeValue{
-							"key":      {S: aws.String(fmt.Sprintf("%s:networth", username))},
+							"key":      {S: aws.String(key)},
 							"sort":     {S: aws.String(timestamp)},
 							"networth": {N: networthStr},
 						},
@@ -100,7 +100,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64) error {
 				{
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]dynamodb.AttributeValue{
-							"key":      {S: aws.String(username)},
+							"key":      {S: aws.String(key)},
 							"sort":     {S: aws.String(DefaultSortValue)},
 							"networth": {N: networthStr},
 						},
