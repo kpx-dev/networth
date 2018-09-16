@@ -40,7 +40,7 @@ func TestSetToken(t *testing.T) {
 
 	// set for specific ins
 	err := db.SetToken(username, institutionID, token)
-	assert.Equal(t, err, nil)
+	assert.Equal(t, nil, err)
 
 	// set for default sort key
 	err = db.SetToken(username, DefaultSortValue, token)

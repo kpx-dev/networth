@@ -25,27 +25,29 @@ var (
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	// TODO: https://github.com/aws/aws-lambda-go/issues/58
 
-	var msg string
 	for _, record := range e.Records {
-		if record.Change.StreamViewType != "NEW_IMAGE" {
-			msg = fmt.Sprintf("Received %s. Not a NEW_IMAGE stream view type, ignoring.", record.Change.StreamViewType)
-			log.Println(msg)
-			nwlib.PublishSNS(snsARN, msg)
-			return
-		}
+		// nwlib.PublishSNS(snsARN, "record.Change.StreamViewType "+record.Change.StreamViewType)
+		// nwlib.PublishSNS(snsARN, fmt.Sprintf("raw record %+v", record))
+		fmt.Printf("raw record %+v", record)
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
-			msg = fmt.Sprintf("DynamoDB stream: %s", record.EventName)
 			key := record.Change.Keys["key"].String()
 			username := strings.Split(key, ":")[0]
 			sort := record.Change.Keys["sort"].String()
 
+			// each user have 2 sort keys for token: all, ins_XXX
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
-				// each user have at least 2 keys for token, 1 for "all", 1 for instutution specific
 				tokens := record.Change.NewImage["tokens"].List()
+				nwlib.PublishSNS(snsARN, fmt.Sprintf("len(newTokens): %d", len(tokens)))
+
 				newToken := tokens[len(tokens)-1].Map()
-				go appendToken(username, newToken)
+
+				nwlib.PublishSNS(snsARN, fmt.Sprintf("len(record.Change.OldImage): %d", len(record.Change.OldImage)))
+				if len(record.Change.OldImage) > 0 {
+					go appendToken(username, newToken)
+				}
+
 				accessToken, err := kms.Decrypt(newToken["access_token"].String())
 
 				if err != nil {
@@ -57,8 +59,9 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 			} else if strings.HasSuffix(key, ":account") {
 				if sort == nwlib.DefaultSortValue {
 					go syncNetworth(username)
-				} else if strings.HasPrefix(sort, "ins_") {
-					// each user have at least 2 keys for account, 1 for "all", 1 for instutution specific
+				} else if strings.HasPrefix(sort, "ins_") && len(record.Change.OldImage) > 0 {
+					// each user has 2 keys for account: all, ins_XXX
+					nwlib.PublishSNS(snsARN, "about to sync appendAccount...")
 					accounts := record.Change.NewImage["accounts"].List()
 					go appendAccount(username, accounts)
 				}
@@ -66,7 +69,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 			break
 		default:
-			msg = fmt.Sprintf("DynamoDB stream unknown event %s %+v", record.EventName, record)
+			log.Printf("DynamoDB stream unknown event %s %+v", record.EventName, record)
 		}
 	}
 }

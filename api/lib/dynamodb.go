@@ -159,7 +159,6 @@ func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens 
 // SetToken save token to db
 func (d DynamoDBClient) SetToken(username string, institutionID string, token *Token) error {
 	tokenList := [1]*Token{token}
-
 	tokenAttr, err := dynamodbattribute.Marshal(tokenList)
 	if err != nil {
 		fmt.Println("Problem marshalling token struct into dyno format", err)
@@ -173,9 +172,10 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, token *T
 		},
 		TableName: aws.String(networthTable),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":token": *tokenAttr,
+			":token":      *tokenAttr,
+			":emptyToken": {L: []dynamodb.AttributeValue{}},
 		},
-		UpdateExpression: aws.String("SET tokens = list_append(if_not_exists(tokens, :token), :token)"),
+		UpdateExpression: aws.String("SET tokens = list_append(if_not_exists(tokens, :emptyToken), :token)"),
 	})
 
 	if _, err := req.Send(); err != nil {
@@ -203,9 +203,10 @@ func (d DynamoDBClient) SetAccount(username string, institutionID string, accoun
 		},
 		TableName: aws.String(networthTable),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":account": *accountAttr,
+			":account":      *accountAttr,
+			":emptyAccount": {L: []dynamodb.AttributeValue{}},
 		},
-		UpdateExpression: aws.String("SET accounts = list_append(if_not_exists(accounts, :account), :account)"),
+		UpdateExpression: aws.String("SET accounts = list_append(if_not_exists(accounts, :emptyAccount), :account)"),
 	})
 
 	if _, err := req.Send(); err != nil {

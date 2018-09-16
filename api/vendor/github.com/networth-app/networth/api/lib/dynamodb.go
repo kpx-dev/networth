@@ -87,6 +87,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	liabilitiesStr := aws.String(strconv.FormatFloat(liabilities, 'f', -1, 64))
 	key := fmt.Sprintf("%s:networth", username)
 
+	fmt.Println("SetNetworth for ", username, networth, assets, liabilities)
 	req := d.BatchWriteItemRequest(&dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]dynamodb.WriteRequest{
 			networthTable: {
@@ -117,7 +118,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	})
 
 	res, err := req.Send()
-	fmt.Printf("Set networth res %+v", res)
+	fmt.Printf("Set networth res %+v\n", res)
 
 	return err
 }
