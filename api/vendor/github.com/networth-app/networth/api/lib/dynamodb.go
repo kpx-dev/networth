@@ -116,7 +116,8 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 		},
 	})
 
-	_, err := req.Send()
+	res, err := req.Send()
+	fmt.Printf("Set networth res %+v", res)
 
 	return err
 }

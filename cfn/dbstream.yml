@@ -62,4 +62,4 @@ Resources:
               Fn::ImportValue:
                 !Join [-, [ !Ref AppName, table, stream]]
             StartingPosition: LATEST
-            BatchSize: 5
+            BatchSize: 1
