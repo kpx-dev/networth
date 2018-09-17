@@ -187,8 +187,8 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, token *T
 }
 
 // SetAccount save account to db
-func (d DynamoDBClient) SetAccount(username string, institutionID string, account *Account) error {
-	accounts := [1]*Account{account}
+func (d DynamoDBClient) SetAccount(username string, institutionID string, account *plaid.Account) error {
+	accounts := [1]*plaid.Account{account}
 
 	accountAttr, err := dynamodbattribute.Marshal(accounts)
 	if err != nil {
