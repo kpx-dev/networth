@@ -57,7 +57,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 					syncNetworth(username)
 				} else if strings.HasPrefix(sort, "ins_") && len(record.Change.OldImage) > 0 {
 					// each user has 2 keys for account: all, ins_XXX
-					nwlib.PublishSNS(snsARN, "about to sync appendAccount...")
+					// TODO: [bug] somehow have duplicate accounts in all key
 					accounts := record.Change.NewImage["accounts"].List()
 					appendAccount(username, accounts)
 				}

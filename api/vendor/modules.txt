@@ -79,7 +79,7 @@ github.com/gorilla/context
 github.com/gorilla/mux
 # github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
 github.com/jmespath/go-jmespath
-# github.com/networth-app/networth/api/lib v0.0.0-20180917021455-1e8051e61f37
+# github.com/networth-app/networth/api/lib v0.0.0-20180917021656-5e8b96f1f20f
 github.com/networth-app/networth/api/lib
 github.com/networth-app/networth/api/lib/dotenv
 # github.com/pkg/errors v0.8.0

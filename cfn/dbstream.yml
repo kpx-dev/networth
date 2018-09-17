@@ -32,7 +32,7 @@ Resources:
       Runtime: go1.x
       CodeUri: ../bin
       Handler: networth-dbstream
-      Timeout: 10
+      Timeout: 30
       FunctionName: networth-dbstream
       Description:  networth.app DB Stream
       Role:

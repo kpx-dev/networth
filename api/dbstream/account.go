@@ -29,8 +29,31 @@ func appendAccount(username string, accounts []events.DynamoDBAttributeValue) er
 	for _, account := range accounts {
 		accountMap := account.Map()
 
+		balance := accountMap["balances"].Map()
+		avail, _ := balance["available"].Float()
+		current, _ := balance["current"].Float()
+		limit, _ := balance["limit"].Float()
+		unofficialCurrencyCode := ""
+		if balance["unofficial_currency_code"].DataType() == events.DataTypeString {
+			unofficialCurrencyCode = balance["unofficial_currency_code"].String()
+		}
+
+		plaidBalance := &plaid.AccountBalances{
+			Available:              avail,
+			Current:                current,
+			Limit:                  limit,
+			ISOCurrencyCode:        balance["iso_currency_code"].String(),
+			UnofficialCurrencyCode: unofficialCurrencyCode,
+		}
+
 		newAccount := &plaid.Account{
-			AccountID: accountMap["account_id"].String(),
+			AccountID:    accountMap["account_id"].String(),
+			Balances:     *plaidBalance,
+			Mask:         accountMap["mask"].String(),
+			Name:         accountMap["name"].String(),
+			OfficialName: accountMap["official_name"].String(),
+			Subtype:      accountMap["subtype"].String(),
+			Type:         accountMap["type"].String(),
 		}
 
 		db.SetAccount(username, nwlib.DefaultSortValue, newAccount)
