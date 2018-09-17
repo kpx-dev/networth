@@ -9,6 +9,7 @@ import (
 )
 
 func syncAccounts(username string, institutionID string, token string) error {
+	log.Printf("%s - sync accounts, ins %s \n", username, institutionID)
 	accounts, err := plaidClient.GetAccounts(token)
 
 	if err != nil {

@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strings"
+	"sync"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -20,16 +20,13 @@ var (
 	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
+	wg             sync.WaitGroup
 )
 
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	// TODO: https://github.com/aws/aws-lambda-go/issues/58
 
 	for _, record := range e.Records {
-		// nwlib.PublishSNS(snsARN, "record.Change.StreamViewType "+record.Change.StreamViewType)
-		// nwlib.PublishSNS(snsARN, fmt.Sprintf("raw record %+v", record))
-		fmt.Printf("raw record %+v", record)
-
 		switch record.EventName {
 		case "INSERT", "MODIFY":
 			key := record.Change.Keys["key"].String()
@@ -39,13 +36,10 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 			// each user have 2 sort keys for token: all, ins_XXX
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
 				tokens := record.Change.NewImage["tokens"].List()
-				nwlib.PublishSNS(snsARN, fmt.Sprintf("len(newTokens): %d", len(tokens)))
-
 				newToken := tokens[len(tokens)-1].Map()
 
-				nwlib.PublishSNS(snsARN, fmt.Sprintf("len(record.Change.OldImage): %d", len(record.Change.OldImage)))
 				if len(record.Change.OldImage) > 0 {
-					go appendToken(username, newToken)
+					appendToken(username, newToken)
 				}
 
 				accessToken, err := kms.Decrypt(newToken["access_token"].String())
@@ -54,16 +48,18 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 					return
 				}
 
-				go syncTransactions(username, accessToken)
-				go syncAccounts(username, sort, accessToken)
+				// TODO: make these into gorutines / wait group workers:
+				// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
+				// syncTransactions(username, accessToken)
+				syncAccounts(username, sort, accessToken)
 			} else if strings.HasSuffix(key, ":account") {
 				if sort == nwlib.DefaultSortValue {
-					go syncNetworth(username)
+					syncNetworth(username)
 				} else if strings.HasPrefix(sort, "ins_") && len(record.Change.OldImage) > 0 {
 					// each user has 2 keys for account: all, ins_XXX
 					nwlib.PublishSNS(snsARN, "about to sync appendAccount...")
 					accounts := record.Change.NewImage["accounts"].List()
-					go appendAccount(username, accounts)
+					appendAccount(username, accounts)
 				}
 			}
 

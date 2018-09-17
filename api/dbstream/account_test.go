@@ -15,7 +15,7 @@ var (
 )
 
 func TestSyncAccounts(t *testing.T) {
-	username := "test_sync_account@networth.app"
+	username := "test_sync_accounts@networth.app"
 
 	err := syncAccounts(username, institutionID, token)
 	assert.Equal(t, nil, err)

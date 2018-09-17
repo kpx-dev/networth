@@ -30,15 +30,15 @@ func syncNetworth(username string) {
 	}
 
 	networth := assets - liabilities
-	msg := fmt.Sprintf("user %s networth %f assets %f liabilities %f\n", username, networth, assets, liabilities)
+	msg := fmt.Sprintf("%s - networth %f assets %f liabilities %f\n", username, networth, assets, liabilities)
 	log.Printf(msg)
 	nwlib.PublishSNS(snsARN, msg)
 
 	if err := db.SetNetworth(username, networth, assets, liabilities); err != nil {
 		log.Println("Problem setting networth ", err)
+		nwlib.PublishSNS(snsARN, fmt.Sprintf("Problem setting networth %+v", err))
 		return
 	}
-
 }
 
 // List of account type and subtype https://plaid.com/docs/#accounts
