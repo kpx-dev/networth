@@ -27,7 +27,22 @@ func TestAppendAccount(t *testing.T) {
 	input := []byte(`
 	{ "M":
 			{
-					"account_id": { "S": "Joe" }
+					"account_id": { "S": "123" },
+					"mask": {"S": "123"},
+					"name": {"S": "Hola bank"},
+					"official_name": {"S": "BOA"},
+					"subtype": {"S": "subtype"},
+					"type": {"S": "type"},
+					"balances": {
+						"M": {
+							"available": {"N": "1"},
+							"current": {"N": "1"},
+							"limit": {"N": "1"},
+							"unofficial_currency_code": {"S": "what"},
+							"iso_currency_code": {"S": "usd"}
+						}
+					}
+
 			}
 	}`)
 

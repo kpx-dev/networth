@@ -65,3 +65,9 @@ token:
 update-lib:
 	cd api/notification && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor && cd ../
 	cd api/dbstream && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor && cd ../
+
+test:
+	cd api && go test
+	cd api/notification && go test
+	cd api/dbstream && go test
+	cd web && npm test

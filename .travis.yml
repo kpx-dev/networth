@@ -68,7 +68,8 @@ matrix:
     - provider: s3
       access_key_id: $AWS_ACCESS_KEY_ID
       secret_access_key: $AWS_SECRET_ACCESS_KEY
-      bucket: ${WEBAPP_S3_BUCKET}/app
+      bucket: ${WEBAPP_S3_BUCKET}
+      upload-dir: app
       local-dir: ${TRAVIS_BUILD_DIR}/web/build
       acl: public_read
       skip_cleanup: true
