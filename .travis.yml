@@ -1,3 +1,9 @@
+notifications:
+  slack: networth-app:QND6oXSeOjfeWIGuLHLOZCSu
+  on_pull_requests: false
+  on_failure: always
+  on_success: always
+
 matrix:
   include:
   - language: go
@@ -9,11 +15,6 @@ matrix:
     deploy:
     - provider: script
       script: make deploy-api
-    notifications:
-      slack: networth-app:QND6oXSeOjfeWIGuLHLOZCSu
-      on_pull_requests: false
-      on_failure: always
-      on_success: always
 
   - language: go
     install:
@@ -24,11 +25,7 @@ matrix:
     deploy:
     - provider: script
       script: make deploy-dbstream
-     notifications:
-      slack: networth-app:QND6oXSeOjfeWIGuLHLOZCSu
-      on_pull_requests: false
-      on_failure: always
-      on_success: always
+
   - language: go
     install:
     - pip install --user awscli
@@ -38,11 +35,6 @@ matrix:
     deploy:
     - provider: script
       script: make deploy-notification
-     notifications:
-      slack: networth-app:QND6oXSeOjfeWIGuLHLOZCSu
-      on_pull_requests: false
-      on_failure: always
-      on_success: always
 
   - language: node_js
     node_js: 10
@@ -71,8 +63,3 @@ matrix:
       skip_cleanup: true
     after_deploy:
     - aws cloudfront create-invalidation --paths '/*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
-    notifications:
-      slack: networth-app:QND6oXSeOjfeWIGuLHLOZCSu
-      on_pull_requests: false
-      on_failure: always
-      on_success: always
