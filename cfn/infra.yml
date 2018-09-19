@@ -8,6 +8,7 @@ Parameters:
   DomainName:
     Type: String
     Default: networth.app
+    # Default: knncreative.com
 
 Resources:
   EnvSlackChannelResource:

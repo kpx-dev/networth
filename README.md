@@ -6,7 +6,7 @@ Get your real-time net worth!
 
 ## [Live Demo](https://app.networth.app/)
 
-[https://app.networth.app/](https://app.networth.app/)
+[https://networth.app/app](https://networth.app/app)
 
 username: `demo@networth.app`
 
@@ -16,15 +16,15 @@ password: `Testing!!1234.`
 
 Each service below has its own instruction:
 
-[/api](api/) - REST API written in Golang, handling backend.
+[/api](api/) - REST API written in Golang.
 
-[/bin](bin/) - Scripts to help in to automating things during development.
-
-[/cloud](cloud/) - Templates to setup networth.app infrastructure on cloud provider, currently AWS.
+[/cfn](cfn/) - CloudFormation templates to setup infrastructure on AWS.
 
 [/data](data/) - Hold in-memory database.
 
 [/landing](landing/) - Main landing page powering [networth.app](https://networth.app).
+
+[/local](local/) - Start entire project locally.
 
 [/macOS](macOS/) - Native macOS app.
 
