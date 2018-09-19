@@ -1,9 +1,10 @@
 .PHONY: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
 .SILENT: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
 
-REGION = us-east-1
-APP_NAME = networth
-LAMBDA_BUCKET = lambda.${APP_NAME}.app
+REGION=us-east-1
+APP_NAME=networth
+# LAMBDA_BUCKET=lambda.networth.app
+LAMBDA_BUCKET=lambda.knncreative.com
 
 api:
 	rm -rf bin/* && cd api && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../bin/${APP_NAME}-api .
