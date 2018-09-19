@@ -32,37 +32,17 @@ Each service below has its own instruction:
 
 [/web](web/) - Web app.
 
-## FAQ
+## How can I help
 
-Q: Why mono repo?
-
-A: Let's KISS for now.
-
-## How to contribute
-
-If it takes you less than 15 mins to do something in this project, please send in a PR, or multiple PRs!
-
-If it requires more effort, please [create an issue](https://github.com/networth-app/networth/issues/new) first and we can discuss potential solution so we are not wasting your valuable time.
+Thank you! Please look at the [contributing guide](docs/CONTRIBUTING.md) to get started.
 
 ## Maintainers
 
-This project is actively maintained by the following open source heroes:
-
-[@raoasifraza11](https://github.com/raoasifraza11) - Asif Raza
-
-[@kienpham2000](https://github.com/kienpham2000) - Kien Pham
+This project is actively maintained by these [open source heroes](docs/MAINTAINERS.md).
 
 ## Contributors
 
-Thanks to the following contributors even if it's a small PR!
-
-[@andreidolhescu](https://github.com/andreidolhescu) - Andrei Dolhescu
-
-[@bbourqu](https://github.com/bbourqu) - Brett Bourquin
-
-[@crossroadguyjp](https://github.com/crossroadguyjp)
-
-[@kanishkarj](https://github.com/kanishkarj) - Kanishkar J
+Thanks to the following [contributors](docs/CONTRIBUTORS.md) even if it's a small PR!
 
 ## License
 
