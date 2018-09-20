@@ -288,27 +288,26 @@ Resources:
           Resource:
           - !Join ['', ['arn:aws:s3:::', !Ref LandingS3Bucket, '/*']]
 
-  WebAppS3Bucket:
+  WebAppS3BucketResource:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join ['.', [webapp, !Ref DomainName]]
-
-  WebAppS3BucketPublicReadPolicy:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        ErrorDocument: !Join ['/', [app, index.html]]
+        IndexDocument: index.html
+  WebAppS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket:
-        !Ref WebAppS3Bucket
+      Bucket: !Join ['.', [webapp, !Ref DomainName]]
       PolicyDocument:
-        Version: '2012-10-17'
         Statement:
-        - Sid: PublicReadGetObject
-          Effect: Allow
-          Principal:
-            AWS: !Join [' ', ['arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity', !Ref CloudFrontOriginAccessIdentity]]
-          Action:
+        - Action:
           - s3:GetObject
+          Effect: Allow
+          Principal: '*'
           Resource:
-          - !Join ['', ['arn:aws:s3:::', !Ref WebAppS3Bucket, '/*']]
+            !Join ['', ['arn:aws:s3:::', webapp, '.', !Ref DomainName, "/*"]]
 
   LoggingS3Bucket:
     Type: AWS::S3::Bucket
@@ -349,11 +348,11 @@ Resources:
             Id: landing
             S3OriginConfig:
               OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
-          - DomainName: !GetAtt WebAppS3Bucket.DomainName
+          - DomainName: !Join ['', [webapp., !Ref DomainName, .s3-website-, !Ref "AWS::Region", '.', !Ref "AWS::URLSuffix"]]
             Id: webapp
-            S3OriginConfig:
-              OriginAccessIdentity: !Join ['/', [origin-access-identity/cloudfront, !Ref CloudFrontOriginAccessIdentity]]
-          - DomainName: !Join ['', [!Ref APIGatewayResource, '.execute-api.us-east-1.amazonaws.com']]
+            CustomOriginConfig:
+              OriginProtocolPolicy: http-only
+          - DomainName: !Join ['', [!Ref APIGatewayResource, .execute-api., !Ref "AWS::Region", '.', !Ref "AWS::URLSuffix"]]
             Id: api-infra
             OriginPath: /latest
             CustomOriginConfig:
@@ -368,6 +367,11 @@ Resources:
           - TargetOriginId: webapp
             Compress: true
             ForwardedValues:
+              Headers:
+                - Referer
+                - Accept
+                - Authorization
+                - Origin
               QueryString: true
             PathPattern: /app*
             ViewerProtocolPolicy: redirect-to-https

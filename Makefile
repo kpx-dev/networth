@@ -1,14 +1,21 @@
 .PHONY: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
 .SILENT: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
 
+# staging
+ENV=staging
+DOMAIN_NAME=knncreative.com
+CLOUDFRONT_DISTRIBUTION_ID?=E3L6OC5YMXHWB4
+
+# prod
+# ENV=production
+# DOMAIN_NAME=networth.app
+# CLOUDFRONT_DISTRIBUTION_ID?=E1N6WQQH3K4M1R
+
+LAMBDA_BUCKET=lambda.${DOMAIN_NAME}
+LANDING_S3_BUCKET?=${DOMAIN_NAME}
+WEBAPP_S3_BUCKET?=webapp.${DOMAIN_NAME}
 REGION=us-east-1
 APP_NAME=networth
-# LAMBDA_BUCKET=lambda.knncreative.com
-LAMBDA_BUCKET=lambda.networth.app
-# LANDING_S3_BUCKET?=knncreative.com
-LANDING_S3_BUCKET?=networth.app
-# CLOUDFRONT_DISTRIBUTION_ID?=E3L6OC5YMXHWB4
-CLOUDFRONT_DISTRIBUTION_ID?=E1N6WQQH3K4M1R
 
 api:
 	rm -rf bin/* && cd api && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../bin/${APP_NAME}-api .
@@ -74,6 +81,6 @@ deploy-landing:
 	aws cloudfront create-invalidation --paths '/*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
 
 deploy-webapp:
-	cd web && npm run build
-	aws s3 sync web/build s3://webapp.networth.app/app --delete --acl public-read
+	cd web && npx env-cmd .env.${ENV} npm run build
+	aws s3 sync web/build s3://${WEBAPP_S3_BUCKET}/app --delete --acl public-read
 	aws cloudfront create-invalidation --paths '/app*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
