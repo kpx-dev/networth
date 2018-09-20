@@ -28,7 +28,13 @@ func init() {
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
+		if strings.HasPrefix(line, "#") || len(line) == 0 {
+			continue
+		}
 		lineSplitted := strings.Split(line, "=")
+		if len(lineSplitted) != 2 {
+			continue
+		}
 
 		key := strings.TrimSpace(lineSplitted[0])
 		val := strings.TrimSpace(lineSplitted[1])
