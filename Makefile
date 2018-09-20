@@ -3,8 +3,12 @@
 
 REGION=us-east-1
 APP_NAME=networth
-# LAMBDA_BUCKET=lambda.networth.app
-LAMBDA_BUCKET=lambda.knncreative.com
+# LAMBDA_BUCKET=lambda.knncreative.com
+LAMBDA_BUCKET=lambda.networth.app
+# LANDING_S3_BUCKET?=knncreative.com
+LANDING_S3_BUCKET?=networth.app
+# CLOUDFRONT_DISTRIBUTION_ID?=E3L6OC5YMXHWB4
+CLOUDFRONT_DISTRIBUTION_ID?=E1N6WQQH3K4M1R
 
 api:
 	rm -rf bin/* && cd api && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../bin/${APP_NAME}-api .
@@ -18,33 +22,6 @@ notification:
 create-infra:
 	aws cloudformation create-stack --template-body file://cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
 	aws cloudformation wait stack-create-complete
-
-deploy-infra:
-	aws cloudformation deploy --template-file cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
-	aws cloudformation wait stack-update-complete
-
-deploy-api:
-	make api
-	aws cloudformation package --template-file cfn/api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/api.yml --s3-prefix ${APP_NAME}-api
-	aws cloudformation deploy --template-file /tmp/api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
-
-deploy-dbstream:
-	make dbstream
-	aws cloudformation package --template-file cfn/dbstream.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/dbstream.yml --s3-prefix ${APP_NAME}-dbstream
-	aws cloudformation deploy --template-file /tmp/dbstream.yml --stack-name ${APP_NAME}-dbstream --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
-
-deploy-notification:
-	make notification
-	aws cloudformation package --template-file cfn/notification.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/notification.yml --s3-prefix ${APP_NAME}-notification
-	aws cloudformation deploy --template-file /tmp/notification.yml --stack-name ${APP_NAME}-notification --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
-
-deploy-landing:
-	aws s3 sync landing/* networth.app
-
-deploy-webapp:
-	cd web && npm run build
-	aws s3 sync web/build s3://webapp.networth.app/app --delete --acl public-read
-	aws cloudfront create-invalidation --paths '/app*' --distribution-id ECY2KX8HDKDAN
 
 start-api:
 	cd api && gin --appPort 8000
@@ -72,3 +49,31 @@ test:
 	cd api/notification && go test
 	cd api/dbstream && go test
 	cd web && npm test
+
+deploy-infra:
+	aws cloudformation deploy --template-file cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws cloudformation wait stack-update-complete
+
+deploy-api:
+	make api
+	aws cloudformation package --template-file cfn/api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/api.yml --s3-prefix ${APP_NAME}-api
+	aws cloudformation deploy --template-file /tmp/api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+
+deploy-dbstream:
+	make dbstream
+	aws cloudformation package --template-file cfn/dbstream.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/dbstream.yml --s3-prefix ${APP_NAME}-dbstream
+	aws cloudformation deploy --template-file /tmp/dbstream.yml --stack-name ${APP_NAME}-dbstream --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+
+deploy-notification:
+	make notification
+	aws cloudformation package --template-file cfn/notification.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/notification.yml --s3-prefix ${APP_NAME}-notification
+	aws cloudformation deploy --template-file /tmp/notification.yml --stack-name ${APP_NAME}-notification --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+
+deploy-landing:
+	aws s3 sync landing s3://${LANDING_S3_BUCKET}
+	aws cloudfront create-invalidation --paths '/*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
+
+deploy-webapp:
+	cd web && npm run build
+	aws s3 sync web/build s3://webapp.networth.app/app --delete --acl public-read
+	aws cloudfront create-invalidation --paths '/app*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}

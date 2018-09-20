@@ -63,3 +63,7 @@ matrix:
       skip_cleanup: true
     after_deploy:
     - aws cloudfront create-invalidation --paths '/*' --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
+
+# on:
+#   branch: master
+#   tags: true

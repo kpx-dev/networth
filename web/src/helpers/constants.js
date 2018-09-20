@@ -1,9 +1,9 @@
-export const NW_API_BASE_URL = process.env.REACT_APP_NW_API_HOST;
 export const PLAID_CLIENT_NAME = "networth.app";
-export const PLAID_PUBLIC_KEY = "7e599ac974fb8343f50fac8535fcf1";
-export const PLAID_ENV = "sandbox";
 export const PLAID_PRODUCTS = ["transactions"];
+export const PLAID_PUBLIC_KEY = process.env.REACT_APP_PLAID_PUBLIC_KEY;
+export const PLAID_ENV = process.env.REACT_APP_PLAID_ENV;
+export const COGNITO_CLIENT_ID = process.env.REACT_APP_COGNITO_CLIENT_ID;
+export const COGNITO_POOL_ID = process.env.REACT_APP_COGNITO_POOL_ID;
 export const PLAID_WEBHOOK = process.env.REACT_APP_PLAID_WEBHOOK_URL;
-export const COGNITO_CLIENT_ID = "5a1pls13n4igqenffk3s8cnb00";
-export const COGNITO_POOL_ID = "us-east-1_JQllcYtjE";
+export const NW_API_BASE_URL = process.env.REACT_APP_NW_API_HOST;
 export const AWS_REGION = "us-east-1";
