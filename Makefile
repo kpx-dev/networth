@@ -4,7 +4,7 @@
 # staging
 ENV=staging
 DOMAIN_NAME=knncreative.com
-CLOUDFRONT_DISTRIBUTION_ID?=E3L6OC5YMXHWB4
+CLOUDFRONT_DISTRIBUTION_ID?=EN255N14EJZLA
 
 # prod
 # ENV=production
@@ -26,8 +26,11 @@ dbstream:
 notification:
 	rm -rf bin/* && cd api/notification && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-notification .
 
+validate-template:
+	aws cloudformation validate-template --template-body file://cfn/${APP_NAME}.yml --region ${REGION}
+
 create-infra:
-	aws cloudformation create-stack --template-body file://cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
+	aws cloudformation create-stack --template-body file://cfn/${APP_NAME}.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
 	aws cloudformation wait stack-create-complete
 
 start-api:

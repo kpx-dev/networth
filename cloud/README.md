@@ -1,4 +1,4 @@
-# networth.app AWS CloudFormation Templates
+# Cloud Templates
 
 ## Infrastructure
 

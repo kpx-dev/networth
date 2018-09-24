@@ -1,3 +1,5 @@
+cloud/.terraform
+*.tfstate*
 .env*.local
 .env.json
 yarn.lock

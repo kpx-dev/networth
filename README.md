@@ -18,7 +18,7 @@ Each service below has its own instruction:
 
 [/api](api/) - REST API written in Golang.
 
-[/cfn](cfn/) - CloudFormation templates to setup infrastructure on AWS.
+[/cloud](cloud/) - Terraform templates to setup infrastructure on AWS.
 
 [/data](data/) - Hold in-memory database.
 
