@@ -16,15 +16,19 @@ LANDING_S3_BUCKET?=${DOMAIN_NAME}
 WEBAPP_S3_BUCKET?=webapp.${DOMAIN_NAME}
 REGION=us-east-1
 APP_NAME=networth
+TIMESTAMP = $(shell date +%s)
 
 api:
-	rm -rf bin/* && cd api && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../bin/${APP_NAME}-api .
+	cd api && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../bin/${APP_NAME}-api .
+	cd bin && zip ${APP_NAME}-api.zip ${APP_NAME}-api
 
 dbstream:
-	rm -rf bin/* && cd api/dbstream && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-dbstream .
+	cd api/dbstream && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-dbstream .
+	cd bin && zip ${APP_NAME}-dbstream.zip ${APP_NAME}-dbstream
 
 notification:
-	rm -rf bin/* && cd api/notification && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-notification .
+	cd api/notification && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-notification .
+	cd bin && zip ${APP_NAME}-notification.zip ${APP_NAME}-notification
 
 validate-template:
 	aws cloudformation validate-template --template-body file://cfn/${APP_NAME}.yml --region ${REGION}
@@ -66,18 +70,18 @@ deploy-infra:
 
 deploy-api:
 	make api
-	aws cloudformation package --template-file cfn/api.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/api.yml --s3-prefix ${APP_NAME}-api
-	aws cloudformation deploy --template-file /tmp/api.yml --stack-name ${APP_NAME}-api --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws s3 cp bin/${APP_NAME}-api.zip s3://${LAMBDA_BUCKET}/api/${TIMESTAMP}.zip > /dev/null
+	aws lambda update-function-code --function-name ${APP_NAME}-api --zip-file fileb://bin/${APP_NAME}-api.zip --publish > /dev/null
 
 deploy-dbstream:
 	make dbstream
-	aws cloudformation package --template-file cfn/dbstream.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/dbstream.yml --s3-prefix ${APP_NAME}-dbstream
-	aws cloudformation deploy --template-file /tmp/dbstream.yml --stack-name ${APP_NAME}-dbstream --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws s3 cp bin/${APP_NAME}-dbstream.zip s3://${LAMBDA_BUCKET}/dbstream/${TIMESTAMP}.zip > /dev/null
+	aws lambda update-function-code --function-name ${APP_NAME}-dbstream --zip-file fileb://bin/${APP_NAME}-dbstream.zip --publish > /dev/null
 
 deploy-notification:
 	make notification
-	aws cloudformation package --template-file cfn/notification.yml --s3-bucket ${LAMBDA_BUCKET} --output-template-file /tmp/notification.yml --s3-prefix ${APP_NAME}-notification
-	aws cloudformation deploy --template-file /tmp/notification.yml --stack-name ${APP_NAME}-notification --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
+	aws s3 cp bin/${APP_NAME}-notification.zip s3://${LAMBDA_BUCKET}/notification/${TIMESTAMP}.zip > /dev/null
+	aws lambda update-function-code --function-name ${APP_NAME}-notification --zip-file fileb://bin/${APP_NAME}-notification.zip --publish > /dev/null
 
 deploy-landing:
 	aws s3 sync landing s3://${LANDING_S3_BUCKET}

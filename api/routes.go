@@ -10,7 +10,6 @@ import (
 	"github.com/rs/cors"
 )
 
-// init routing
 func (s *NetworthAPI) init() {
 	prefix := "/api"
 

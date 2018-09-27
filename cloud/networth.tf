@@ -163,6 +163,7 @@ data "aws_iam_policy_document" "KMSKeyPolicyDoc" {
 }
 
 resource "aws_kms_key" "KMSKey" {
+  # TODO: enable
   # policy = "${data.aws_iam_policy_document.KMSKeyPolicyDoc.json}"
 }
 
@@ -278,7 +279,7 @@ resource "aws_s3_bucket" "LoggingS3Bucket" {
 }
 
 resource "aws_api_gateway_rest_api" "api" {
-  name        = "${var.AppName}"
+  name = "${var.AppName}"
 }
 
 resource "aws_api_gateway_resource" "proxy" {
@@ -332,9 +333,9 @@ resource "aws_api_gateway_deployment" "api" {
 }
 
 resource "aws_api_gateway_authorizer" "auth" {
-  name                   = "cognito"
-  type = "COGNITO_USER_POOLS"
-  rest_api_id            = "${aws_api_gateway_rest_api.api.id}"
+  name          = "cognito"
+  type          = "COGNITO_USER_POOLS"
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
   provider_arns = ["${aws_cognito_user_pool.UserPool.arn}"]
 }
 
@@ -343,9 +344,8 @@ resource "aws_lambda_permission" "apigw" {
   action        = "lambda:InvokeFunction"
   function_name = "${aws_lambda_function.LambdaAPIFunction.arn}"
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_deployment.api.execution_arn}/*/*"
+  source_arn    = "${aws_api_gateway_deployment.api.execution_arn}/*/*"
 }
-
 
 resource "aws_cloudfront_distribution" "CloudFrontResource" {
   enabled             = true
@@ -437,13 +437,13 @@ resource "aws_cloudfront_distribution" "CloudFrontResource" {
   }
 
   ordered_cache_behavior {
-    path_pattern     = "/api*"
-    target_origin_id = "api"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
-    cached_methods   = ["GET", "HEAD"]
-    min_ttl = 0
-    max_ttl = 0
-    default_ttl = 0
+    path_pattern           = "/api*"
+    target_origin_id       = "api"
+    allowed_methods        = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods         = ["GET", "HEAD"]
+    min_ttl                = 0
+    max_ttl                = 0
+    default_ttl            = 0
     compress               = true
     viewer_protocol_policy = "https-only"
 
@@ -487,9 +487,6 @@ resource "aws_lambda_function" "LambdaAPIFunction" {
   handler          = "${var.AppName}-api"
   source_code_hash = "${base64sha256(file("../bin/${var.AppName}-api.zip"))}"
   runtime          = "go1.x"
-  # TODO: always using latest from S3
-  # s3_bucket = "${aws_s3_bucket.lambda.id}"
-  # s3_key = "${var.AppName}-api-latest.zip"
 
   environment {
     variables = {
@@ -505,6 +502,43 @@ resource "aws_lambda_function" "LambdaAPIFunction" {
   }
 }
 
+resource "aws_lambda_function" "dbstream" {
+  filename         = "../bin/${var.AppName}-dbstream.zip"
+  function_name    = "${var.AppName}-dbstream"
+  role             = "${aws_iam_role.LambdaRole.arn}"
+  handler          = "${var.AppName}-dbstream"
+  source_code_hash = "${base64sha256(file("../bin/${var.AppName}-dbstream.zip"))}"
+  runtime          = "go1.x"
+
+  environment {
+    variables = {
+      SNS_TOPIC_ARN     = "${aws_sns_topic.SNSTopic.arn}"
+      KMS_KEY_ALIAS     = "${aws_kms_alias.KMSAlias.id}"
+      SLACK_WEBHOOK_URL = "${aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
+      PLAID_ENV         = "${aws_ssm_parameter.PLAID_ENV.value}"
+      PLAID_PUBLIC_KEY  = "${aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
+      PLAID_CLIENT_ID   = "${aws_ssm_parameter.PLAID_CLIENT_ID.value}"
+      PLAID_SECRET      = "${aws_ssm_parameter.PLAID_SECRET.value}"
+    }
+  }
+}
+
+resource "aws_lambda_function" "notification" {
+  filename         = "../bin/${var.AppName}-notification.zip"
+  function_name    = "${var.AppName}-notification"
+  role             = "${aws_iam_role.LambdaRole.arn}"
+  handler          = "${var.AppName}-notification"
+  source_code_hash = "${base64sha256(file("../bin/${var.AppName}-notification.zip"))}"
+  runtime          = "go1.x"
+
+  environment {
+    variables = {
+      SLACK_WEBHOOK_URL = "${aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
+      SLACK_CHANNEL     = "${aws_ssm_parameter.SLACK_CHANNEL.value}"
+    }
+  }
+}
+
 output "user_pool_client_id" {
   value = "${aws_cognito_user_pool_client.UserPoolClient.id}"
 }
@@ -515,8 +549,4 @@ output "user_pool_id" {
 
 output "cloudfront_distribution_id" {
   value = "${aws_cloudfront_distribution.CloudFrontResource.id}"
-}
-
-output "api_gateway_url" {
-  value = "${aws_api_gateway_deployment.api.invoke_url}"
 }
