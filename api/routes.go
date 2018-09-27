@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,12 +12,14 @@ import (
 
 // init routing
 func (s *NetworthAPI) init() {
-	s.router.HandleFunc("/tokens/exchange", s.auth(s.handleTokenExchange())).Methods("POST")
-	// s.router.HandleFunc("/tokens", s.auth(s.handleTokens())).Methods("GET", "POST")
-	s.router.HandleFunc("/networth", s.auth(s.handleNetworth())).Methods("GET", "POST", "PUT")
-	s.router.HandleFunc("/webhook", s.auth(s.handleWebhook())).Methods("POST")
-	s.router.HandleFunc("/accounts", s.auth(s.handleAccounts()))
-	s.router.HandleFunc("/healthcheck", s.handleHealthcheck()).Methods("GET")
+	prefix := "/api"
+
+	s.router.HandleFunc(fmt.Sprintf("%s/tokens/exchange", prefix), s.auth(s.handleTokenExchange())).Methods("POST")
+	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.auth(s.handleNetworth())).Methods("GET", "POST", "PUT")
+	s.router.HandleFunc(fmt.Sprintf("%s/webhook", prefix), s.auth(s.handleWebhook())).Methods("POST")
+	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.auth(s.handleAccounts()))
+	s.router.HandleFunc(fmt.Sprintf("%s/healthcheck", prefix), s.handleHealthcheck()).Methods("GET")
+	s.router.HandleFunc(prefix, s.handleHealthcheck()).Methods("GET")
 	s.router.HandleFunc("/", s.handleHealthcheck()).Methods("GET")
 }
 
