@@ -301,7 +301,6 @@ resource "aws_api_gateway_method" "proxy_root" {
   authorization = "NONE"
 }
 
-
 resource "aws_api_gateway_integration" "lambda" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   resource_id = "${aws_api_gateway_method.proxy.resource_id}"
@@ -330,6 +329,13 @@ resource "aws_api_gateway_deployment" "api" {
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "latest"
+}
+
+resource "aws_api_gateway_authorizer" "auth" {
+  name                   = "cognito"
+  type = "COGNITO_USER_POOLS"
+  rest_api_id            = "${aws_api_gateway_rest_api.api.id}"
+  provider_arns = ["${aws_cognito_user_pool.UserPool.arn}"]
 }
 
 resource "aws_lambda_permission" "apigw" {
@@ -382,6 +388,19 @@ resource "aws_cloudfront_distribution" "CloudFrontResource" {
     }
   }
 
+  origin {
+    domain_name = "${replace(replace(aws_api_gateway_deployment.api.invoke_url, "https://", ""), "/latest", "") }"
+    origin_id   = "api"
+    origin_path = "/latest"
+
+    custom_origin_config {
+      origin_protocol_policy = "https-only"
+      http_port              = 80
+      https_port             = 443
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
   default_cache_behavior {
     compress               = true
     target_origin_id       = "landing"
@@ -417,7 +436,24 @@ resource "aws_cloudfront_distribution" "CloudFrontResource" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
-  # TODO add /api*
+  ordered_cache_behavior {
+    path_pattern     = "/api*"
+    target_origin_id = "api"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+    cached_methods   = ["GET", "HEAD"]
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Authorization", "Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    compress               = true
+    viewer_protocol_policy = "https-only"
+  }
 
   viewer_certificate {
     acm_certificate_arn      = "${aws_acm_certificate.cert.arn}"
@@ -446,7 +482,7 @@ resource "aws_lambda_function" "LambdaAPIFunction" {
   filename         = "../bin/${var.AppName}-api.zip"
   function_name    = "${var.AppName}-api"
   role             = "${aws_iam_role.LambdaRole.arn}"
-  handler          = "api"
+  handler          = "${var.AppName}-api"
   source_code_hash = "${base64sha256(file("../bin/${var.AppName}-api.zip"))}"
   runtime          = "go1.x"
   # TODO: always using latest from S3
