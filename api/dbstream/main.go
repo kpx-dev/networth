@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strings"
 	"sync"
@@ -20,19 +21,23 @@ var (
 	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
-	slackUrl       = nwlib.GetEnv("SLACK_WEBHOOK_URL")
+	slackURL       = nwlib.GetEnv("SLACK_WEBHOOK_URL")
 	wg             sync.WaitGroup
 )
 
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
+	fmt.Println("handling handleDynamoDBStream....")
 	// TODO: https://github.com/aws/aws-lambda-go/issues/58
-
 	for _, record := range e.Records {
 		switch record.EventName {
 		case "INSERT": //, "MODIFY":
+
 			key := record.Change.Keys["key"].String()
 			username := strings.Split(key, ":")[0]
 			sort := record.Change.Keys["sort"].String()
+
+			nwlib.PublishSNS(snsARN, fmt.Sprintf("publish sns: insert %s %s %s", key, username, sort))
+			nwlib.PublishSlack(slackURL, fmt.Sprintf("publish slack: insert %s", key, username, sort), "sns")
 
 			// each user have 2 sort keys for token: all, ins_XXX
 			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
@@ -41,12 +46,12 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 				if len(record.Change.OldImage) > 0 {
 					nwlib.PublishSNS(snsARN, "publish sns: about to append token")
-					nwlib.PublishSlack(slackUrl, "publish slack: about to append token", "sns")
+					nwlib.PublishSlack(slackURL, "publish slack: about to append token", "sns")
 					appendToken(username, newToken)
 				}
 
 				nwlib.PublishSNS(snsARN, "publish sns: about to decrypt token")
-				nwlib.PublishSlack(slackUrl, "publish slack: about to decrypt token", "sns")
+				nwlib.PublishSlack(slackURL, "publish slack: about to decrypt token", "sns")
 				accessToken, err := kms.Decrypt(newToken["access_token"].String())
 
 				if err != nil {
@@ -59,7 +64,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 				// syncTransactions(username, accessToken)
 
 				nwlib.PublishSNS(snsARN, "publish sns: about to sync account")
-				nwlib.PublishSlack(slackUrl, "publish slack: about to sync account", "sns")
+				nwlib.PublishSlack(slackURL, "publish slack: about to sync account", "sns")
 				syncAccounts(username, sort, accessToken)
 			} else if strings.HasSuffix(key, ":account") {
 				if sort == nwlib.DefaultSortValue {
