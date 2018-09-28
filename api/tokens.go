@@ -12,11 +12,10 @@ import (
 
 // IncomingToken body from api
 type IncomingToken struct {
-	AccessToken     string   `json:"access_token"`
-	Accounts        []string `json:"accounts"`
-	AccountID       string   `json:"account_id"`
-	InstitutionID   string   `json:"institution_id"`
-	InstitutionName string   `json:"institution_name"`
+	AccessToken     string `json:"access_token"`
+	AccountID       string `json:"account_id"`
+	InstitutionID   string `json:"institution_id"`
+	InstitutionName string `json:"institution_name"`
 }
 
 func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
@@ -36,12 +35,12 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		// TODO: remove fixture
-		publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
-		if err != nil {
-			log.Println("Problem creating sandbox public token ", err)
-			return
-		}
-		body.AccessToken = publicToken.PublicToken
+		// publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
+		// if err != nil {
+		// 	log.Println("Problem creating sandbox public token ", err)
+		// 	return
+		// }
+		// body.AccessToken = publicToken.PublicToken
 
 		exchangedToken, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
@@ -65,7 +64,6 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			AccountID:       body.AccountID,
 			InstitutionID:   body.InstitutionID,
 			InstitutionName: body.InstitutionName,
-			Accounts:        body.Accounts,
 		}
 
 		if err := s.db.SetToken(jwtUsername, body.InstitutionID, token); err != nil {

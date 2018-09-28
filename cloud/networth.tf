@@ -5,6 +5,8 @@ variable "region" {
 }
 
 provider "aws" {
+  version = "~> 1.38.0"
+
   region = "${var.region}"
 }
 
@@ -25,39 +27,45 @@ resource "aws_s3_bucket" "lambda" {
 }
 
 resource "aws_ssm_parameter" "SLACK_CHANNEL" {
-  name  = "/${var.AppName}/SLACK_CHANNEL"
-  type  = "String"
-  value = "sns"
+  name      = "/${var.AppName}/SLACK_CHANNEL"
+  type      = "String"
+  value     = "sns"
+  overwrite = false
 }
 
 resource "aws_ssm_parameter" "PLAID_ENV" {
-  name  = "/${var.AppName}/PLAID_ENV"
-  type  = "String"
-  value = "sandbox"
+  name      = "/${var.AppName}/PLAID_ENV"
+  type      = "String"
+  value     = "sandbox"
+  overwrite = false
 }
 
 resource "aws_ssm_parameter" "PLAID_CLIENT_ID" {
-  name  = "/${var.AppName}/PLAID_CLIENT_ID"
-  type  = "String"
-  value = " "
+  name      = "/${var.AppName}/PLAID_CLIENT_ID"
+  type      = "String"
+  value     = " "
+  overwrite = false
 }
 
 resource "aws_ssm_parameter" "PLAID_SECRET" {
-  name  = "/${var.AppName}/PLAID_SECRET"
-  type  = "String"
-  value = " "
+  name      = "/${var.AppName}/PLAID_SECRET"
+  type      = "String"
+  value     = " "
+  overwrite = false
 }
 
 resource "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
-  name  = "/${var.AppName}/PLAID_PUBLIC_KEY"
-  type  = "String"
-  value = " "
+  name      = "/${var.AppName}/PLAID_PUBLIC_KEY"
+  type      = "String"
+  value     = " "
+  overwrite = false
 }
 
 resource "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
-  name  = "/${var.AppName}/SLACK_WEBHOOK_URL"
-  type  = "String"
-  value = " "
+  name      = "/${var.AppName}/SLACK_WEBHOOK_URL"
+  type      = "String"
+  value     = " "
+  overwrite = false
 }
 
 resource "aws_sns_topic" "SNSTopic" {
@@ -89,8 +97,8 @@ resource "aws_dynamodb_table" "db_table" {
 }
 
 resource "aws_cognito_user_pool" "UserPool" {
-  name = "${var.AppName}"
-  username_attributes = ["email"]
+  name                     = "${var.AppName}"
+  username_attributes      = ["email"]
   auto_verified_attributes = ["email"]
 }
 
@@ -148,26 +156,7 @@ resource "aws_acm_certificate" "cert" {
   validation_method = "EMAIL"
 }
 
-data "aws_iam_policy_document" "KMSKeyPolicyDoc" {
-  statement {
-    resources = ["*"]
-
-    actions = [
-      "kms:Encrypt",
-      "kms:Decrypt",
-    ]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["aws_iam_role.LambdaRole.arn"]
-    }
-  }
-}
-
-resource "aws_kms_key" "KMSKey" {
-  # TODO: enable
-  # policy = "${data.aws_iam_policy_document.KMSKeyPolicyDoc.json}"
-}
+resource "aws_kms_key" "KMSKey" {}
 
 resource "aws_kms_alias" "KMSAlias" {
   name          = "alias/${var.AppName}"
@@ -185,6 +174,13 @@ data "aws_iam_policy_document" "LambdaAssumeRolePolicyDoc" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_kms" {
+  statement {
+    actions   = ["kms:Encrypt", "kms:Decrypt"]
+    resources = ["*"]
+  }
+}
+
 data "aws_iam_policy_document" "DynamoDBPolicyDoc" {
   statement {
     actions = [
@@ -193,6 +189,7 @@ data "aws_iam_policy_document" "DynamoDBPolicyDoc" {
 
     resources = [
       "${aws_dynamodb_table.db_table.arn}",
+      "${aws_dynamodb_table.db_table.stream_arn}"
     ]
   }
 }
@@ -207,9 +204,19 @@ resource "aws_iam_policy" "DynamoDBPolicy" {
   policy = "${data.aws_iam_policy_document.DynamoDBPolicyDoc.json}"
 }
 
+resource "aws_iam_policy" "lambda_kms" {
+  name   = "LambdaAccessToKMS"
+  policy = "${data.aws_iam_policy_document.lambda_kms.json}"
+}
+
 resource "aws_iam_role_policy_attachment" "LambdaRoleAttachDynamoDB" {
   role       = "${aws_iam_role.LambdaRole.name}"
   policy_arn = "${aws_iam_policy.DynamoDBPolicy.arn}"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_kms" {
+  role       = "${aws_iam_role.LambdaRole.name}"
+  policy_arn = "${aws_iam_policy.lambda_kms.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "LambdaRoleAttachLambdaBasic" {
@@ -482,6 +489,30 @@ resource "aws_route53_record" "ARecordLanding" {
   }
 }
 
+data "aws_ssm_parameter" "PLAID_CLIENT_ID" {
+  name = "/${var.AppName}/PLAID_CLIENT_ID"
+}
+
+data "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
+  name = "/${var.AppName}/PLAID_PUBLIC_KEY"
+}
+
+data "aws_ssm_parameter" "PLAID_SECRET" {
+  name = "/${var.AppName}/PLAID_SECRET"
+}
+
+data "aws_ssm_parameter" "PLAID_ENV" {
+  name = "/${var.AppName}/PLAID_ENV"
+}
+
+data "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
+  name = "/${var.AppName}/SLACK_WEBHOOK_URL"
+}
+
+data "aws_ssm_parameter" "SLACK_CHANNEL" {
+  name = "/${var.AppName}/SLACK_CHANNEL"
+}
+
 resource "aws_lambda_function" "LambdaAPIFunction" {
   filename         = "../bin/${var.AppName}-api.zip"
   function_name    = "${var.AppName}-api"
@@ -495,11 +526,11 @@ resource "aws_lambda_function" "LambdaAPIFunction" {
       DB_TABLE          = "${aws_dynamodb_table.db_table.id}"
       SNS_TOPIC_ARN     = "${aws_sns_topic.SNSTopic.arn}"
       KMS_KEY_ALIAS     = "${aws_kms_alias.KMSAlias.id}"
-      SLACK_WEBHOOK_URL = "${aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
-      PLAID_ENV         = "${aws_ssm_parameter.PLAID_ENV.value}"
-      PLAID_PUBLIC_KEY  = "${aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
-      PLAID_CLIENT_ID   = "${aws_ssm_parameter.PLAID_CLIENT_ID.value}"
-      PLAID_SECRET      = "${aws_ssm_parameter.PLAID_SECRET.value}"
+      SLACK_WEBHOOK_URL = "${data.aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
+      PLAID_ENV         = "${data.aws_ssm_parameter.PLAID_ENV.value}"
+      PLAID_PUBLIC_KEY  = "${data.aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
+      PLAID_CLIENT_ID   = "${data.aws_ssm_parameter.PLAID_CLIENT_ID.value}"
+      PLAID_SECRET      = "${data.aws_ssm_parameter.PLAID_SECRET.value}"
     }
   }
 }
@@ -516,13 +547,21 @@ resource "aws_lambda_function" "dbstream" {
     variables = {
       SNS_TOPIC_ARN     = "${aws_sns_topic.SNSTopic.arn}"
       KMS_KEY_ALIAS     = "${aws_kms_alias.KMSAlias.id}"
-      SLACK_WEBHOOK_URL = "${aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
-      PLAID_ENV         = "${aws_ssm_parameter.PLAID_ENV.value}"
-      PLAID_PUBLIC_KEY  = "${aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
-      PLAID_CLIENT_ID   = "${aws_ssm_parameter.PLAID_CLIENT_ID.value}"
-      PLAID_SECRET      = "${aws_ssm_parameter.PLAID_SECRET.value}"
+      SLACK_WEBHOOK_URL = "${data.aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
+      PLAID_ENV         = "${data.aws_ssm_parameter.PLAID_ENV.value}"
+      PLAID_PUBLIC_KEY  = "${data.aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
+      PLAID_CLIENT_ID   = "${data.aws_ssm_parameter.PLAID_CLIENT_ID.value}"
+      PLAID_SECRET      = "${data.aws_ssm_parameter.PLAID_SECRET.value}"
     }
   }
+}
+
+resource "aws_lambda_event_source_mapping" "dbstream" {
+  batch_size        = 1
+  event_source_arn  = "${aws_dynamodb_table.db_table.stream_arn}"
+  enabled           = true
+  function_name     = "${aws_lambda_function.dbstream.id}"
+  starting_position = "LATEST"
 }
 
 resource "aws_lambda_function" "notification" {
@@ -535,10 +574,24 @@ resource "aws_lambda_function" "notification" {
 
   environment {
     variables = {
-      SLACK_WEBHOOK_URL = "${aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
-      SLACK_CHANNEL     = "${aws_ssm_parameter.SLACK_CHANNEL.value}"
+      SLACK_WEBHOOK_URL = "${data.aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
+      SLACK_CHANNEL     = "${data.aws_ssm_parameter.SLACK_CHANNEL.value}"
     }
   }
+}
+
+resource "aws_lambda_permission" "with_sns" {
+  statement_id  = "AllowExecutionFromSNS"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.notification.function_name}"
+  principal     = "sns.amazonaws.com"
+  source_arn    = "${aws_sns_topic.SNSTopic.arn}"
+}
+
+resource "aws_sns_topic_subscription" "notification" {
+  topic_arn = "${aws_sns_topic.SNSTopic.arn}"
+  protocol  = "lambda"
+  endpoint  = "${aws_lambda_function.notification.arn}"
 }
 
 output "user_pool_client_id" {

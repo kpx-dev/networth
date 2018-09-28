@@ -20,6 +20,7 @@ var (
 	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
+	slackUrl       = nwlib.GetEnv("SLACK_WEBHOOK_URL")
 	wg             sync.WaitGroup
 )
 
@@ -28,7 +29,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 	for _, record := range e.Records {
 		switch record.EventName {
-		case "INSERT", "MODIFY":
+		case "INSERT": //, "MODIFY":
 			key := record.Change.Keys["key"].String()
 			username := strings.Split(key, ":")[0]
 			sort := record.Change.Keys["sort"].String()
@@ -39,18 +40,26 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 				newToken := tokens[len(tokens)-1].Map()
 
 				if len(record.Change.OldImage) > 0 {
+					nwlib.PublishSNS(snsARN, "publish sns: about to append token")
+					nwlib.PublishSlack(slackUrl, "publish slack: about to append token", "sns")
 					appendToken(username, newToken)
 				}
 
+				nwlib.PublishSNS(snsARN, "publish sns: about to decrypt token")
+				nwlib.PublishSlack(slackUrl, "publish slack: about to decrypt token", "sns")
 				accessToken, err := kms.Decrypt(newToken["access_token"].String())
 
 				if err != nil {
+					log.Println("Problem decoding access_token")
 					return
 				}
 
 				// TODO: make these into gorutines / wait group workers:
 				// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
 				// syncTransactions(username, accessToken)
+
+				nwlib.PublishSNS(snsARN, "publish sns: about to sync account")
+				nwlib.PublishSlack(slackUrl, "publish slack: about to sync account", "sns")
 				syncAccounts(username, sort, accessToken)
 			} else if strings.HasSuffix(key, ":account") {
 				if sort == nwlib.DefaultSortValue {

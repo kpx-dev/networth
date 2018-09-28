@@ -55,8 +55,8 @@ token:
 	aws cognito-idp initiate-auth --client-id 5a1pls13n4igqenffk3s8cnb00 --auth-flow USER_PASSWORD_AUTH --auth-parameters USERNAME=demo@networth.app,PASSWORD=Testing!!1234. | jq -r .AuthenticationResult.IdToken
 
 update-lib:
-	cd api/notification && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor && cd ../
-	cd api/dbstream && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor && cd ../
+	cd api/notification && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor
+	cd api/dbstream && go get github.com/networth-app/networth/api/lib && go mod download && go mod vendor
 
 test:
 	cd api && go test
@@ -65,8 +65,7 @@ test:
 	cd web && npm test
 
 deploy-infra:
-	aws cloudformation deploy --template-file cfn/infra.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION} --no-fail-on-empty-changeset
-	aws cloudformation wait stack-update-complete
+	cd cloud && terraform apply -auto-approve
 
 deploy-api:
 	make api
