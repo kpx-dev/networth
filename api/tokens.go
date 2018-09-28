@@ -36,12 +36,12 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		// TODO: remove fixture
-		// publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
-		// if err != nil {
-		// 	log.Println("Problem creating sandbox public token ", err)
-		// 	return
-		// }
-		// body.AccessToken = publicToken.PublicToken
+		publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
+		if err != nil {
+			log.Println("Problem creating sandbox public token ", err)
+			return
+		}
+		body.AccessToken = publicToken.PublicToken
 
 		exchangedToken, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
@@ -79,31 +79,6 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 	}
 }
 
-// func (s *NetworthAPI) handleTokens() http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		type claim struct {
-// 			Username string `json:"username"`
-// 		}
-
-// 		key := []byte(jwtSecret)
-// 		sig, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.HS256, Key: key}, (&jose.SignerOptions{}).WithType("JWT"))
-// 		if err != nil {
-// 			nwlib.ErrorResp(w, err.Error())
-// 			return
-// 		}
-
-// 		myClaim := claim{username}
-
-// 		raw, err := jwt.Signed(sig).Claims(myClaim).CompactSerialize()
-// 		if err != nil {
-// 			nwlib.ErrorResp(w, err.Error())
-// 			return
-// 		}
-
-// 		nwlib.SuccessResp(w, raw)
-// 	}
-// }
-
 func (s *NetworthAPI) username(headers http.Header) string {
 	type CognitoJWT struct {
 		Username string `json:"cognito:username"`
@@ -122,31 +97,4 @@ func (s *NetworthAPI) username(headers http.Header) string {
 	tok.UnsafeClaimsWithoutVerification(&claim)
 
 	return claim.Username
-}
-
-func (s *NetworthAPI) auth(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: enable auth when deploy
-		h(w, r)
-		return
-
-		// authHeader := r.Header.Get("Authorization")
-		// jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
-		// parsed, err := jwt.ParseSigned(jwtKey)
-		// if err != nil {
-		// 	w.WriteHeader(http.StatusForbidden)
-		// 	nwlib.ErrorResp(w, "Invalid JWT format")
-		// 	return
-		// }
-
-		// claim := jwt.Claims{}
-		// key := []byte(jwtSecret)
-		// if err := parsed.Claims(key, &claim); err != nil {
-		// 	w.WriteHeader(http.StatusForbidden)
-		// 	nwlib.ErrorResp(w, "Invalid JWT crypto")
-		// 	return
-		// }
-
-		// h(w, r)
-	}
 }

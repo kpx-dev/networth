@@ -4,22 +4,33 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/apex/gateway"
 	"github.com/networth-app/networth/api/lib"
 	"github.com/rs/cors"
 )
 
-func (s *NetworthAPI) init() {
-	prefix := "/api"
+var prefix = "/api"
 
-	s.router.HandleFunc(fmt.Sprintf("%s/tokens/exchange", prefix), s.auth(s.handleTokenExchange())).Methods("POST")
-	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.auth(s.handleNetworth())).Methods("GET", "POST", "PUT")
-	s.router.HandleFunc(fmt.Sprintf("%s/webhook", prefix), s.auth(s.handleWebhook())).Methods("POST")
-	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.auth(s.handleAccounts()))
+func (s *NetworthAPI) init() {
+
+	s.router.HandleFunc(fmt.Sprintf("%s/tokens/exchange", prefix), s.handleTokenExchange()).Methods("POST")
+	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.handleNetworth()).Methods("GET", "POST", "PUT")
+	s.router.HandleFunc(fmt.Sprintf("%s/webhook", prefix), s.handleWebhook()).Methods("POST")
+	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts())
 	s.router.HandleFunc(fmt.Sprintf("%s/healthcheck", prefix), s.handleHealthcheck()).Methods("GET")
 	s.router.HandleFunc(prefix, s.handleHealthcheck()).Methods("GET")
 	s.router.HandleFunc("/", s.handleHealthcheck()).Methods("GET")
+	s.router.Use(loggingMiddleware)
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		url := strings.SplitAfter(r.URL.String(), prefix)
+		log.Println(fmt.Sprintf("%s %s", r.Method, url[1]))
+		next.ServeHTTP(w, r)
+	})
 }
 
 // Start start api service
@@ -27,7 +38,7 @@ func (s *NetworthAPI) Start(host string) {
 	s.init()
 	handler := cors.Default().Handler(s.router)
 
-	log.Println("Starting api service on: ", host)
+	log.Println(fmt.Sprintf("API service started on: %s", host))
 
 	if nwlib.GetEnv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		log.Fatal(http.ListenAndServe(host, handler))

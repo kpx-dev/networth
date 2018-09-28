@@ -90,6 +90,8 @@ resource "aws_dynamodb_table" "db_table" {
 
 resource "aws_cognito_user_pool" "UserPool" {
   name = "${var.AppName}"
+  username_attributes = ["email"]
+  auto_verified_attributes = ["email"]
 }
 
 resource "aws_cognito_user_pool_client" "UserPoolClient" {
@@ -549,4 +551,8 @@ output "user_pool_id" {
 
 output "cloudfront_distribution_id" {
   value = "${aws_cloudfront_distribution.CloudFrontResource.id}"
+}
+
+output "aws_dynamodb_table_name" {
+  value = "${aws_dynamodb_table.db_table.id}"
 }
