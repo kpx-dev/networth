@@ -64,7 +64,7 @@ github.com/coreos/bbolt
 github.com/davecgh/go-spew/spew
 # github.com/go-ini/ini v1.25.4
 github.com/go-ini/ini
-# github.com/go-redis/redis v6.13.2+incompatible
+# github.com/go-redis/redis v6.14.1+incompatible
 github.com/go-redis/redis
 github.com/go-redis/redis/internal
 github.com/go-redis/redis/internal/consistenthash
@@ -79,7 +79,7 @@ github.com/gorilla/context
 github.com/gorilla/mux
 # github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
 github.com/jmespath/go-jmespath
-# github.com/networth-app/networth/api/lib v0.0.0-20180928194751-98ff673de8a1
+# github.com/networth-app/networth/api/lib v0.0.0-20180928234745-b32e49e3ff20
 github.com/networth-app/networth/api/lib
 github.com/networth-app/networth/api/lib/dotenv
 # github.com/pkg/errors v0.8.0
@@ -93,13 +93,13 @@ github.com/pmezard/go-difflib/difflib
 github.com/rs/cors
 # github.com/stretchr/testify v1.2.2
 github.com/stretchr/testify/assert
-# golang.org/x/crypto v0.0.0-20180808211826-de0752318171
+# golang.org/x/crypto v0.0.0-20180927165925-5295e8364332
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/ed25519/internal/edwards25519
-# golang.org/x/sys v0.0.0-20180814072032-4e1fef560951
+# golang.org/x/sys v0.0.0-20180928133829-e4b3c5e90611
 golang.org/x/sys/unix
-# gopkg.in/square/go-jose.v2 v2.1.8
+# gopkg.in/square/go-jose.v2 v2.1.9
 gopkg.in/square/go-jose.v2/jwt
 gopkg.in/square/go-jose.v2
 gopkg.in/square/go-jose.v2/json

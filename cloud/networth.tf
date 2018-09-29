@@ -194,6 +194,13 @@ data "aws_iam_policy_document" "DynamoDBPolicyDoc" {
   }
 }
 
+data "aws_iam_policy_document" "sns" {
+  statement {
+    actions = ["sns:publish"]
+    resources = ["${aws_sns_topic.SNSTopic.arn}"]
+  }
+}
+
 resource "aws_iam_role" "LambdaRole" {
   name               = "LambdaRole"
   assume_role_policy = "${data.aws_iam_policy_document.LambdaAssumeRolePolicyDoc.json}"
@@ -207,6 +214,16 @@ resource "aws_iam_policy" "DynamoDBPolicy" {
 resource "aws_iam_policy" "lambda_kms" {
   name   = "LambdaAccessToKMS"
   policy = "${data.aws_iam_policy_document.lambda_kms.json}"
+}
+
+resource "aws_iam_policy" "lambda_sns" {
+  name   = "LambdaAccessToSNS"
+  policy = "${data.aws_iam_policy_document.sns.json}"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_sns" {
+  role       = "${aws_iam_role.LambdaRole.name}"
+  policy_arn = "${aws_iam_policy.lambda_sns.arn}"
 }
 
 resource "aws_iam_role_policy_attachment" "LambdaRoleAttachDynamoDB" {

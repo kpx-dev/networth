@@ -8,7 +8,7 @@ All tokens for a user
 
 ```json
 {
-  "key": "demo@networth.app:token",
+  "id": "demo@networth.app:token",
   "sort": "all",
   "tokens": [
     {
@@ -31,7 +31,7 @@ Tokens for a specific institution
 
 ```json
 {
-  "key": "demo@networth.app:token",
+  "id": "demo@networth.app:token",
   "sort": "ins_1",
   "tokens": [
     {
@@ -54,7 +54,7 @@ Accounts for a user
 
 ```json
 {
-  "key": "demo@networth.app:account",
+  "id": "demo@networth.app:account",
   "sort": "all",
   "accounts": [
     {
@@ -81,7 +81,7 @@ Accounts for a user at a bank
 
 ```json
 {
-  "key": "demo@networth.app:account",
+  "id": "demo@networth.app:account",
   "sort": "ins_1",
   "accounts": [
     {
@@ -108,7 +108,7 @@ Net Worth for a user
 
 ```json
 {
-  "key": "demo@networth.app:networth",
+  "id": "demo@networth.app:networth",
   "sort": "2018-01-01T02:03:03Z",
   "networth": 150123,
 }

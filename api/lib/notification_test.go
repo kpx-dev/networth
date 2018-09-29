@@ -19,7 +19,7 @@ func TestPublishSlack(t *testing.T) {
 	}
 
 	// send to custom channel
-	if err := PublishSlack(slackWebhookURL, "test_publish_slack", "db-stream"); err != nil {
+	if err := PublishSlack(slackWebhookURL, "test_publish_slack", "test"); err != nil {
 		t.Errorf("Cannot publish Slack %v", err)
 	}
 }
