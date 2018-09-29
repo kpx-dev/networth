@@ -2,12 +2,9 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
-	"strings"
 
 	"github.com/networth-app/networth/api/lib"
-	"gopkg.in/square/go-jose.v2/jwt"
 )
 
 // IncomingToken body from api
@@ -34,12 +31,8 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			return
 		}
 
-		// TODO: remove fixture
-		// publicToken, err := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
-		// if err != nil {
-		// 	log.Println("Problem creating sandbox public token ", err)
-		// 	return
-		// }
+		// TODO: enable for testing purposes only
+		// publicToken, _ := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
 		// body.AccessToken = publicToken.PublicToken
 
 		exchangedToken, err := s.plaid.ExchangePublicToken(body.AccessToken)
@@ -57,7 +50,6 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			return
 		}
 
-		jwtUsername := s.username(r.Header)
 		token := &nwlib.Token{
 			ItemID:          exchangedToken.ItemID,
 			AccessToken:     encryptedToken,
@@ -65,7 +57,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			InstitutionName: body.InstitutionName,
 		}
 
-		if err := s.db.SetToken(jwtUsername, body.InstitutionID, token); err != nil {
+		if err := s.db.SetToken(username, body.InstitutionID, token); err != nil {
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}
@@ -74,24 +66,4 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		payload.AccessToken = "*redacted*"
 		nwlib.SuccessResp(w, payload)
 	}
-}
-
-func (s *NetworthAPI) username(headers http.Header) string {
-	type CognitoJWT struct {
-		Username string `json:"cognito:username"`
-		Email    string `json:"email"`
-	}
-
-	authHeader := headers.Get("Authorization")
-	jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
-	tok, err := jwt.ParseSigned(jwtKey)
-	if err != nil {
-		log.Println("Problem parsing jwt ", err)
-		return ""
-	}
-
-	var claim CognitoJWT
-	tok.UnsafeClaimsWithoutVerification(&claim)
-
-	return claim.Username
 }

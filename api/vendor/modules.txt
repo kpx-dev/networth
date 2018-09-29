@@ -37,8 +37,6 @@ github.com/aws/aws-sdk-go-v2/private/protocol/rest
 github.com/aws/aws-sdk-go-v2/private/protocol/json/jsonutil
 github.com/aws/aws-sdk-go-v2/private/protocol/query/queryutil
 github.com/aws/aws-sdk-go-v2/private/protocol/xml/xmlutil
-# github.com/coreos/bbolt v1.3.0
-github.com/coreos/bbolt
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/go-ini/ini v1.38.2
@@ -58,7 +56,7 @@ github.com/gorilla/context
 github.com/gorilla/mux
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
-# github.com/networth-app/networth/api/lib v0.0.0-20180929072554-dae1f9edadff
+# github.com/networth-app/networth/api/lib v0.0.0-20180929073746-8ca23bf75cfd
 github.com/networth-app/networth/api/lib
 github.com/networth-app/networth/api/lib/dotenv
 # github.com/pkg/errors v0.8.0
@@ -76,8 +74,6 @@ github.com/stretchr/testify/assert
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/pbkdf2
 golang.org/x/crypto/ed25519/internal/edwards25519
-# golang.org/x/sys v0.0.0-20180928133829-e4b3c5e90611
-golang.org/x/sys/unix
 # gopkg.in/square/go-jose.v2 v2.1.9
 gopkg.in/square/go-jose.v2/jwt
 gopkg.in/square/go-jose.v2

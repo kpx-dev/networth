@@ -4,11 +4,11 @@ require (
 	github.com/apex/gateway v1.1.1
 	github.com/aws/aws-lambda-go v1.6.0
 	github.com/boltdb/bolt v1.3.1 // indirect
-	github.com/coreos/bbolt v1.3.0
+	github.com/coreos/bbolt v1.3.0 // indirect
 	github.com/go-redis/redis v6.14.1+incompatible
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
-	github.com/networth-app/networth/api/lib v0.0.0-20180929072554-dae1f9edadff
+	github.com/networth-app/networth/api/lib v0.0.0-20180929073746-8ca23bf75cfd
 	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd

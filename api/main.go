@@ -15,6 +15,7 @@ type NetworthAPI struct {
 }
 
 var (
+	username       = ""
 	plaidClientID  = nwlib.GetEnv("PLAID_CLIENT_ID")
 	plaidSecret    = nwlib.GetEnv("PLAID_SECRET")
 	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
