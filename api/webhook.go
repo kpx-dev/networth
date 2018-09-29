@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/networth-app/networth/api/lib"
@@ -28,23 +29,34 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		RemovedTransactions []string     `json:"removed_transactions"` // ["yBVBEwrPyJs8GvR77N7QTxnGg6wG74H7dEDN6", "kgygNvAVPzSX9KkddNdWHaVGRVex1MHm3k9no"],
 	}
 
-	// plaid webhook ips: (https://support.plaid.com/customer/en/portal/articles/2546264-webhook-overview)
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body WebhookBody
-		// plaidIps := []string{
-		// 	"52.21.26.131", "52.21.47.157", "52.41.247.19", "52.88.82.239",
-		// }
+		// Plaid webhook ips: https://support.plaid.com/customer/en/portal/articles/2546264-webhook-overview
+		plaidIPs := []string{"52.21.26.131", "52.21.47.157", "52.41.247.19", "52.88.82.239"}
+		ips := r.Header.Get("X-Forwarded-For")
+
+		validIP := false
+		for ip := range ips {
+			for plaidIP := range plaidIPs {
+				if ip == plaidIP {
+					validIP = true
+					break
+				}
+			}
+		}
+
+		if !validIP {
+			log.Printf("Invalid webhook, IP does not match whitelisted IP: %+v", ips)
+			return
+		}
 
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
-		// TODO: check to make sure ip came from whitelist
-		// ips := r.Header.Get("X-Forwarded-For")
-		// fmt.Println("Got webhook message from these ips: ", ips, r.RemoteAddr)
-		nwlib.PublishSNS(snsARN, fmt.Sprintf("New webhook, type: %s, code: %s, item: %s", body.WebhookType, body.WebhookCode, body.ItemID))
+		// TODO: handle webhook to sync new trans
+		nwlib.PublishSNS(snsARN, fmt.Sprintf("New webhook, type: %s, code: %s, item: %s, new trans: %+v", body.WebhookType, body.WebhookCode, body.ItemID, body.NewTransactions))
 		nwlib.SuccessResp(w, body)
 	}
 }
