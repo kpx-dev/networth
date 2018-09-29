@@ -61,7 +61,6 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		token := &nwlib.Token{
 			ItemID:          exchangedToken.ItemID,
 			AccessToken:     encryptedToken,
-			AccountID:       body.AccountID,
 			InstitutionID:   body.InstitutionID,
 			InstitutionName: body.InstitutionName,
 		}
