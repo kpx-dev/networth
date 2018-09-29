@@ -45,6 +45,9 @@ resource "aws_ssm_parameter" "PLAID_CLIENT_ID" {
   type      = "String"
   value     = " "
   overwrite = false
+  lifecycle {
+    ignore_changes = ["*"]
+  }
 }
 
 resource "aws_ssm_parameter" "PLAID_SECRET" {
@@ -52,6 +55,9 @@ resource "aws_ssm_parameter" "PLAID_SECRET" {
   type      = "String"
   value     = " "
   overwrite = false
+  lifecycle {
+    ignore_changes = ["*"]
+  }
 }
 
 resource "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
@@ -59,6 +65,9 @@ resource "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
   type      = "String"
   value     = " "
   overwrite = false
+  lifecycle {
+    ignore_changes = ["*"]
+  }
 }
 
 resource "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
@@ -66,6 +75,9 @@ resource "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
   type      = "String"
   value     = " "
   overwrite = false
+  lifecycle {
+    ignore_changes = ["*"]
+  }
 }
 
 resource "aws_sns_topic" "SNSTopic" {
@@ -335,7 +347,7 @@ resource "aws_api_gateway_integration" "lambda" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.LambdaAPIFunction.invoke_arn}"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
 resource "aws_api_gateway_integration" "lambda_root" {
@@ -345,7 +357,7 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.LambdaAPIFunction.invoke_arn}"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
 resource "aws_api_gateway_deployment" "api" {
@@ -368,7 +380,7 @@ resource "aws_api_gateway_authorizer" "auth" {
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.LambdaAPIFunction.arn}"
+  function_name = "${aws_lambda_function.api.arn}"
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_deployment.api.execution_arn}/*/*"
 }
@@ -530,7 +542,7 @@ data "aws_ssm_parameter" "SLACK_CHANNEL" {
   name = "/${var.AppName}/SLACK_CHANNEL"
 }
 
-resource "aws_lambda_function" "LambdaAPIFunction" {
+resource "aws_lambda_function" "api" {
   filename         = "../bin/${var.AppName}-api.zip"
   function_name    = "${var.AppName}-api"
   role             = "${aws_iam_role.LambdaRole.arn}"
@@ -564,6 +576,7 @@ resource "aws_lambda_function" "dbstream" {
     variables = {
       SNS_TOPIC_ARN     = "${aws_sns_topic.SNSTopic.arn}"
       KMS_KEY_ALIAS     = "${aws_kms_alias.KMSAlias.id}"
+      DB_TABLE          = "${aws_dynamodb_table.db_table.id}"
       SLACK_WEBHOOK_URL = "${data.aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
       PLAID_ENV         = "${data.aws_ssm_parameter.PLAID_ENV.value}"
       PLAID_PUBLIC_KEY  = "${data.aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
