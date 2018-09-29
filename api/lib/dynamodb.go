@@ -36,7 +36,7 @@ func (d DynamoDBClient) GetNetworth(username string) float64 {
 	req := d.GetItemRequest(&dynamodb.GetItemInput{
 		TableName: aws.String(dbTable),
 		Key: map[string]dynamodb.AttributeValue{
-			"id":   {S: aws.String(username)},
+			"id":   {S: aws.String(fmt.Sprintf("%s:networth", username))},
 			"sort": {S: aws.String(DefaultSortValue)},
 		},
 	})

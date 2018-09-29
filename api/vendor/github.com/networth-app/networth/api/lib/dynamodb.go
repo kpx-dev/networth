@@ -33,15 +33,28 @@ func NewDynamoDBClient() *DynamoDBClient {
 
 // GetNetworth return networth
 func (d DynamoDBClient) GetNetworth(username string) float64 {
-	today := time.Now().UTC().Format("2006-01-02")
+	req := d.GetItemRequest(&dynamodb.GetItemInput{
+		TableName: aws.String(dbTable),
+		Key: map[string]dynamodb.AttributeValue{
+			"id":   {S: aws.String(username)},
+			"sort": {S: aws.String(DefaultSortValue)},
+		},
+	})
 
-	networth, err := d.Get(username, today)
-
+	res, err := req.Send()
 	if err != nil {
+		log.Println("Problem getting networth ", err)
 		return 0.0
 	}
 
-	return networth
+	payload := Networth{}
+	if err := dynamodbattribute.UnmarshalMap(res.Item, &payload); err != nil {
+		log.Println("Problem converting db to Networth struct ", err)
+
+		return 0.0
+	}
+
+	return payload.Networth
 }
 
 // SetNetworth value as of today date and current timestamp
@@ -181,32 +194,6 @@ func (d DynamoDBClient) SetAccount(username string, institutionID string, accoun
 	}
 
 	return nil
-}
-
-// Get item
-func (d DynamoDBClient) Get(partitionKey string, sortKey string) (float64, error) {
-	req := d.GetItemRequest(&dynamodb.GetItemInput{
-		TableName: aws.String(dbTable),
-		Key: map[string]dynamodb.AttributeValue{
-			"id":   {S: aws.String(partitionKey)},
-			"sort": {S: aws.String(sortKey)},
-		},
-	})
-
-	res, err := req.Send()
-	if err != nil {
-		return 0.0, err
-	}
-
-	payload := HistoryResp{}
-	if err := dynamodbattribute.UnmarshalMap(res.Item, &payload); err != nil {
-		log.Println(err)
-
-		return 0.0, err
-	}
-	fmt.Println(payload)
-
-	return payload.Networth, nil
 }
 
 // Set key / val to db

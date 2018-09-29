@@ -8,6 +8,7 @@ import (
 
 // Networth holds networth info
 type Networth struct {
+	Networth float64 `json:"networth"`
 }
 
 // Tokens holds the structure multiple tokens
@@ -33,11 +34,6 @@ type Account struct {
 // Accounts hols the structure for multiple plaid account
 type Accounts struct {
 	Accounts []*Account `json:"accounts"`
-}
-
-// HistoryResp history response
-type HistoryResp struct {
-	Networth float64 `json:"networth"`
 }
 
 // PlaidClient plaid client
