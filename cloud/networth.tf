@@ -571,6 +571,7 @@ resource "aws_lambda_function" "dbstream" {
   handler          = "${var.AppName}-dbstream"
   source_code_hash = "${base64sha256(file("../bin/${var.AppName}-dbstream.zip"))}"
   runtime          = "go1.x"
+  timeout = 30
 
   environment {
     variables = {
@@ -587,7 +588,7 @@ resource "aws_lambda_function" "dbstream" {
 }
 
 resource "aws_lambda_event_source_mapping" "dbstream" {
-  batch_size        = 1
+  batch_size        = 10
   event_source_arn  = "${aws_dynamodb_table.db_table.stream_arn}"
   enabled           = true
   function_name     = "${aws_lambda_function.dbstream.id}"
