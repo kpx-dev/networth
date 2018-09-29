@@ -44,11 +44,19 @@ func extractUsernameMiddleware(next http.Handler) http.Handler {
 		}
 
 		authHeader := r.Header.Get("Authorization")
+		if len(authHeader) == 0 {
+			log.Println("No Authorization header found")
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		jwtKey := strings.Replace(authHeader, "Bearer ", "", 1)
+
 		tok, err := jwt.ParseSigned(jwtKey)
 		if err != nil {
 			log.Println("Problem parsing jwt ", err)
 			next.ServeHTTP(w, r)
+			return
 		}
 
 		var claim CognitoJWT
