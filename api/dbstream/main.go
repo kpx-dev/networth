@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strings"
 	"sync"
@@ -33,58 +32,28 @@ func extractCompositeKeys(record events.DynamoDBEventRecord) (string, string, st
 	return key, username, sort
 }
 
-func handleNewToken(username string, sort string, record events.DynamoDBEventRecord) {
-	tokens := record.Change.NewImage["tokens"].List()
-	newToken := tokens[len(tokens)-1].Map()
-
-	if len(record.Change.OldImage) > 0 {
-		appendToken(username, newToken)
-	}
-
-	accessToken, err := kms.Decrypt(newToken["access_token"].String())
-
-	if err != nil {
-		log.Println("Problem decoding access_token")
-		return
-	}
-
-	// TODO: make these into gorutines / wait group workers:
-	// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
-	// syncTransactions(username, accessToken)
-	syncAccounts(username, sort, accessToken)
-}
-
-func handleNewAccount(username string, sort string, record events.DynamoDBEventRecord) {
-	if sort == nwlib.DefaultSortValue {
-		syncNetworth(username)
-	} else if strings.HasPrefix(sort, "ins_") && len(record.Change.OldImage) > 0 {
-		// each user has 2 keys for account: all, ins_XXX
-		// TODO: [bug] somehow have duplicate accounts in all key
-		accounts := record.Change.NewImage["accounts"].List()
-		appendAccount(username, accounts)
-	}
-}
-
 // TODO: https://github.com/aws/aws-lambda-go/issues/58
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
-	fmt.Printf("handleDynamoDBStream ...")
-
 	for _, record := range e.Records {
+		key, username, sort := extractCompositeKeys(record)
+
 		switch record.EventName {
-		case "MODIFY":
-			fmt.Printf("Modify record %+v", record)
-			break
 		case "INSERT":
-			key, username, sort := extractCompositeKeys(record)
-
-			// each user have 2 sort keys for token: all, ins_XXX
-			if strings.HasSuffix(key, ":token") && strings.HasPrefix(sort, "ins_") {
-				handleNewToken(username, sort, record)
+			if strings.HasSuffix(key, ":token") {
+				handleInsertModifyToken(username, sort, record)
 			} else if strings.HasSuffix(key, ":account") {
-				handleNewAccount(username, sort, record)
+				handleInsertAccount(username, sort, record)
 			}
-
 			break
+
+		case "MODIFY":
+			if strings.HasSuffix(key, ":token") {
+				handleInsertModifyToken(username, sort, record)
+			} else if strings.HasSuffix(key, ":account") && sort == nwlib.DefaultSortValue {
+				syncNetworth(username)
+			}
+			break
+
 		default:
 			log.Printf("DynamoDB stream unknown event %s %+v", record.EventName, record)
 		}

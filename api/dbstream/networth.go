@@ -11,6 +11,7 @@ func syncNetworth(username string) {
 	assets := 0.0
 	liabilities := 0.0
 	accountCache := make(map[string]bool)
+	// TODO: use the current record from stream instead of getting the latest one?
 	accounts, err := db.GetAccounts(username, nwlib.DefaultSortValue)
 
 	if err != nil {

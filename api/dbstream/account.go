@@ -2,11 +2,21 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/networth-app/networth/api/lib"
 	"github.com/plaid/plaid-go/plaid"
 )
+
+func handleInsertAccount(username string, sort string, record events.DynamoDBEventRecord) {
+	if sort == nwlib.DefaultSortValue {
+		syncNetworth(username)
+	} else if strings.HasPrefix(sort, "ins_") {
+		accounts := record.Change.NewImage["accounts"].List()
+		appendAccount(username, accounts)
+	}
+}
 
 func syncAccounts(username string, institutionID string, token string) error {
 	log.Printf("%s - sync accounts, ins %s \n", username, institutionID)
