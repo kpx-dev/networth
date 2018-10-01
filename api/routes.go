@@ -16,7 +16,7 @@ var prefix = "/api"
 
 func (s *NetworthAPI) init() {
 	// unauth routes
-	s.router.HandleFunc(fmt.Sprintf("%s/tokens/exchange", prefix), s.handleTokenExchange()).Methods("POST")
+	s.router.HandleFunc(fmt.Sprintf("%s/tokens", prefix), s.handleTokenExchange()).Methods("POST")
 	s.router.HandleFunc(fmt.Sprintf("%s/webhook", prefix), s.handleWebhook()).Methods("POST")
 	s.router.HandleFunc(fmt.Sprintf("%s/healthcheck", prefix), s.handleHealthcheck()).Methods("GET")
 

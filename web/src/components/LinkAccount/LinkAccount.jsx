@@ -35,7 +35,7 @@ class LinkAccount extends React.Component {
       account_id: metadata.account_id, // for stripe later (https://plaid.com/docs/link/stripe/)
       accounts: metadata.accounts || [],
     };
-    await post('/tokens/exchange', body);
+    await post('/tokens', body);
   }
 
   // handleOnExit() {

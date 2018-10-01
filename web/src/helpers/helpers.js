@@ -8,7 +8,7 @@ async function post(path, body) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      Authorization: session.idToken.jwtToken
+      Authorization: `Bearer ${session.idToken.jwtToken}`
     },
     body: JSON.stringify(body)
   };
@@ -19,4 +19,21 @@ async function post(path, body) {
   return fetch(absPath, fetchOptions);
 }
 
-export { post };
+async function get(path) {
+  const session = await Auth.currentSession();
+  const fetchOptions = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.idToken.jwtToken}`
+    },
+  };
+
+  let absPath = path;
+  if (NW_API_BASE_URL) absPath = `${NW_API_BASE_URL}${path}`;
+
+  return fetch(absPath, fetchOptions);
+}
+
+export { get, post };

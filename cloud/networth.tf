@@ -330,6 +330,54 @@ resource "aws_api_gateway_resource" "api" {
   path_part   = "api"
 }
 
+// create /api/healthcheck
+resource "aws_api_gateway_resource" "healthcheck" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.api.id}"
+  path_part   = "healthcheck"
+}
+
+resource "aws_api_gateway_method" "get_healthcheck" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.healthcheck.id}"
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_healthcheck" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.get_healthcheck.resource_id}"
+  http_method = "${aws_api_gateway_method.get_healthcheck.http_method}"
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
+// create /api/webhook
+resource "aws_api_gateway_resource" "webhook" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.api.id}"
+  path_part   = "webhook"
+}
+
+resource "aws_api_gateway_method" "post_webhook" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.webhook.id}"
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "post_webhook" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.post_webhook.resource_id}"
+  http_method = "${aws_api_gateway_method.post_webhook.http_method}"
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
 // create /api/networth
 resource "aws_api_gateway_resource" "networth" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
@@ -355,13 +403,41 @@ resource "aws_api_gateway_integration" "get_networth" {
   uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
+
+// create /api/tokens
+resource "aws_api_gateway_resource" "tokens" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.api.id}"
+  path_part   = "tokens"
+}
+
+resource "aws_api_gateway_method" "post_tokens" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.tokens.id}"
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "post_tokens" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.post_tokens.resource_id}"
+  http_method = "${aws_api_gateway_method.post_tokens.http_method}"
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
+
 resource "aws_api_gateway_deployment" "api" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "latest"
-  # TODO: https://github.com/hashicorp/terraform/issues/6613
-  # stage_description = "${md5(file("networth.tf"))}"
+  # TODO: deploy api based on changes: https://github.com/hashicorp/terraform/issues/6613
   depends_on = [
     "aws_api_gateway_integration.get_networth",
+    "aws_api_gateway_integration.get_healthcheck",
+    "aws_api_gateway_integration.post_webhook",
+    "aws_api_gateway_integration.post_tokens",
   ]
 }
 

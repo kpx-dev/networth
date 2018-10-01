@@ -10,14 +10,34 @@ import GridItem from "../components/Grid/GridItem.jsx";
 import NavPills from "../components/NavPills/NavPills.jsx";
 import pillsStyle from "../assets/jss/material-kit-react/views/componentsSections/pillsStyle.jsx";
 import LinkAccount from "../components/LinkAccount/LinkAccount.jsx";
+import { get } from "../helpers/helpers.js";
 
 class DashboardTab extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {networth: 0};
+  }
+
   static propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    networth: PropTypes.number,
   };
+
+  static defaultProps = {
+    networth: 0,
+  };
+
+  async componentDidMount() {
+    const nw = await get('/networth');
+    const body = await nw.json();
+    this.setState({
+      networth: body.data
+    });
+  }
 
   render() {
     const { classes } = this.props;
+
     return (
       <div className={classes.section}>
         <div className={classes.container}>
@@ -31,6 +51,15 @@ class DashboardTab extends React.Component {
                     contentGrid: { xs: 12, sm: 8, md: 8 }
                   }}
                   tabs={[
+                    {
+                      tabButton: "Net Worth",
+                      tabIcon: Dashboard,
+                      tabContent: (
+                        <span>
+                          <h1>${this.state.networth}</h1>
+                        </span>
+                      )
+                    },
                     {
                       tabButton: "Link Account",
                       tabIcon: AddIcon,
@@ -62,15 +91,7 @@ class DashboardTab extends React.Component {
                         </span>
                       )
                     },
-                    {
-                      tabButton: "Net Worth",
-                      tabIcon: Dashboard,
-                      tabContent: (
-                        <span>
-                          <h1>$1M</h1>
-                        </span>
-                      )
-                    },
+
                     {
                       tabButton: "Transactions",
                       tabIcon: Schedule,
