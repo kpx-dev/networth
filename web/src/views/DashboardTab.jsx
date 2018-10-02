@@ -60,6 +60,21 @@ class DashboardTab extends React.Component {
                         </span>
                       )
                     },
+
+                    {
+                      tabButton: "Transactions",
+                      tabIcon: Schedule,
+                      tabContent: (
+                        <span>
+                          <p>
+                            Efficiently unleash cross-media information without
+                            cross-media value. Quickly maximize timely
+                            deliverables for real-time schemas.
+                          </p>
+                        </span>
+                      )
+                    },
+
                     {
                       tabButton: "Link Account",
                       tabIcon: AddIcon,
@@ -92,19 +107,7 @@ class DashboardTab extends React.Component {
                       )
                     },
 
-                    {
-                      tabButton: "Transactions",
-                      tabIcon: Schedule,
-                      tabContent: (
-                        <span>
-                          <p>
-                            Efficiently unleash cross-media information without
-                            cross-media value. Quickly maximize timely
-                            deliverables for real-time schemas.
-                          </p>
-                        </span>
-                      )
-                    }
+
                   ]}
                 />
               </GridItem>
