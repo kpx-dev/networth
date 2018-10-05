@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/networth-app/networth/api/lib"
@@ -57,7 +58,8 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			InstitutionName: body.InstitutionName,
 		}
 
-		if err := s.db.SetToken(username, body.InstitutionID, token); err != nil {
+		if err := s.db.SetToken(username, token); err != nil {
+			log.Println("Problem saving token to db ", err)
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}
