@@ -24,7 +24,7 @@ func syncTransactions(username string, token string) error {
 
 	nwlib.PublishSNS(snsARN, "about to sync trans...")
 	for _, tran := range trans.Transactions {
-		nwlib.PublishSNS(snsARN, tran.AccountID)
+		nwlib.PublishSNS(snsARN, tran.ID)
 		fmt.Printf("sync transaction %+v\n", tran)
 
 		if err := nwlib.SetTransaction(username, tran); err != nil {

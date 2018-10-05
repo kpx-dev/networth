@@ -165,6 +165,30 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, token *T
 	return nil
 }
 
+// SetTransaction save transaction to db
+func (d DynamoDBClient) SetTransaction(username string, transaction *plaid.Transaction) error {
+
+	transactionAttr, err := dynamodbattribute.MarshalMap(transaction)
+	if err != nil {
+		fmt.Println("Problem marshalling transaction struct into dyno format", err)
+		return err
+	}
+
+	fmt.Printf("transactionAttr is %+v", transactionAttr)
+
+	req := d.PutItemRequest(&dynamodb.PutItemInput{
+		TableName: aws.String(dbTable),
+		Item:      transactionAttr,
+	})
+
+	if _, err := req.Send(); err != nil {
+		log.Println("Problem SetTransaction ", err)
+		return err
+	}
+
+	return nil
+}
+
 // SetAccount save account to db
 func (d DynamoDBClient) SetAccount(username string, institutionID string, account *plaid.Account) error {
 	accounts := [1]*plaid.Account{account}
