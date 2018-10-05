@@ -7,16 +7,16 @@ import (
 	"github.com/networth-app/networth/api/lib"
 )
 
-func syncNetworth(username string) {
+func syncNetworth(username string) error {
 	assets := 0.0
 	liabilities := 0.0
 	accountCache := make(map[string]bool)
-	// TODO: use the current record from stream instead of getting the latest one?
+
 	accounts, err := db.GetAccounts(username, nwlib.DefaultSortValue)
 
 	if err != nil {
 		log.Println("Problem getting accounts ", err)
-		return
+		return err
 	}
 
 	for _, account := range accounts.Accounts {
@@ -38,8 +38,10 @@ func syncNetworth(username string) {
 	if err := db.SetNetworth(username, networth, assets, liabilities); err != nil {
 		log.Println("Problem setting networth ", err)
 		nwlib.PublishSNS(snsARN, fmt.Sprintf("Problem setting networth %+v", err))
-		return
+		return err
 	}
+
+	return nil
 }
 
 // List of account type and subtype https://plaid.com/docs/#accounts

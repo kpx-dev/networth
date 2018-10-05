@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"strings"
-	"sync"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -21,41 +20,31 @@ var (
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
 	slackURL       = nwlib.GetEnv("SLACK_WEBHOOK_URL")
-	wg             sync.WaitGroup
 )
 
 func extractCompositeKeys(record events.DynamoDBEventRecord) (string, string, string) {
-	key := record.Change.Keys["id"].String()
-	username := strings.Split(key, ":")[0]
-	sort := record.Change.Keys["sort"].String()
+	partitionKey := record.Change.Keys["id"].String()
+	sortKey := record.Change.Keys["sort"].String()
+	username := strings.Split(partitionKey, ":")[0]
 
-	return key, username, sort
+	return partitionKey, sortKey, username
 }
 
 // TODO: https://github.com/aws/aws-lambda-go/issues/58
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	for _, record := range e.Records {
-		key, username, sort := extractCompositeKeys(record)
+		key, sort, username := extractCompositeKeys(record)
 
 		switch record.EventName {
-		case "INSERT":
+		case "INSERT", "MODIFY":
 			if strings.HasSuffix(key, ":token") {
-				handleInsertModifyToken(username, sort, record)
-			} else if strings.HasSuffix(key, ":account") {
-				handleInsertAccount(username, sort, record)
+				if err := handleInsertModifyToken(username, sort, record); err != nil {
+					log.Println("Problem insert / modify token ", err)
+				}
 			}
 			break
-
-		case "MODIFY":
-			if strings.HasSuffix(key, ":token") {
-				handleInsertModifyToken(username, sort, record)
-			} else if strings.HasSuffix(key, ":account") && sort == nwlib.DefaultSortValue {
-				syncNetworth(username)
-			}
-			break
-
 		default:
-			log.Printf("DynamoDB stream unknown event %s %+v", record.EventName, record)
+			log.Printf("DynamoDB stream unknown event: %s, records: %+v\n", record.EventName, record)
 		}
 	}
 }
