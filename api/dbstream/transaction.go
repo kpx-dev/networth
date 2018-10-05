@@ -22,16 +22,14 @@ func syncTransactions(username string, token string) error {
 		return err
 	}
 
-	nwlib.PublishSNS(snsARN, fmt.Sprintf("trans %+v", trans))
-	fmt.Printf("Total trans: %d", trans.TotalTransactions)
-	// for _, account := range trans.Accounts {
-	// 	// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
-	// 	fmt.Println("sync accounts" account)
-	// }
-
+	nwlib.PublishSNS(snsARN, "about to sync trans...")
 	for _, tran := range trans.Transactions {
-		// fmt.Println(tran.AccountID, tran.Amount, tran.Date, tran.Name)
-		fmt.Printf("sync transaction %+v", tran)
+		nwlib.PublishSNS(snsARN, tran.AccountID)
+		fmt.Printf("sync transaction %+v\n", tran)
+
+		if err := nwlib.SetTransaction(username, tran); err != nil {
+			log.Printf("Problem saving this transaction to db: %+v", tran)
+		}
 	}
 
 	return nil

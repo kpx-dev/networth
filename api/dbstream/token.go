@@ -26,12 +26,12 @@ func handleInsertModifyToken(username string, sort string, record events.DynamoD
 
 		// TODO: make these into gorutines / wait group workers:
 		// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
-		if err := syncTransactions(username, accessToken); err != nil {
-			log.Println("Problem syncing transactions ", err)
-		}
-
 		if err := syncAccounts(username, sort, accessToken); err != nil {
 			log.Println("Problem syncing accounts ", err)
+		}
+
+		if err := syncTransactions(username, accessToken); err != nil {
+			log.Println("Problem syncing transactions ", err)
 		}
 	}
 }

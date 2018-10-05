@@ -26,6 +26,11 @@ type Token struct {
 	// Accounts        []string `json:"accounts"`
 }
 
+// Transaction struct
+type Transaction struct {
+	plaid.Transaction
+}
+
 // Account wrapper struct for plaid.Account
 type Account struct {
 	plaid.Account

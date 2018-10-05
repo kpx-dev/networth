@@ -4,7 +4,11 @@
 
 Table: `networth`
 
-All tokens for a user
+### Tokens
+
+<details>
+<summary>All tokens for a user</summary>
+<p>
 
 ```json
 {
@@ -27,7 +31,12 @@ All tokens for a user
 }
 ```
 
-Tokens for a specific institution
+</p>
+</details>
+
+<details>
+<summary>Tokens for a specific institution</summary>
+<p>
 
 ```json
 {
@@ -50,7 +59,14 @@ Tokens for a specific institution
 }
 ```
 
-Accounts for a user
+</p>
+</details>
+
+### Accounts
+
+<details>
+<summary>Accounts for a user</summary>
+<p>
 
 ```json
 {
@@ -77,7 +93,12 @@ Accounts for a user
 }
 ```
 
-Accounts for a user at a bank
+</p>
+</details>
+
+<details>
+<summary>Accounts for a user at a bank</summary>
+<p>
 
 ```json
 {
@@ -104,7 +125,32 @@ Accounts for a user at a bank
 }
 ```
 
-Net Worth for a user
+</p>
+</details>
+
+### Transaction
+
+<details>
+<summary>Transactions for a user</summary>
+<p>
+
+```json
+{
+  "id": "demo@networth.app:transaction",
+  "sort": "zP6RRqXAdRidoQ5ABldRT7G1BXplEjto5LWrl",
+  "account_id": "P3L99pDjM9TwrymA6QwNigkNdgwEewF7Mx6Dz",
+  "amount": 500,
+  ...
+}
+```
+
+</p>
+</details>
+
+### Net Worth
+<details>
+<summary>Net Worth for a user</summary>
+<p>
 
 ```json
 {
@@ -113,3 +159,6 @@ Net Worth for a user
   "networth": 150123,
 }
 ```
+
+</p>
+</details>

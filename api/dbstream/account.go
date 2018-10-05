@@ -10,10 +10,11 @@ import (
 )
 
 func handleInsertAccount(username string, sort string, record events.DynamoDBEventRecord) {
+	accounts := record.Change.NewImage["accounts"].List()
+
 	if sort == nwlib.DefaultSortValue {
 		syncNetworth(username)
 	} else if strings.HasPrefix(sort, "ins_") {
-		accounts := record.Change.NewImage["accounts"].List()
 		appendAccount(username, accounts)
 	}
 }
