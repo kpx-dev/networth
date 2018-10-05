@@ -136,25 +136,25 @@ func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens 
 }
 
 // SetToken save token to db
-func (d DynamoDBClient) SetToken(username string, institutionID string, token *Token) error {
-	tokenList := [1]*Token{token}
-	tokenAttr, err := dynamodbattribute.Marshal(tokenList)
+func (d DynamoDBClient) SetToken(username string, token *Token) error {
+	tokenAttr, err := dynamodbattribute.MarshalMap(token)
 	if err != nil {
 		fmt.Println("Problem marshalling token struct into dyno format", err)
 		return err
 	}
 
-	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
-		Key: map[string]dynamodb.AttributeValue{
-			"id":   {S: aws.String(fmt.Sprintf("%s:token", username))},
-			"sort": {S: aws.String(institutionID)},
-		},
+	dbKey := map[string]dynamodb.AttributeValue{
+		"id":   {S: aws.String(fmt.Sprintf("%s:token", username))},
+		"sort": {S: aws.String(token.ItemID)},
+	}
+
+	for k, v := range dbKey {
+		tokenAttr[k] = v
+	}
+
+	req := d.PutItemRequest(&dynamodb.PutItemInput{
 		TableName: aws.String(dbTable),
-		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":token":      *tokenAttr,
-			":emptyToken": {L: []dynamodb.AttributeValue{}},
-		},
-		UpdateExpression: aws.String("SET tokens = list_append(if_not_exists(tokens, :emptyToken), :token)"),
+		Item:      tokenAttr,
 	})
 
 	if _, err := req.Send(); err != nil {

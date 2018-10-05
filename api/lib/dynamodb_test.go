@@ -47,17 +47,13 @@ func TestSetToken(t *testing.T) {
 	db := NewDynamoDBClient()
 	username := "test_set_token@networth.app"
 	token := &Token{
+		ItemID:        "1",
 		AccessToken:   "1",
 		InstitutionID: institutionID,
 	}
 
-	// set for specific ins
-	err := db.SetToken(username, institutionID, token)
+	err := db.SetToken(username, token)
 	assert.Equal(t, nil, err)
-
-	// set for default sort key
-	err = db.SetToken(username, DefaultSortValue, token)
-	assert.Equal(t, err, nil)
 }
 
 func TestGetToken(t *testing.T) {

@@ -12,8 +12,14 @@ func handleInsertModifyToken(username string, sort string, record events.DynamoD
 	if strings.HasPrefix(sort, "ins_") {
 		tokens := record.Change.NewImage["tokens"].List()
 		newToken := tokens[len(tokens)-1].Map()
+		token := &nwlib.Token{
+			ItemID:          newToken["item_id"].String(),
+			AccessToken:     newToken["access_token"].String(),
+			InstitutionID:   newToken["institution_id"].String(),
+			InstitutionName: newToken["institution_name"].String(),
+		}
 
-		if err := appendToken(username, newToken); err != nil {
+		if err := db.SetToken(username, token); err != nil {
 			log.Println("Problem append single token to global list ", err)
 			return
 		}
@@ -37,13 +43,13 @@ func handleInsertModifyToken(username string, sort string, record events.DynamoD
 }
 
 // append token from single institution to the "all" institution sort key
-func appendToken(username string, tokenMap map[string]events.DynamoDBAttributeValue) error {
-	token := &nwlib.Token{
-		ItemID:          tokenMap["item_id"].String(),
-		AccessToken:     tokenMap["access_token"].String(),
-		InstitutionID:   tokenMap["institution_id"].String(),
-		InstitutionName: tokenMap["institution_name"].String(),
-	}
+// func appendToken(username string, tokenMap map[string]events.DynamoDBAttributeValue) error {
+// 	token := &nwlib.Token{
+// 		ItemID:          tokenMap["item_id"].String(),
+// 		AccessToken:     tokenMap["access_token"].String(),
+// 		InstitutionID:   tokenMap["institution_id"].String(),
+// 		InstitutionName: tokenMap["institution_name"].String(),
+// 	}
 
-	return db.SetToken(username, nwlib.DefaultSortValue, token)
-}
+// 	return db.SetToken(username, nwlib.DefaultSortValue, token)
+// }
