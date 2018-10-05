@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"time"
-
-	"github.com/networth-app/networth/api/lib"
 )
 
 // sync last 12 months
@@ -22,8 +20,6 @@ func syncTransactions(username string, token string) error {
 	}
 
 	for _, tran := range trans.Transactions {
-		nwlib.PublishSNS(snsARN, tran.ID)
-
 		if err := db.SetTransaction(username, tran); err != nil {
 			log.Printf("Problem saving this transaction to db: %+v", tran)
 		}
