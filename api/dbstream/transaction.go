@@ -27,7 +27,7 @@ func syncTransactions(username string, token string) error {
 		nwlib.PublishSNS(snsARN, tran.ID)
 		fmt.Printf("sync transaction %+v\n", tran)
 
-		if err := nwlib.SetTransaction(username, tran); err != nil {
+		if err := db.SetTransaction(username, tran); err != nil {
 			log.Printf("Problem saving this transaction to db: %+v", tran)
 		}
 	}
