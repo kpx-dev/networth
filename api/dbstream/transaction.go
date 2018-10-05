@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -22,10 +21,8 @@ func syncTransactions(username string, token string) error {
 		return err
 	}
 
-	nwlib.PublishSNS(snsARN, "about to sync trans...")
 	for _, tran := range trans.Transactions {
 		nwlib.PublishSNS(snsARN, tran.ID)
-		fmt.Printf("sync transaction %+v\n", tran)
 
 		if err := db.SetTransaction(username, tran); err != nil {
 			log.Printf("Problem saving this transaction to db: %+v", tran)

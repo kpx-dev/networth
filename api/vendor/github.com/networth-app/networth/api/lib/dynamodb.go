@@ -166,7 +166,7 @@ func (d DynamoDBClient) SetToken(username string, institutionID string, token *T
 }
 
 // SetTransaction save transaction to db
-func (d DynamoDBClient) SetTransaction(username string, transaction *plaid.Transaction) error {
+func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transaction) error {
 
 	transactionAttr, err := dynamodbattribute.MarshalMap(transaction)
 	if err != nil {

@@ -15,6 +15,18 @@ var (
 	testUsername  = "test@networth.app"
 )
 
+func TestSetTransaction(t *testing.T) {
+	username := "test_set_transaction@networth.app"
+	trans := plaid.Transaction{
+		ID:        "1",
+		AccountID: "1",
+		Amount:    1,
+	}
+
+	err := db.SetTransaction(username, trans)
+	assert.Equal(t, err, nil)
+}
+
 func TestSetAccount(t *testing.T) {
 	username := "test_set_account@networth.app"
 	account := &plaid.Account{
