@@ -19,7 +19,7 @@ func syncNetworth(username string) error {
 		return err
 	}
 
-	for _, account := range accounts.Accounts {
+	for _, account := range accounts {
 		if _, ok := accountCache[account.AccountID]; !ok {
 			if isAsset(account) {
 				assets = assets + account.Balances.Current
