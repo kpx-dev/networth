@@ -12,7 +12,7 @@ import (
 var (
 	db            = NewDynamoDBClient()
 	institutionID = "ins_1"
-	testUsername  = "test@networth.app"
+	testUsername  = "b6989907-cba1-4ffb-b0f3-1258cb689ba0"
 )
 
 func TestSetTransaction(t *testing.T) {
@@ -76,27 +76,15 @@ func TestGetToken(t *testing.T) {
 
 func TestGetAccounts(t *testing.T) {
 	db := NewDynamoDBClient()
-	usernameNotExist := "test_get_account@networth.app"
-	usernameExist := "test_set_account@networth.app"
-	invalidInstitutionID := "ins_1_invalid"
-
-	// get using non-exist username
-	accounts, err := db.GetAccounts(usernameNotExist, institutionID)
-	assert.Equal(t, err, nil)
-	assert.Equal(t, len(accounts.Accounts), 0)
+	usernameNotExist := "test_not_exist_username@networth.app"
 
 	// get using existing username
-	accounts, err = db.GetAccounts(usernameExist, institutionID)
+	accounts, err := db.GetAccounts(testUsername)
 	assert.Equal(t, err, nil)
-	assert.Equal(t, len(accounts.Accounts) > 0, true)
+	assert.Equal(t, len(accounts) > 0, true)
 
-	// get using invalid ins_id
-	accounts, err = db.GetAccounts(usernameExist, invalidInstitutionID)
+	// get using non-exist username
+	accounts, err = db.GetAccounts(usernameNotExist)
 	assert.Equal(t, err, nil)
-	assert.Equal(t, len(accounts.Accounts), 0)
-
-	// get using default sort key
-	accounts, err = db.GetAccounts(usernameExist, DefaultSortValue)
-	assert.Equal(t, err, nil)
-	assert.Equal(t, true, len(accounts.Accounts) > 0)
+	assert.Equal(t, len(accounts), 0)
 }

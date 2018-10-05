@@ -12,7 +12,7 @@ func syncNetworth(username string) error {
 	liabilities := 0.0
 	accountCache := make(map[string]bool)
 
-	accounts, err := db.GetAccounts(username, nwlib.DefaultSortValue)
+	accounts, err := db.GetAccounts(username)
 
 	if err != nil {
 		log.Println("Problem getting accounts ", err)

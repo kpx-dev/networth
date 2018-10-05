@@ -257,16 +257,17 @@ func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, v
 	return err
 }
 
-// GetAccounts return accounts from db
-func (d DynamoDBClient) GetAccounts(username string, sort string) (Accounts, error) {
-	var accounts Accounts
+// GetAccounts return all accounts from db for a username
+func (d DynamoDBClient) GetAccounts(username string) ([]Accounts, error) {
+	var accounts []Accounts
 	key := fmt.Sprintf("%s:account", username)
-	req := d.GetItemRequest(&dynamodb.GetItemInput{
+
+	req := d.QueryRequest(&dynamodb.QueryInput{
 		TableName: aws.String(dbTable),
-		Key: map[string]dynamodb.AttributeValue{
-			"id":   {S: aws.String(key)},
-			"sort": {S: aws.String(sort)},
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":id": {S: aws.String(key)},
 		},
+		KeyConditionExpression: aws.String("id = :id"),
 	})
 
 	res, err := req.Send()
@@ -274,7 +275,7 @@ func (d DynamoDBClient) GetAccounts(username string, sort string) (Accounts, err
 		return accounts, err
 	}
 
-	if err := dynamodbattribute.UnmarshalMap(res.Item, &accounts); err != nil {
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &accounts); err != nil {
 		return accounts, err
 	}
 
