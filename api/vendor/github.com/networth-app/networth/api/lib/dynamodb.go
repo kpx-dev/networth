@@ -174,7 +174,15 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 		return err
 	}
 
-	fmt.Printf("transactionAttr is %+v", transactionAttr)
+	dbKey := map[string]dynamodb.AttributeValue{
+		"id":             {S: aws.String(fmt.Sprintf("%s:transaction", username))},
+		"sort":           {S: aws.String(transaction.ID)},
+		"transaction_id": {S: aws.String(transaction.ID)},
+	}
+
+	for k, v := range dbKey {
+		transactionAttr[k] = v
+	}
 
 	req := d.PutItemRequest(&dynamodb.PutItemInput{
 		TableName: aws.String(dbTable),
