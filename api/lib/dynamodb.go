@@ -206,8 +206,9 @@ func (d DynamoDBClient) SetAccount(username string, itemID string, account *plai
 	}
 
 	dbKey := map[string]dynamodb.AttributeValue{
-		"id":   {S: aws.String(fmt.Sprintf("%s:account", username))},
-		"sort": {S: aws.String(itemID)},
+		"id":      {S: aws.String(fmt.Sprintf("%s:account", username))},
+		"sort":    {S: aws.String(account.AccountID)},
+		"item_id": {S: aws.String(itemID)},
 	}
 
 	for k, v := range dbKey {

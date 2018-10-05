@@ -198,30 +198,29 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 }
 
 // SetAccount save account to db
-func (d DynamoDBClient) SetAccount(username string, institutionID string, account *plaid.Account) error {
-	accounts := [1]*plaid.Account{account}
-
-	accountAttr, err := dynamodbattribute.Marshal(accounts)
+func (d DynamoDBClient) SetAccount(username string, itemID string, account *plaid.Account) error {
+	accountAttr, err := dynamodbattribute.MarshalMap(account)
 	if err != nil {
 		fmt.Println("Problem marshalling account struct into dyno format", err)
 		return err
 	}
 
-	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
-		Key: map[string]dynamodb.AttributeValue{
-			"id":   {S: aws.String(fmt.Sprintf("%s:account", username))},
-			"sort": {S: aws.String(institutionID)},
-		},
+	dbKey := map[string]dynamodb.AttributeValue{
+		"id":   {S: aws.String(fmt.Sprintf("%s:account", username))},
+		"sort": {S: aws.String(itemID)},
+	}
+
+	for k, v := range dbKey {
+		accountAttr[k] = v
+	}
+
+	req := d.PutItemRequest(&dynamodb.PutItemInput{
 		TableName: aws.String(dbTable),
-		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":account":      *accountAttr,
-			":emptyAccount": {L: []dynamodb.AttributeValue{}},
-		},
-		UpdateExpression: aws.String("SET accounts = list_append(if_not_exists(accounts, :emptyAccount), :account)"),
+		Item:      accountAttr,
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetAccount ", err)
+		log.Println("Problem saving account to db ", err)
 		return err
 	}
 
