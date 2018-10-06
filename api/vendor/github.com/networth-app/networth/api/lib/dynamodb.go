@@ -165,7 +165,7 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 }
 
 // SetWebhook save webhook to db
-func (d DynamoDBClient) SetWebhook(username string, webhook Webhook) error {
+func (d DynamoDBClient) SetWebhook(webhook Webhook) error {
 	dbAttr, err := dynamodbattribute.MarshalMap(webhook)
 	if err != nil {
 		fmt.Println("Problem marshalling webhook struct into dyno format", err)
@@ -173,7 +173,7 @@ func (d DynamoDBClient) SetWebhook(username string, webhook Webhook) error {
 	}
 
 	dbKey := map[string]dynamodb.AttributeValue{
-		"id":   {S: aws.String(fmt.Sprintf("%s:webhook", username))},
+		"id":   {S: aws.String("webhook")},
 		"sort": {S: aws.String(webhook.ItemID)},
 	}
 

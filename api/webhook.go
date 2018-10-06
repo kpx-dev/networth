@@ -30,7 +30,7 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 	// }
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		var body nwlib.Webhook
+		var webhook nwlib.Webhook
 		// Plaid webhook ips: https://support.plaid.com/customer/en/portal/articles/2546264-webhook-overview
 		plaidIPs := []string{"52.21.26.131", "52.21.47.157", "52.41.247.19", "52.88.82.239"}
 		ips := r.Header.Get("X-Forwarded-For")
@@ -50,13 +50,14 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 			return
 		}
 
-		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&webhook); err != nil {
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}
 
 		// TODO: handle webhook to sync new trans
-		nwlib.PublishSNS(snsARN, fmt.Sprintf("New webhook, type: %s, code: %s, item: %s, new trans: %+v", body.WebhookType, body.WebhookCode, body.ItemID, body.NewTransactions))
-		nwlib.SuccessResp(w, body)
+		nwlib.PublishSNS(snsARN, fmt.Sprintf("New webhook, type: %s, code: %s, item: %s, new trans: %+v", webhook.WebhookType, webhook.WebhookCode, webhook.ItemID, webhook.NewTransactions))
+		s.db.SetWebhook(webhook)
+		nwlib.SuccessResp(w, webhook)
 	}
 }

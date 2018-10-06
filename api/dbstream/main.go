@@ -37,7 +37,11 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
-			if strings.HasSuffix(key, ":token") {
+			if key == "webhook" {
+				if err := handleInsertModifyWebhook(record); err != nil {
+					log.Println("Problem insert / modify webhook ", err)
+				}
+			} else if strings.HasSuffix(key, ":token") {
 				if err := handleInsertModifyToken(username, sort, record); err != nil {
 					log.Println("Problem insert / modify token ", err)
 				}
