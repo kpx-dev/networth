@@ -30,7 +30,7 @@ func NewDynamoDBClient() *DynamoDBClient {
 }
 
 // GetNetworth return networth
-func (d DynamoDBClient) GetNetworth(username string) float64 {
+func (d DynamoDBClient) GetNetworth(username string) (float64, error) {
 	req := d.GetItemRequest(&dynamodb.GetItemInput{
 		TableName: aws.String(dbTable),
 		Key: map[string]dynamodb.AttributeValue{
@@ -42,17 +42,17 @@ func (d DynamoDBClient) GetNetworth(username string) float64 {
 	res, err := req.Send()
 	if err != nil {
 		log.Println("Problem getting networth ", err)
-		return 0.0
+		return 0.0, err
 	}
 
 	payload := Networth{}
 	if err := dynamodbattribute.UnmarshalMap(res.Item, &payload); err != nil {
 		log.Println("Problem converting db to Networth struct ", err)
 
-		return 0.0
+		return 0.0, err
 	}
 
-	return payload.Networth
+	return payload.Networth, nil
 }
 
 // SetNetworth value as of today date and current timestamp
