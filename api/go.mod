@@ -8,7 +8,7 @@ require (
 	github.com/go-redis/redis v6.14.1+incompatible
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
-	github.com/networth-app/networth/api/lib v0.0.0-20181006073131-b2396051a7e4
+	github.com/networth-app/networth/api/lib v0.0.0-20181006074145-2a57bae1803d
 	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/rs/cors v1.5.0

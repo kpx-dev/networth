@@ -27,10 +27,10 @@ func handleInsertModifyToken(username string, itemID string, record events.Dynam
 		return err
 	}
 
-	// if err := syncTransactions(username, accessToken); err != nil {
-	// 	log.Println("Problem syncing transactions ", err)
-	//  return err
-	// }
+	if err := syncTransactions(username, accessToken); err != nil {
+		log.Println("Problem syncing transactions ", err)
+		return err
+	}
 
 	return nil
 }
