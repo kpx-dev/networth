@@ -56,24 +56,27 @@ class DashboardTab extends React.Component {
                       tabIcon: Dashboard,
                       tabContent: (
                         <span>
-                          <h1>${this.state.networth}</h1>
+                          <h1>
+                          {new Intl.NumberFormat('en-us', {
+                              style: 'currency',
+                              currency: 'USD'
+                          }).format(this.state.networth)}
+                          </h1>
                         </span>
                       )
                     },
 
-                    {
-                      tabButton: "Transactions",
-                      tabIcon: Schedule,
-                      tabContent: (
-                        <span>
-                          <p>
-                            Efficiently unleash cross-media information without
-                            cross-media value. Quickly maximize timely
-                            deliverables for real-time schemas.
-                          </p>
-                        </span>
-                      )
-                    },
+                    // {
+                    //   tabButton: "Transactions",
+                    //   tabIcon: Schedule,
+                    //   tabContent: (
+                    //     <span>
+                    //       <p>
+                    //         Transactions here
+                    //       </p>
+                    //     </span>
+                    //   )
+                    // },
 
                     {
                       tabButton: "Link Account",

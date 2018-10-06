@@ -39,8 +39,6 @@ create-infra:
 
 start-api:
 	cd api && gin --appPort 8000
-	# make api
-	# cd api && sam local start-api --env-vars .env.json
 
 start-web:
 	cd web && npm run start

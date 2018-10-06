@@ -14,6 +14,7 @@ var (
 	institutionID        = "ins_1"
 	testUsername         = "b6989907-cba1-4ffb-b0f3-1258cb689ba0"
 	testUsernameNotExist = "test_not_exist_username@networth.app"
+	accountID            = "Vxk3QMnVmNhaJKmlrXg5tj7q5keD3bfW4BnnE"
 )
 
 func TestSetTransaction(t *testing.T) {
@@ -103,3 +104,15 @@ func TestGetNetworth(t *testing.T) {
 	assert.Equal(t, err, nil)
 	assert.Equal(t, networth, 0.0)
 }
+
+// func TestGetTransaction(t *testing.T) {
+// 	// get using existing username
+// 	transactions, err := db.GetTransactions(testUsername, accountID)
+// 	assert.Equal(t, err, nil)
+// 	assert.Equal(t, len(transactions) > 0, true)
+
+// 	// get using non-exist username
+// 	// accounts, err = db.GetAccounts(testUsernameNotExist)
+// 	// assert.Equal(t, err, nil)
+// 	// assert.Equal(t, len(accounts), 0)
+// }
