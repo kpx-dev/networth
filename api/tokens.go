@@ -33,8 +33,8 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		// TODO: enable for testing purposes only
-		publicToken, _ := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
-		body.AccessToken = publicToken.PublicToken
+		// publicToken, _ := s.plaid.CreateSandboxPublicToken("ins_1", []string{"transactions"})
+		// body.AccessToken = publicToken.PublicToken
 
 		exchangedToken, err := s.plaid.ExchangePublicToken(body.AccessToken)
 
