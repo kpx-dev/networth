@@ -164,6 +164,36 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	return nil
 }
 
+// SetWebhook save webhook to db
+func (d DynamoDBClient) SetWebhook(username string, webhook Webhook) error {
+	dbAttr, err := dynamodbattribute.MarshalMap(webhook)
+	if err != nil {
+		fmt.Println("Problem marshalling webhook struct into dyno format", err)
+		return err
+	}
+
+	dbKey := map[string]dynamodb.AttributeValue{
+		"id":   {S: aws.String(fmt.Sprintf("%s:webhook", username))},
+		"sort": {S: aws.String(webhook.ItemID)},
+	}
+
+	for k, v := range dbKey {
+		dbAttr[k] = v
+	}
+
+	req := d.PutItemRequest(&dynamodb.PutItemInput{
+		TableName: aws.String(dbTable),
+		Item:      dbAttr,
+	})
+
+	if _, err := req.Send(); err != nil {
+		log.Println("Problem SetWebhook ", err)
+		return err
+	}
+
+	return nil
+}
+
 // SetTransaction save transaction to db
 func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transaction) error {
 

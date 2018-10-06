@@ -31,6 +31,25 @@ type Transaction struct {
 	plaid.Transaction
 }
 
+// WebhookError struct contains error fields from webhook
+type WebhookError struct {
+	DisplayMessage string `json:"display_message"` //: "The provided credentials were not correct. Please try again.",
+	ErrorCode      string `json:"error_code"`      //: "ITEM_LOGIN_REQUIRED",
+	ErrorMessage   string `json:"error_message"`   //: "the provided credentials were not correct",
+	ErrorType      string `json:"error_type"`      //: "ITEM_ERROR",
+	Status         int    `json:"status"`          //: 400
+}
+
+// Webhook body
+type Webhook struct {
+	WebhookType         string       `json:"webhook_type"`         // "TRANSACTIONS",
+	WebhookCode         string       `json:"webhook_code"`         // INITIAL_UPDATE HISTORICAL_UPDATE DEFAULT_UPDATE TRANSACTIONS_REMOVED
+	ItemID              string       `json:"item_id"`              // "wz666MBjYWTp2PDzzggYhM6oWWmBb",
+	Error               WebhookError `json:"error"`                // null,
+	NewTransactions     int          `json:"new_transactions"`     //19
+	RemovedTransactions []string     `json:"removed_transactions"` // ["yBVBEwrPyJs8GvR77N7QTxnGg6wG74H7dEDN6", "kgygNvAVPzSX9KkddNdWHaVGRVex1MHm3k9no"],
+}
+
 // Account wrapper struct for plaid.Account
 type Account struct {
 	plaid.Account
