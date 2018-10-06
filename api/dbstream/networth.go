@@ -45,7 +45,7 @@ func syncNetworth(username string) error {
 }
 
 // List of account type and subtype https://plaid.com/docs/#accounts
-func isAsset(account *nwlib.Account) bool {
+func isAsset(account nwlib.Account) bool {
 	switch account.Type {
 	case "brokerage", "depository":
 		return true

@@ -36,11 +36,6 @@ type Account struct {
 	plaid.Account
 }
 
-// Accounts hols the structure for multiple plaid account
-type Accounts struct {
-	Accounts []*Account `json:"accounts"`
-}
-
 // PlaidClient plaid client
 type PlaidClient struct {
 	*plaid.Client

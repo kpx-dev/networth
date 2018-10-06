@@ -258,8 +258,8 @@ func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, v
 }
 
 // GetAccounts return all accounts from db for a username
-func (d DynamoDBClient) GetAccounts(username string) ([]Accounts, error) {
-	var accounts []Accounts
+func (d DynamoDBClient) GetAccounts(username string) ([]Account, error) {
+	var accounts []Account
 	key := fmt.Sprintf("%s:account", username)
 
 	req := d.QueryRequest(&dynamodb.QueryInput{
