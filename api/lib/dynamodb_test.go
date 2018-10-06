@@ -10,9 +10,10 @@ import (
 )
 
 var (
-	db            = NewDynamoDBClient()
-	institutionID = "ins_1"
-	testUsername  = "b6989907-cba1-4ffb-b0f3-1258cb689ba0"
+	db                   = NewDynamoDBClient()
+	institutionID        = "ins_1"
+	testUsername         = "b6989907-cba1-4ffb-b0f3-1258cb689ba0"
+	testUsernameNotExist = "test_not_exist_username@networth.app"
 )
 
 func TestSetTransaction(t *testing.T) {
@@ -77,7 +78,6 @@ func TestSetToken(t *testing.T) {
 
 func TestGetAccounts(t *testing.T) {
 	db := NewDynamoDBClient()
-	usernameNotExist := "test_not_exist_username@networth.app"
 
 	// get using existing username
 	accounts, err := db.GetAccounts(testUsername)
@@ -85,7 +85,21 @@ func TestGetAccounts(t *testing.T) {
 	assert.Equal(t, len(accounts) > 0, true)
 
 	// get using non-exist username
-	accounts, err = db.GetAccounts(usernameNotExist)
+	accounts, err = db.GetAccounts(testUsernameNotExist)
 	assert.Equal(t, err, nil)
 	assert.Equal(t, len(accounts), 0)
+}
+
+func TestGetNetworth(t *testing.T) {
+	db := NewDynamoDBClient()
+
+	// get using existing username
+	networth, err := db.GetNetworth(testUsername)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, networth > 0, true)
+
+	// get using non-exist username
+	networth, err = db.GetNetworth(testUsernameNotExist)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, networth, 0.0)
 }

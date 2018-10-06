@@ -14,8 +14,6 @@ import (
 
 var (
 	dbTable = GetEnv("DB_TABLE")
-	// DefaultSortValue default sort key value
-	DefaultSortValue = "all"
 )
 
 // DynamoDBClient db client struct
@@ -37,7 +35,7 @@ func (d DynamoDBClient) GetNetworth(username string) float64 {
 		TableName: aws.String(dbTable),
 		Key: map[string]dynamodb.AttributeValue{
 			"id":   {S: aws.String(fmt.Sprintf("%s:networth", username))},
-			"sort": {S: aws.String(DefaultSortValue)},
+			"sort": {S: aws.String("latest")},
 		},
 	})
 
@@ -85,7 +83,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 					PutRequest: &dynamodb.PutRequest{
 						Item: map[string]dynamodb.AttributeValue{
 							"id":          {S: aws.String(key)},
-							"sort":        {S: aws.String(DefaultSortValue)},
+							"sort":        {S: aws.String("latest")},
 							"networth":    {N: networthStr},
 							"assets":      {N: assetsStr},
 							"liabilities": {N: liabilitiesStr},
@@ -102,38 +100,39 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	return err
 }
 
+// TODO: Query based on ins id?
 // GetToken return tokens from db
-func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens {
-	dbTokens := &Tokens{}
-	key := fmt.Sprintf("%s:token", username)
-	sort := DefaultSortValue
-	if len(institutionID) > 0 {
-		sort = institutionID
-	}
+// func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens {
+// 	dbTokens := &Tokens{}
+// 	key := fmt.Sprintf("%s:token", username)
+// 	sort := ""
+// 	if len(institutionID) > 0 {
+// 		sort = institutionID
+// 	}
 
-	req := d.GetItemRequest(&dynamodb.GetItemInput{
-		TableName: aws.String(dbTable),
-		Key: map[string]dynamodb.AttributeValue{
-			"id":   {S: aws.String(key)},
-			"sort": {S: aws.String(sort)},
-		},
-	})
+// 	req := d.GetItemRequest(&dynamodb.GetItemInput{
+// 		TableName: aws.String(dbTable),
+// 		Key: map[string]dynamodb.AttributeValue{
+// 			"id":   {S: aws.String(key)},
+// 			"sort": {S: aws.String(sort)},
+// 		},
+// 	})
 
-	res, err := req.Send()
-	if err != nil {
-		log.Printf("Problem getting tokens from db using sort key %s %v", sort, err)
+// 	res, err := req.Send()
+// 	if err != nil {
+// 		log.Printf("Problem getting tokens from db using sort key %s %v", sort, err)
 
-		return dbTokens
-	}
+// 		return dbTokens
+// 	}
 
-	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbTokens); err != nil {
-		log.Println("Problem converting token data from db ", err)
+// 	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbTokens); err != nil {
+// 		log.Println("Problem converting token data from db ", err)
 
-		return dbTokens
-	}
+// 		return dbTokens
+// 	}
 
-	return dbTokens
-}
+// 	return dbTokens
+// }
 
 // SetToken save token to db
 func (d DynamoDBClient) SetToken(username string, token *Token) error {
