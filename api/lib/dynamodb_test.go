@@ -29,6 +29,7 @@ func TestSetTransaction(t *testing.T) {
 
 func TestSetAccount(t *testing.T) {
 	username := "test_set_account@networth.app"
+	itemID := "1"
 	account := &plaid.Account{
 		AccountID: "1",
 		Name:      "test",
@@ -39,7 +40,7 @@ func TestSetAccount(t *testing.T) {
 	assert.Equal(t, err, nil)
 
 	// set for all
-	err = db.SetAccount(username, DefaultSortValue, account)
+	err = db.SetAccount(username, itemID, account)
 	assert.Equal(t, err, nil)
 }
 
@@ -56,23 +57,23 @@ func TestSetToken(t *testing.T) {
 	assert.Equal(t, nil, err)
 }
 
-func TestGetToken(t *testing.T) {
-	db := NewDynamoDBClient()
-	username := "test_set_token@networth.app"
-	invalidInstitutionID := "ins_1_invalid"
+// func TestGetToken(t *testing.T) {
+// 	db := NewDynamoDBClient()
+// 	username := "test_set_token@networth.app"
+// 	invalidInstitutionID := "ins_1_invalid"
 
-	// get without ins_id
-	tokens := db.GetToken(username, "")
-	assert.Equal(t, tokens.Tokens[len(tokens.Tokens)-1].InstitutionID, institutionID)
+// 	// get without ins_id
+// 	tokens := db.GetToken(username, "")
+// 	assert.Equal(t, tokens.Tokens[len(tokens.Tokens)-1].InstitutionID, institutionID)
 
-	// get using ins_id
-	tokens = db.GetToken(username, institutionID)
-	assert.Equal(t, tokens.Tokens[len(tokens.Tokens)-1].InstitutionID, institutionID)
+// 	// get using ins_id
+// 	tokens = db.GetToken(username, institutionID)
+// 	assert.Equal(t, tokens.Tokens[len(tokens.Tokens)-1].InstitutionID, institutionID)
 
-	// // get using invalid ins_id
-	tokens = db.GetToken(username, invalidInstitutionID)
-	assert.Equal(t, len(tokens.Tokens) == 0, true)
-}
+// 	// // get using invalid ins_id
+// 	tokens = db.GetToken(username, invalidInstitutionID)
+// 	assert.Equal(t, len(tokens.Tokens) == 0, true)
+// }
 
 func TestGetAccounts(t *testing.T) {
 	db := NewDynamoDBClient()
