@@ -2,7 +2,6 @@ cloud/.terraform
 *.tfstate*
 .env*.local
 .env.json
-yarn.lock
 web/build
 gin-bin
 yarn-error.log

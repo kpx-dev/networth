@@ -1,1 +1,7 @@
-# [Web App](https://app.networth.app)
+# [Web App](https://networth.app/app)
+
+## Install
+
+```shell
+yarn
+```

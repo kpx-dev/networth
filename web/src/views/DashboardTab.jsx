@@ -4,7 +4,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Dashboard from "@material-ui/icons/Dashboard";
 import Schedule from "@material-ui/icons/Schedule";
 import AddIcon from "@material-ui/icons/Add";
-// import List from "@material-ui/icons/List";
 import GridContainer from "../components/Grid/GridContainer.jsx";
 import GridItem from "../components/Grid/GridItem.jsx";
 import NavPills from "../components/NavPills/NavPills.jsx";
@@ -66,17 +65,17 @@ class DashboardTab extends React.Component {
                       )
                     },
 
-                    // {
-                    //   tabButton: "Transactions",
-                    //   tabIcon: Schedule,
-                    //   tabContent: (
-                    //     <span>
-                    //       <p>
-                    //         Transactions here
-                    //       </p>
-                    //     </span>
-                    //   )
-                    // },
+                    {
+                      tabButton: "Transactions",
+                      tabIcon: Schedule,
+                      tabContent: (
+                        <span>
+                          <p>
+                            Transactions here
+                          </p>
+                        </span>
+                      )
+                    },
 
                     {
                       tabButton: "Link Account",
