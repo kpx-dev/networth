@@ -97,12 +97,16 @@ func TestGetNetworth(t *testing.T) {
 	// get using existing username
 	networth, err := db.GetNetworth(testUsername)
 	assert.Equal(t, err, nil)
-	assert.Equal(t, networth > 0, true)
+	assert.Equal(t, networth.Networth > 0, true)
+	assert.Equal(t, networth.Assets > 0, true)
+	assert.Equal(t, networth.Liabilities > 0, true)
 
 	// get using non-exist username
 	networth, err = db.GetNetworth(testUsernameNotExist)
 	assert.Equal(t, err, nil)
-	assert.Equal(t, networth, 0.0)
+	assert.Equal(t, networth.Networth, 0.0)
+	assert.Equal(t, networth.Assets, 0.0)
+	assert.Equal(t, networth.Liabilities, 0.0)
 }
 
 // func TestGetTransaction(t *testing.T) {

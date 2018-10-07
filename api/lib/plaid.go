@@ -6,11 +6,6 @@ import (
 	"github.com/plaid/plaid-go/plaid"
 )
 
-// Networth holds networth info
-type Networth struct {
-	Networth float64 `json:"networth"`
-}
-
 // Tokens holds the structure multiple tokens
 type Tokens struct {
 	Tokens []*Token `json:"tokens"`

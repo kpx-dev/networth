@@ -7,6 +7,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import buttonStyle from "../../assets/jss/material-kit-react/components/buttonStyle.jsx";
 import { post } from "../../helpers/helpers.js";
 import { PLAID_CLIENT_NAME, PLAID_PUBLIC_KEY, PLAID_ENV, PLAID_PRODUCTS, PLAID_WEBHOOK } from "../../helpers/constants.js"
+import Tooltip from "@material-ui/core/Tooltip";
 
 class LinkAccount extends React.Component {
   constructor(props) {
@@ -38,10 +39,6 @@ class LinkAccount extends React.Component {
     await post('/tokens', body);
   }
 
-  // handleOnExit() {
-  //   // handle the case when your user exits Link
-  // }
-
   static propTypes = {
     classes: PropTypes.object.isRequired,
     institution: PropTypes.string,
@@ -66,12 +63,20 @@ class LinkAccount extends React.Component {
         env={PLAID_ENV}
         product={PLAID_PRODUCTS}
         publicKey={PLAID_PUBLIC_KEY}
-        // onExit={this.handleOnExit}
         onSuccess={this.handleOnSuccess}
       >
-        <Button size="sm" round>
-          <AddIcon className={classes.icons} /> {text}
-        </Button>
+
+        <Tooltip
+          id="tooltip-bottom"
+          title="Connect new financial source"
+          placement="bottom"
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <Button>
+            <AddIcon className={classes.icons} /> {text}
+          </Button>
+        </Tooltip>
+
       </PlaidLink>
     );
   }

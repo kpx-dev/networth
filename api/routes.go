@@ -22,7 +22,7 @@ func (s *NetworthAPI) init() {
 
 	// auth routes
 	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.handleNetworth()).Methods("GET")
-	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts())
+	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts()).Methods("GET")
 
 	s.router.Use(loggingMiddleware)
 	s.router.Use(extractUsernameMiddleware)
