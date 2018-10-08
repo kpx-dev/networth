@@ -65,7 +65,6 @@ class LinkAccount extends React.Component {
         publicKey={PLAID_PUBLIC_KEY}
         onSuccess={this.handleOnSuccess}
       >
-
         <Tooltip
           id="tooltip-bottom"
           title="Connect new financial source"

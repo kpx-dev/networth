@@ -44,7 +44,6 @@ class DashboardTab extends React.Component {
     return (
       <div className={classes.section}>
         <div className={classes.container}>
-
         <GridContainer>
           <GridItem xs={4} sm={4} md={4}>
           <Card className={classes.card}>
@@ -53,7 +52,7 @@ class DashboardTab extends React.Component {
             {new Intl.NumberFormat('en-us', {
                 style: 'currency',
                 currency: 'USD'
-            }).format(this.state.networth)}
+            }).format(this.state.networth.networth)}
           </h2>
           <h3>Net Worth</h3>
           </CardContent>
@@ -67,7 +66,7 @@ class DashboardTab extends React.Component {
             {new Intl.NumberFormat('en-us', {
                 style: 'currency',
                 currency: 'USD'
-            }).format(this.state.networth)}
+            }).format(this.state.networth.assets)}
           </h2>
           <h3>Assets</h3>
           </CardContent>
@@ -81,7 +80,7 @@ class DashboardTab extends React.Component {
             {new Intl.NumberFormat('en-us', {
                 style: 'currency',
                 currency: 'USD'
-            }).format(this.state.networth)}
+            }).format(this.state.networth.liabilities)}
           </h2>
           <h3>Liabilities</h3>
           </CardContent>
