@@ -1,5 +1,5 @@
-.PHONY: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
-.SILENT: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream
+.PHONY: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream sync deploy-sync
+.SILENT: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream deploy-sync
 
 # staging
 ENV=staging
@@ -25,6 +25,10 @@ api:
 dbstream:
 	cd api/dbstream && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-dbstream .
 	cd bin && zip ${APP_NAME}-dbstream.zip ${APP_NAME}-dbstream
+
+sync:
+	cd api/sync && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-sync .
+	cd bin && zip ${APP_NAME}-sync.zip ${APP_NAME}-sync
 
 notification:
 	cd api/notification && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-notification .
@@ -74,6 +78,11 @@ deploy-dbstream:
 	make dbstream
 	aws s3 cp bin/${APP_NAME}-dbstream.zip s3://${LAMBDA_BUCKET}/dbstream/${TIMESTAMP}.zip > /dev/null
 	aws lambda update-function-code --function-name ${APP_NAME}-dbstream --zip-file fileb://bin/${APP_NAME}-dbstream.zip --publish > /dev/null
+
+deploy-sync:
+	make sync
+	aws s3 cp bin/${APP_NAME}-sync.zip s3://${LAMBDA_BUCKET}/sync/${TIMESTAMP}.zip > /dev/null
+	aws lambda update-function-code --function-name ${APP_NAME}-sync --zip-file fileb://bin/${APP_NAME}-sync.zip --publish > /dev/null
 
 deploy-notification:
 	make notification

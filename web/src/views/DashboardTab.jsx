@@ -10,11 +10,10 @@ import NavPills from "../components/NavPills/NavPills.jsx";
 import pillsStyle from "../assets/jss/material-kit-react/views/componentsSections/pillsStyle.jsx";
 import LinkAccount from "../components/LinkAccount/LinkAccount.jsx";
 import { get } from "../helpers/helpers.js";
-
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-
+import Loader from 'react-loader-spinner'
 import {Line} from 'react-chartjs-2';
 
 class DashboardTab extends React.Component {
@@ -61,15 +60,18 @@ class DashboardTab extends React.Component {
   };
 
   async componentDidMount() {
+    this.setState({ loading: true });
     const nw = await get('/networth');
     const body = await nw.json();
     this.setState({
-      networth: body.data
+      networth: body.data,
+      loading: false
     });
   }
 
   render() {
     const { classes } = this.props;
+    if (this.state.loading) return <Loader type="ThreeDots" color="#somecolor" height={80} width={80} />
 
     return (
       <div className={classes.section}>

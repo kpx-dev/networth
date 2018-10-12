@@ -666,6 +666,48 @@ resource "aws_lambda_event_source_mapping" "dbstream" {
   starting_position = "LATEST"
 }
 
+resource "aws_lambda_function" "sync" {
+  filename         = "../bin/${var.AppName}-sync.zip"
+  function_name    = "${var.AppName}-sync"
+  role             = "${aws_iam_role.LambdaRole.arn}"
+  handler          = "${var.AppName}-sync"
+  source_code_hash = "${base64sha256(file("../bin/${var.AppName}-sync.zip"))}"
+  runtime          = "go1.x"
+  timeout = 300
+
+  environment {
+    variables = {
+      SNS_TOPIC_ARN     = "${aws_sns_topic.SNSTopic.arn}"
+      KMS_KEY_ALIAS     = "${aws_kms_alias.KMSAlias.id}"
+      DB_TABLE          = "${aws_dynamodb_table.db_table.id}"
+      SLACK_WEBHOOK_URL = "${data.aws_ssm_parameter.SLACK_WEBHOOK_URL.value}"
+      PLAID_ENV         = "${data.aws_ssm_parameter.PLAID_ENV.value}"
+      PLAID_PUBLIC_KEY  = "${data.aws_ssm_parameter.PLAID_PUBLIC_KEY.value}"
+      PLAID_CLIENT_ID   = "${data.aws_ssm_parameter.PLAID_CLIENT_ID.value}"
+      PLAID_SECRET      = "${data.aws_ssm_parameter.PLAID_SECRET.value}"
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_rule" "sync" {
+  name        = "sync"
+  schedule_expression = "rate(2 minutes)"
+}
+
+resource "aws_cloudwatch_event_target" "sync-lambda" {
+  rule = "${aws_cloudwatch_event_rule.sync.name}"
+  target_id = "sync"
+  arn = "${aws_lambda_function.sync.arn}"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_sync_lambda" {
+    statement_id = "AllowExecutionFromCloudWatch"
+    action = "lambda:InvokeFunction"
+    function_name = "${aws_lambda_function.sync.function_name}"
+    principal = "events.amazonaws.com"
+    source_arn = "${aws_cloudwatch_event_rule.sync.arn}"
+}
+
 resource "aws_lambda_function" "notification" {
   filename         = "../bin/${var.AppName}-notification.zip"
   function_name    = "${var.AppName}-notification"
