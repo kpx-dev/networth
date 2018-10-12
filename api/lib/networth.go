@@ -13,7 +13,7 @@ type Networth struct {
 }
 
 // SyncNetworth save net worth to db for current datetime
-func SyncNetworth(db DynamoDBClient, username string) error {
+func SyncNetworth(db *DynamoDBClient, username string) error {
 	assets := 0.0
 	liabilities := 0.0
 	accountCache := make(map[string]bool)
