@@ -1,4 +1,5 @@
 cloud/.terraform
+cloud/terraform*
 *.tfstate*
 .env*.local
 .env.json

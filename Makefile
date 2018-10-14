@@ -1,5 +1,5 @@
-.PHONY: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream sync deploy-sync
-.SILENT: api deploy-infra deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream deploy-sync
+.PHONY: api deploy-infra-staging deploy-infra-prod deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream sync deploy-sync
+.SILENT: api deploy-infra-staging deploy-infra-prod deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream deploy-sync
 
 # staging
 ENV=staging
@@ -66,8 +66,13 @@ test:
 	cd api/dbstream && go test
 	cd web && npm test
 
-deploy-infra:
-	cd cloud && terraform apply -auto-approve
+deploy-infra-staging:
+	ln -s -f ~/.aws/credentials.staging.networth ~/.aws/credentials
+	cd cloud && terraform workspace select staging && terraform apply -auto-approve
+
+deploy-infra-prod:
+	ln -s -f ~/.aws/credentials.prod.networth ~/.aws/credentials
+	cd cloud && terraform workspace select prod && terraform apply -auto-approve
 
 deploy-api:
 	make api

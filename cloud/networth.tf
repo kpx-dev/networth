@@ -13,7 +13,8 @@ variable "AppName" {
 }
 
 variable "DomainName" {
-  default = "knncreative.com"
+  # default = "knncreative.com"
+  default = "networth.app"
 }
 
 resource "aws_s3_bucket" "landing-bucket" {
@@ -28,21 +29,22 @@ resource "aws_ssm_parameter" "SLACK_CHANNEL" {
   name      = "/${var.AppName}/SLACK_CHANNEL"
   type      = "String"
   value     = "sns"
-  overwrite = false
+  overwrite = true
 }
 
 resource "aws_ssm_parameter" "PLAID_ENV" {
   name      = "/${var.AppName}/PLAID_ENV"
   type      = "String"
   value     = "sandbox"
-  overwrite = false
+  overwrite = true
 }
 
 resource "aws_ssm_parameter" "PLAID_CLIENT_ID" {
   name      = "/${var.AppName}/PLAID_CLIENT_ID"
   type      = "String"
   value     = " "
-  overwrite = false
+  overwrite = true
+
   lifecycle {
     ignore_changes = ["*"]
   }
@@ -52,7 +54,8 @@ resource "aws_ssm_parameter" "PLAID_SECRET" {
   name      = "/${var.AppName}/PLAID_SECRET"
   type      = "String"
   value     = " "
-  overwrite = false
+  overwrite = true
+
   lifecycle {
     ignore_changes = ["*"]
   }
@@ -62,7 +65,8 @@ resource "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
   name      = "/${var.AppName}/PLAID_PUBLIC_KEY"
   type      = "String"
   value     = " "
-  overwrite = false
+  overwrite = true
+
   lifecycle {
     ignore_changes = ["*"]
   }
@@ -72,7 +76,8 @@ resource "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
   name      = "/${var.AppName}/SLACK_WEBHOOK_URL"
   type      = "String"
   value     = " "
-  overwrite = false
+  overwrite = true
+
   lifecycle {
     ignore_changes = ["*"]
   }
@@ -199,14 +204,14 @@ data "aws_iam_policy_document" "DynamoDBPolicyDoc" {
 
     resources = [
       "${aws_dynamodb_table.db_table.arn}",
-      "${aws_dynamodb_table.db_table.stream_arn}"
+      "${aws_dynamodb_table.db_table.stream_arn}",
     ]
   }
 }
 
 data "aws_iam_policy_document" "sns" {
   statement {
-    actions = ["sns:publish"]
+    actions   = ["sns:publish"]
     resources = ["${aws_sns_topic.SNSTopic.arn}"]
   }
 }
@@ -401,7 +406,6 @@ resource "aws_api_gateway_integration" "get_networth" {
   uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
-
 // create /api/tokens
 resource "aws_api_gateway_resource" "tokens" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
@@ -426,10 +430,10 @@ resource "aws_api_gateway_integration" "post_tokens" {
   uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
-
 resource "aws_api_gateway_deployment" "api" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "latest"
+
   # TODO: deploy api based on changes: https://github.com/hashicorp/terraform/issues/6613
   depends_on = [
     "aws_api_gateway_integration.get_networth",
@@ -640,7 +644,7 @@ resource "aws_lambda_function" "dbstream" {
   handler          = "${var.AppName}-dbstream"
   source_code_hash = "${base64sha256(file("../bin/${var.AppName}-dbstream.zip"))}"
   runtime          = "go1.x"
-  timeout = 30
+  timeout          = 30
 
   environment {
     variables = {
@@ -671,7 +675,7 @@ resource "aws_lambda_function" "sync" {
   handler          = "${var.AppName}-sync"
   source_code_hash = "${base64sha256(file("../bin/${var.AppName}-sync.zip"))}"
   runtime          = "go1.x"
-  timeout = 300
+  timeout          = 300
 
   environment {
     variables = {
@@ -688,22 +692,22 @@ resource "aws_lambda_function" "sync" {
 }
 
 resource "aws_cloudwatch_event_rule" "sync" {
-  name        = "sync"
+  name                = "sync"
   schedule_expression = "rate(15 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "sync-lambda" {
-  rule = "${aws_cloudwatch_event_rule.sync.name}"
+  rule      = "${aws_cloudwatch_event_rule.sync.name}"
   target_id = "sync"
-  arn = "${aws_lambda_function.sync.arn}"
+  arn       = "${aws_lambda_function.sync.arn}"
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch_to_call_sync_lambda" {
-    statement_id = "AllowExecutionFromCloudWatch"
-    action = "lambda:InvokeFunction"
-    function_name = "${aws_lambda_function.sync.function_name}"
-    principal = "events.amazonaws.com"
-    source_arn = "${aws_cloudwatch_event_rule.sync.arn}"
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.sync.function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.sync.arn}"
 }
 
 resource "aws_lambda_function" "notification" {
