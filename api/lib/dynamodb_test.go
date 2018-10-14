@@ -109,6 +109,25 @@ func TestGetNetworth(t *testing.T) {
 	assert.Equal(t, networth.Liabilities, 0.0)
 }
 
+func TestGetNetworthByDateRange(t *testing.T) {
+	db := NewDynamoDBClient()
+	startDate := "2018-10-06"
+	endDate := "2018-10-13"
+	badStartDate := "2050-10-06"
+	badEndDate := "2050-10-13"
+
+	// get using existing range
+	networth, err := db.GetNetworthByDateRange(testUsername, startDate, endDate)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(networth) > 0, true)
+	assert.Equal(t, networth[0].Networth > 0, true)
+
+	// get using invalid range
+	networth, err = db.GetNetworthByDateRange(testUsername, badStartDate, badEndDate)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(networth), 0)
+}
+
 // func TestGetTransaction(t *testing.T) {
 // 	// get using existing username
 // 	transactions, err := db.GetTransactions(testUsername, accountID)

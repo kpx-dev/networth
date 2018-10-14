@@ -1,5 +1,3 @@
-# data "aws_caller_identity" "current" {}
-
 variable "region" {
   default = "us-east-1"
 }
@@ -691,7 +689,7 @@ resource "aws_lambda_function" "sync" {
 
 resource "aws_cloudwatch_event_rule" "sync" {
   name        = "sync"
-  schedule_expression = "rate(2 minutes)"
+  schedule_expression = "rate(15 minutes)"
 }
 
 resource "aws_cloudwatch_event_target" "sync-lambda" {

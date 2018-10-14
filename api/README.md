@@ -22,6 +22,21 @@ make start-api
 http :3000/healthcheck
 ```
 
+## Testing
+
+Docker is required for test as it will launch a local-dynamodb instance in a container.
+
+```shell
+# pull dynamodb-local
+docker pull amazon/dynamodb-local
+
+# start a dynamodb-local container
+docker run --rm -d -p 8000:8000 amazon/dynamodb-local
+
+# test api
+make test
+```
+
 ## Deploy service
 
 ```shell
