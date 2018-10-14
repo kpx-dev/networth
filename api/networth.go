@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/networth-app/networth/api/lib"
@@ -13,12 +14,12 @@ func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 		endDate := url.Get("end_date")
 
 		if startDate != "" && endDate != "" {
+			fmt.Println("startDate inside ", startDate, " endDate ", endDate)
 			networth, err := s.db.GetNetworthByDateRange(username, startDate, endDate)
 			if err != nil {
 				nwlib.ErrorResp(w, err.Error())
 			}
 			nwlib.SuccessResp(w, networth)
-
 		} else {
 			networth, err := s.db.GetNetworth(username)
 			if err != nil {

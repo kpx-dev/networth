@@ -72,7 +72,7 @@ func (d DynamoDBClient) GetNetworthByDateRange(username string, startDate string
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting networth ", err)
+		log.Println("Problem getting networth by date range ", err)
 		return networth, err
 	}
 
