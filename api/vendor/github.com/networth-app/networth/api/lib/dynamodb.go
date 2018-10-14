@@ -23,6 +23,7 @@ type DynamoDBClient struct {
 
 // NewDynamoDBClient new dynamodb client
 func NewDynamoDBClient() *DynamoDBClient {
+	// TODO: be able to accept custom endpoint (for testing)
 	cfg := LoadAWSConfig()
 	table := dynamodb.New(cfg)
 
@@ -54,6 +55,32 @@ func (d DynamoDBClient) GetNetworth(username string) (Networth, error) {
 	}
 
 	return payload, nil
+}
+
+// GetNetworthByDateRange return net worth based on date
+func (d DynamoDBClient) GetNetworthByDateRange(username string, startDate string, endDate string) ([]Networth, error) {
+	var networth []Networth
+	req := d.QueryRequest(&dynamodb.QueryInput{
+		TableName:              aws.String(dbTable),
+		KeyConditionExpression: aws.String("id = :id AND sort BETWEEN :startDate AND :endDate"),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":id":        {S: aws.String(fmt.Sprintf("%s:networth", username))},
+			":startDate": {S: aws.String(startDate)},
+			":endDate":   {S: aws.String(endDate)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		log.Println("Problem getting networth ", err)
+		return networth, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &networth); err != nil {
+		return networth, err
+	}
+
+	return networth, nil
 }
 
 // SetNetworth value as of today date and current timestamp

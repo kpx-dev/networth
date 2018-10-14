@@ -8,12 +8,23 @@ import (
 
 func (s *NetworthAPI) handleNetworth() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		networth, err := s.db.GetNetworth(username)
+		url := r.URL.Query()
+		startDate := url.Get("start_date")
+		endDate := url.Get("end_date")
 
-		if err != nil {
-			nwlib.ErrorResp(w, err.Error())
+		if startDate != "" && endDate != "" {
+			networth, err := s.db.GetNetworthByDateRange(username, startDate, endDate)
+			if err != nil {
+				nwlib.ErrorResp(w, err.Error())
+			}
+			nwlib.SuccessResp(w, networth)
+
+		} else {
+			networth, err := s.db.GetNetworth(username)
+			if err != nil {
+				nwlib.ErrorResp(w, err.Error())
+			}
+			nwlib.SuccessResp(w, networth)
 		}
-
-		nwlib.SuccessResp(w, networth)
 	}
 }
