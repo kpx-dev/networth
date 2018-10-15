@@ -1,15 +1,15 @@
-.PHONY: api deploy-infra-staging deploy-infra-prod deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream sync deploy-sync
-.SILENT: api deploy-infra-staging deploy-infra-prod deploy-api start-api dbstream create-infra token notification deploy-notification update-lib deploy-dbstream deploy-sync
+.PHONY: api deploy-infra-staging deploy-infra-prod deploy-api start-api dbstream token notification deploy-notification update-lib deploy-dbstream sync deploy-sync sync
+.SILENT: api deploy-infra-staging deploy-infra-prod deploy-api start-api dbstream token notification deploy-notification update-lib deploy-dbstream deploy-sync sync
 
 # staging
-ENV=staging
-DOMAIN_NAME=knncreative.com
-CLOUDFRONT_DISTRIBUTION_ID?=EN255N14EJZLA
+# ENV=staging
+# DOMAIN_NAME=knncreative.com
+# CLOUDFRONT_DISTRIBUTION_ID?=EN255N14EJZLA
 
 # prod
-# ENV=production
-# DOMAIN_NAME=networth.app
-# CLOUDFRONT_DISTRIBUTION_ID?=E1N6WQQH3K4M1R
+ENV=production
+DOMAIN_NAME=networth.app
+CLOUDFRONT_DISTRIBUTION_ID?=E2777SQLYCBXKE
 
 LAMBDA_BUCKET=lambda.${DOMAIN_NAME}
 LANDING_S3_BUCKET?=${DOMAIN_NAME}
@@ -33,13 +33,6 @@ sync:
 notification:
 	cd api/notification && env GOOS=linux go build -ldflags '-d -s -w' -a -tags netgo -installsuffix netgo -o ../../bin/${APP_NAME}-notification .
 	cd bin && zip ${APP_NAME}-notification.zip ${APP_NAME}-notification
-
-validate-template:
-	aws cloudformation validate-template --template-body file://cfn/${APP_NAME}.yml --region ${REGION}
-
-create-infra:
-	aws cloudformation create-stack --template-body file://cfn/${APP_NAME}.yml --stack-name ${APP_NAME}-infra --capabilities CAPABILITY_IAM --region ${REGION}
-	aws cloudformation wait stack-create-complete
 
 start-api:
 	cd api && gin --appPort 8000

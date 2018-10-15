@@ -3,7 +3,7 @@ variable "region" {
 }
 
 provider "aws" {
-  version = "~> 1.38.0"
+  version = "~> 1.40.0"
 
   region = "${var.region}"
 }
@@ -29,32 +29,36 @@ resource "aws_ssm_parameter" "SLACK_CHANNEL" {
   name      = "/${var.AppName}/SLACK_CHANNEL"
   type      = "String"
   value     = "sns"
-  overwrite = true
+  overwrite = false
+  lifecycle {
+    ignore_changes = ["*"]
+  }
 }
 
 resource "aws_ssm_parameter" "PLAID_ENV" {
   name      = "/${var.AppName}/PLAID_ENV"
   type      = "String"
   value     = "sandbox"
-  overwrite = true
+  overwrite = false
+  lifecycle {
+    ignore_changes = ["*"]
+  }
 }
 
 resource "aws_ssm_parameter" "PLAID_CLIENT_ID" {
   name      = "/${var.AppName}/PLAID_CLIENT_ID"
   type      = "String"
   value     = " "
-  overwrite = true
-
+  overwrite = false
   lifecycle {
     ignore_changes = ["*"]
   }
 }
-
 resource "aws_ssm_parameter" "PLAID_SECRET" {
   name      = "/${var.AppName}/PLAID_SECRET"
   type      = "String"
   value     = " "
-  overwrite = true
+  overwrite = false
 
   lifecycle {
     ignore_changes = ["*"]
@@ -65,7 +69,7 @@ resource "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
   name      = "/${var.AppName}/PLAID_PUBLIC_KEY"
   type      = "String"
   value     = " "
-  overwrite = true
+  overwrite = false
 
   lifecycle {
     ignore_changes = ["*"]
@@ -76,7 +80,7 @@ resource "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
   name      = "/${var.AppName}/SLACK_WEBHOOK_URL"
   type      = "String"
   value     = " "
-  overwrite = true
+  overwrite = false
 
   lifecycle {
     ignore_changes = ["*"]
@@ -593,26 +597,32 @@ resource "aws_route53_record" "ARecordLanding" {
 
 data "aws_ssm_parameter" "PLAID_CLIENT_ID" {
   name = "/${var.AppName}/PLAID_CLIENT_ID"
+  depends_on = ["aws_ssm_parameter.PLAID_CLIENT_ID"]
 }
 
 data "aws_ssm_parameter" "PLAID_PUBLIC_KEY" {
   name = "/${var.AppName}/PLAID_PUBLIC_KEY"
+  depends_on = ["aws_ssm_parameter.PLAID_PUBLIC_KEY"]
 }
 
 data "aws_ssm_parameter" "PLAID_SECRET" {
   name = "/${var.AppName}/PLAID_SECRET"
+  depends_on = ["aws_ssm_parameter.PLAID_SECRET"]
 }
 
 data "aws_ssm_parameter" "PLAID_ENV" {
   name = "/${var.AppName}/PLAID_ENV"
+  depends_on = ["aws_ssm_parameter.PLAID_ENV"]
 }
 
 data "aws_ssm_parameter" "SLACK_WEBHOOK_URL" {
   name = "/${var.AppName}/SLACK_WEBHOOK_URL"
+  depends_on = ["aws_ssm_parameter.SLACK_WEBHOOK_URL"]
 }
 
 data "aws_ssm_parameter" "SLACK_CHANNEL" {
   name = "/${var.AppName}/SLACK_CHANNEL"
+  depends_on = ["aws_ssm_parameter.SLACK_CHANNEL"]
 }
 
 resource "aws_lambda_function" "api" {
