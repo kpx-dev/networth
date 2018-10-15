@@ -19,7 +19,7 @@ var (
 	plaidClientID  = nwlib.GetEnv("PLAID_CLIENT_ID")
 	plaidSecret    = nwlib.GetEnv("PLAID_SECRET")
 	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
-	plaidEnv       = nwlib.GetEnv("PLAID_ENV", "sandbox")
+	plaidEnv       = nwlib.GetEnv("PLAID_ENV")
 	plaidClient    = nwlib.NewPlaidClient(plaidClientID, plaidSecret, plaidPublicKey, plaidEnv)
 )
 
