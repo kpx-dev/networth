@@ -563,7 +563,7 @@ resource "aws_cloudfront_distribution" "CloudFrontResource" {
     viewer_protocol_policy = "https-only"
 
     forwarded_values {
-      query_string = false
+      query_string = true
       headers      = ["Authorization", "Origin"]
 
       cookies {

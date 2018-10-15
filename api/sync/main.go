@@ -28,7 +28,7 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 	}
 
 	// TODO: get all active username
-	if err := nwlib.SyncNetworth(db, "b6989907-cba1-4ffb-b0f3-1258cb689ba0"); err != nil {
+	if err := nwlib.SyncNetworth(db, "c1fa7e12-529e-4b63-8c64-855ba23690ff"); err != nil {
 		fmt.Println("Problem syncing networth ", err)
 	}
 

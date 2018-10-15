@@ -63,7 +63,7 @@ func NewPlaidClient(clientID string, secret string, publicKey string, environmen
 	case "sandbox":
 		plaidHost = plaid.Sandbox
 		break
-	case "dev":
+	case "dev", "development":
 		plaidHost = plaid.Development
 		break
 	case "prod":

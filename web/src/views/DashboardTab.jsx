@@ -93,7 +93,7 @@ class DashboardTab extends React.Component {
 
   async componentDidMount() {
     const startDate = '2018-10-01';
-    const endDate = '2018-10-13';
+    const endDate = '2018-11-01';
     this.setState({ loading: true });
     const nw = await get('/networth');
     const nwHistory = await get(`/networth?start_date=${startDate}&end_date=${endDate}`);
