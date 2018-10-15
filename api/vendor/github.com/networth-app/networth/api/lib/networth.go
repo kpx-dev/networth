@@ -3,6 +3,7 @@ package nwlib
 import (
 	"fmt"
 	"log"
+	"strings"
 )
 
 // Networth struct
@@ -62,6 +63,12 @@ func isAsset(account Account) bool {
 		return false
 	case "paypal", "403B", "cash management", "cd", "hsa", "keogh", "money market", "mutual fund", "prepaid", "recurring", "rewards", "safe deposit", "sarsep":
 		return true
+	}
+
+	if account.Type == "other" && account.Subtype == "other" {
+		if strings.ToLower(account.OfficialName) == "investment" {
+			return true
+		}
 	}
 
 	return false

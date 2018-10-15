@@ -22,10 +22,10 @@ var (
 )
 
 func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
-	if e.Source != "aws.events" {
-		fmt.Printf("Invalid source: %s\n", e.Source)
-		return
-	}
+	// if e.Source != "aws.events" {
+	// 	fmt.Printf("Invalid source: %s\n", e.Source)
+	// 	return
+	// }
 
 	// TODO: get all active username
 	if err := nwlib.SyncNetworth(db, "c1fa7e12-529e-4b63-8c64-855ba23690ff"); err != nil {
