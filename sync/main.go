@@ -22,13 +22,20 @@ var (
 )
 
 func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
-	// if e.Source != "aws.events" {
-	// 	fmt.Printf("Invalid source: %s\n", e.Source)
-	// 	return
-	// }
-
 	// TODO: get all active username
-	if err := nwlib.SyncNetworth(db, "c1fa7e12-529e-4b63-8c64-855ba23690ff"); err != nil {
+	username := "c1fa7e12-529e-4b63-8c64-855ba23690ff"
+
+	tokens, err := nwlib.GetTokens(username)
+	if err != nil {
+		fmt.Println("Problem getting tokens ", err)
+	}
+
+	// (plaidClient *PlaidClient, db *DynamoDBClient, username string, itemID string, token string) error {
+	if err := nwlib.SyncAccount(plaidClient, db, username); err != nil {
+		fmt.Println("Problem syncing accounts ", err)
+	}
+
+	if err := nwlib.SyncNetworth(db, username); err != nil {
 		fmt.Println("Problem syncing networth ", err)
 	}
 

@@ -162,6 +162,39 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 // 	return dbTokens
 // }
 
+// GetTokens - return all tokens decrypted from db for a username
+func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, error) {
+	var tokens []Token
+	key := fmt.Sprintf("%s:token", username)
+
+	req := d.QueryRequest(&dynamodb.QueryInput{
+		TableName: aws.String(dbTable),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":id": {S: aws.String(key)},
+		},
+		KeyConditionExpression: aws.String("id = :id"),
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return tokens, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return tokens, err
+	}
+
+	for _, token := range tokens {
+		accessToken, err := kms.Decrypt(token.AccessToken)
+		if err != nil {
+			log.Println("Problem decoding access_token ", err)
+			return nil, err
+		}
+	}
+
+	return tokens, nil
+}
+
 // SetToken save token to db
 func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	tokenAttr, err := dynamodbattribute.MarshalMap(token)
@@ -171,8 +204,9 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	}
 
 	dbKey := map[string]dynamodb.AttributeValue{
-		"id":   {S: aws.String(fmt.Sprintf("%s:token", username))},
-		"sort": {S: aws.String(token.ItemID)},
+		"id":       {S: aws.String(fmt.Sprintf("%s:token", username))},
+		"sort":     {S: aws.String(token.ItemID)},
+		"username": {S: aws.String(username)},
 	}
 
 	for k, v := range dbKey {

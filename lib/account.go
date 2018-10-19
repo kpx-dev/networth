@@ -1,10 +1,11 @@
-package main
+package nwlib
 
 import (
 	"log"
 )
 
-func syncAccounts(username string, itemID string, token string) error {
+// SyncAccounts - get latest accounts from Plaid
+func SyncAccounts(plaidClient *PlaidClient, db *DynamoDBClient, username string, itemID string, token string) error {
 	log.Printf("Syncing accounts for username: %s \n", username)
 	accounts, err := plaidClient.GetAccounts(token)
 
