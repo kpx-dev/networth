@@ -379,7 +379,6 @@ func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
 	})
 
 	res, err := req.Send()
-	fmt.Println(err)
 	if err != nil {
 		return tokens, err
 	}
