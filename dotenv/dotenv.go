@@ -9,16 +9,20 @@ import (
 
 func init() {
 	dir, _ := os.Getwd()
-	if strings.HasSuffix(dir, "/api/dbstream") {
-		dir = strings.Replace(dir, "/api/dbstream", "", 1)
+	if strings.HasSuffix(dir, "/dbstream") {
+		dir = strings.Replace(dir, "/dbstream", "", 1)
 	}
 
-	if strings.HasSuffix(dir, "/api/lib") {
-		dir = strings.Replace(dir, "/api/lib", "", 1)
+	if strings.HasSuffix(dir, "/lib") {
+		dir = strings.Replace(dir, "/lib", "", 1)
 	}
 
 	if strings.HasSuffix(dir, "/api") {
 		dir = strings.Replace(dir, "/api", "", 1)
+	}
+
+	if strings.HasSuffix(dir, "/sync") {
+		dir = strings.Replace(dir, "/sync", "", 1)
 	}
 
 	envPath := fmt.Sprintf("%s/.env", dir)
