@@ -72,7 +72,7 @@ func (d DynamoDBClient) GetNetworthByDateRange(username string, startDate string
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting networth by date range ", err)
+		log.Printf("Problem getting networth by date range: %s - %s %+v", startDate, endDate, err)
 		return networth, err
 	}
 
@@ -371,6 +371,7 @@ func (d DynamoDBClient) GetTransactions(username string, accountID string) ([]Tr
 
 // GetAllUsers - get all users
 func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
+	// TODO: Query on username index instead of Scan
 	var tokens []Token
 	req := d.ScanRequest(&dynamodb.ScanInput{
 		TableName:        aws.String(dbTable),
@@ -378,7 +379,6 @@ func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
 	})
 
 	res, err := req.Send()
-	fmt.Println(err)
 	if err != nil {
 		return tokens, err
 	}

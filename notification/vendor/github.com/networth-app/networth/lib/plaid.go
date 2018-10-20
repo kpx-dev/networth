@@ -6,11 +6,6 @@ import (
 	"github.com/plaid/plaid-go/plaid"
 )
 
-// Tokens holds the structure multiple tokens
-type Tokens struct {
-	Tokens []*Token `json:"tokens"`
-}
-
 // Token holds the structure single token
 type Token struct {
 	ItemID          string   `json:"item_id"`
@@ -19,6 +14,7 @@ type Token struct {
 	InstitutionID   string   `json:"institution_id"`
 	InstitutionName string   `json:"institution_name"`
 	Accounts        []string `json:"accounts"`
+	Username        string   `json:"username"`
 }
 
 // Transaction struct

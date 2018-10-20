@@ -72,7 +72,7 @@ func (d DynamoDBClient) GetNetworthByDateRange(username string, startDate string
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting networth by date range ", err)
+		log.Printf("Problem getting networth by date range: %s - %s %+v", startDate, endDate, err)
 		return networth, err
 	}
 
@@ -128,40 +128,6 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	return err
 }
 
-// TODO: Query based on ins id?
-// GetToken return tokens from db
-// func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens {
-// 	dbTokens := &Tokens{}
-// 	key := fmt.Sprintf("%s:token", username)
-// 	sort := ""
-// 	if len(institutionID) > 0 {
-// 		sort = institutionID
-// 	}
-
-// 	req := d.GetItemRequest(&dynamodb.GetItemInput{
-// 		TableName: aws.String(dbTable),
-// 		Key: map[string]dynamodb.AttributeValue{
-// 			"id":   {S: aws.String(key)},
-// 			"sort": {S: aws.String(sort)},
-// 		},
-// 	})
-
-// 	res, err := req.Send()
-// 	if err != nil {
-// 		log.Printf("Problem getting tokens from db using sort key %s %v", sort, err)
-
-// 		return dbTokens
-// 	}
-
-// 	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbTokens); err != nil {
-// 		log.Println("Problem converting token data from db ", err)
-
-// 		return dbTokens
-// 	}
-
-// 	return dbTokens
-// }
-
 // GetTokens - return all tokens decrypted from db for a username
 func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, error) {
 	var tokens []Token
@@ -191,7 +157,10 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 			log.Println("Problem decoding access_token ", err)
 			return nil, err
 		}
-		payload = append(payload, Token{AccessToken: accessToken})
+		payload = append(payload, Token{
+			AccessToken:   accessToken,
+			ItemID:        token.ItemID,
+			InstitutionID: token.InstitutionID})
 	}
 
 	return payload, nil
@@ -398,4 +367,25 @@ func (d DynamoDBClient) GetTransactions(username string, accountID string) ([]Tr
 	}
 
 	return transactions, nil
+}
+
+// GetAllUsers - get all users
+func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
+	// TODO: Query on username index instead of Scan
+	var tokens []Token
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("attribute_exists(username)"),
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return tokens, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return tokens, err
+	}
+
+	return tokens, nil
 }
