@@ -2,13 +2,9 @@ package main
 
 import (
 	_ "github.com/networth-app/networth/dotenv"
-
-	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-func TestTransactions(t *testing.T) {
-	err := syncTransactions(username, invalidToken)
-	assert.Equal(t, err != nil, true)
-}
+// func TestTransactions(t *testing.T) {
+// 	err := syncTransactions(username, invalidToken)
+// 	assert.Equal(t, err != nil, true)
+// }

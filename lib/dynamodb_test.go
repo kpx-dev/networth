@@ -141,6 +141,7 @@ func TestGetNetworthByDateRange(t *testing.T) {
 // }
 
 func TestGetAllUsers(t *testing.T) {
-	_, err := db.GetAllUsers()
+	res, err := db.GetAllUsers()
 	assert.Equal(t, err, nil)
+	assert.Equal(t, len(res) > 0, true)
 }
