@@ -1,7 +1,6 @@
 package nwlib
 
 import (
-	"fmt"
 	"log"
 	"strings"
 )
@@ -38,8 +37,6 @@ func SyncNetworth(db *DynamoDBClient, username string) error {
 	}
 
 	networth := assets - liabilities
-	msg := fmt.Sprintf("%s - networth %f assets %f liabilities %f\n", username, networth, assets, liabilities)
-	log.Printf(msg)
 
 	if err := db.SetNetworth(username, networth, assets, liabilities); err != nil {
 		log.Println("Problem setting networth ", err)
