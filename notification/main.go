@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"github.com/networth-app/networth/lib"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
