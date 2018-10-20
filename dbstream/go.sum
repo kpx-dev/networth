@@ -12,6 +12,8 @@ github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8 h1:12VvqtR6Ao
 github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/networth-app/networth v0.0.0-20181019070109-7af34b272e9e h1:t3cg3sc+2b0+6ndhJphtSZGhwDeJ1Z9iRCKNPAIn7Yg=
 github.com/networth-app/networth v0.0.0-20181019070109-7af34b272e9e/go.mod h1:2ao7ZribndZqtowzn1EWwtVe7BHlu6JZj6lp+ZQ6mZM=
+github.com/networth-app/networth/dotenv v0.0.0-20181020073026-6a606e482806 h1:8MC2pZ2qjIeHl7yreymP/DhBni2QFZRS+Pvpci3KTgg=
+github.com/networth-app/networth/dotenv v0.0.0-20181020073026-6a606e482806/go.mod h1:wz+raRJgNFD9crCt5q5UzuuREPwSvBmHAz+J2uwmd84=
 github.com/networth-app/networth/lib v0.0.0-20181020050848-fdf051382c77 h1:HLfnP1Mw28TttkuV1aFE7ILXTPwJkvgFbB60Rd6PlnI=
 github.com/networth-app/networth/lib v0.0.0-20181020050848-fdf051382c77/go.mod h1:x5uNs5s33n1m4+YhGF0uYGr+ZQj3iSSGUm3svblbyiQ=
 github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd h1:0NQ8P+8Hop86vm7urcCZQxetNcox/SNWEclQu+Yf2Xc=
