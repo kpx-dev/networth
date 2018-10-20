@@ -22,23 +22,29 @@ var (
 )
 
 func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
-	// TODO: get all active username
-	username := "c1fa7e12-529e-4b63-8c64-855ba23690ff"
+	users, err := db.GetAllUsers()
 
-	tokens, err := db.GetTokens(kms, username)
 	if err != nil {
-		fmt.Println("Problem getting tokens ", err)
+		fmt.Println("Problem getting all users", err)
+		return
 	}
 
-	for _, token := range tokens {
-		// (plaidClient *PlaidClient, db *DynamoDBClient, username string, itemID string, token string) error {
-		if err := nwlib.SyncAccounts(plaidClient, db, username, token.ItemID, token.AccessToken); err != nil {
-			fmt.Println("Problem syncing accounts ", err)
+	for _, user := range users {
+		fmt.Printf("Syncing for username: %s\n", user.Username)
+		tokens, err := db.GetTokens(kms, user.Username)
+		if err != nil {
+			fmt.Println("Problem getting tokens ", err)
 		}
-	}
 
-	if err := nwlib.SyncNetworth(db, username); err != nil {
-		fmt.Println("Problem syncing networth ", err)
+		for _, token := range tokens {
+			if err := nwlib.SyncAccounts(plaidClient, db, user.Username, token.ItemID, token.AccessToken); err != nil {
+				fmt.Println("Problem syncing accounts ", err)
+			}
+		}
+
+		if err := nwlib.SyncNetworth(db, user.Username); err != nil {
+			fmt.Println("Problem syncing networth ", err)
+		}
 	}
 
 	fmt.Println("Sync done.")

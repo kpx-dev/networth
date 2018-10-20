@@ -18,6 +18,8 @@ github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82 h1:tS
 github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82/go.mod h1:wz+raRJgNFD9crCt5q5UzuuREPwSvBmHAz+J2uwmd84=
 github.com/networth-app/networth/lib v0.0.0-20181020071818-099b45c0817d h1:55YRnS+HmsK1Qeu22quKLtj0la4HEQxnQTpqaeojLJQ=
 github.com/networth-app/networth/lib v0.0.0-20181020071818-099b45c0817d/go.mod h1:zDrLFmwWPolUTCk5tjSMKOSX1HejS+i8qm6WB1/ZWCg=
+github.com/networth-app/networth/lib v0.0.0-20181020191121-e93c8d482e77 h1:+eYLOBcLIluwyaa/WuLi12kwZX4iPAUzLStIlFnWNAQ=
+github.com/networth-app/networth/lib v0.0.0-20181020191121-e93c8d482e77/go.mod h1:/UOxshCuiSS60r+bfnKLD+UXmoLq0d5r3gXZ+rAQjDo=
 github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd h1:0NQ8P+8Hop86vm7urcCZQxetNcox/SNWEclQu+Yf2Xc=
 github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd/go.mod h1:c7cDT1Lkcr0AgKJGVIG+oCa07jOrrg4Um8nduQ1eQN0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
