@@ -371,6 +371,7 @@ func (d DynamoDBClient) GetTransactions(username string, accountID string) ([]Tr
 
 // GetAllUsers - get all users
 func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
+	// TODO: Query on username index instead of Scan
 	var tokens []Token
 	req := d.ScanRequest(&dynamodb.ScanInput{
 		TableName:        aws.String(dbTable),
