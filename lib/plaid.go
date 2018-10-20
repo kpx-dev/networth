@@ -14,6 +14,7 @@ type Token struct {
 	InstitutionID   string   `json:"institution_id"`
 	InstitutionName string   `json:"institution_name"`
 	Accounts        []string `json:"accounts"`
+	Username        string   `json:"username"`
 }
 
 // Transaction struct

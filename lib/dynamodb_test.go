@@ -1,12 +1,12 @@
 package nwlib
 
 import (
+	_ "github.com/networth-app/networth/dotenv"
+
 	"testing"
 
 	"github.com/plaid/plaid-go/plaid"
 	"github.com/stretchr/testify/assert"
-
-	_ "github.com/networth-app/networth/dotenv"
 )
 
 var (
@@ -139,3 +139,8 @@ func TestGetNetworthByDateRange(t *testing.T) {
 // 	// assert.Equal(t, err, nil)
 // 	// assert.Equal(t, len(accounts), 0)
 // }
+
+func TestGetAllUsers(t *testing.T) {
+	_, err := db.GetAllUsers()
+	assert.Equal(t, err, nil)
+}

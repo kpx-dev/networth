@@ -368,3 +368,24 @@ func (d DynamoDBClient) GetTransactions(username string, accountID string) ([]Tr
 
 	return transactions, nil
 }
+
+// GetAllUsers - get all users
+func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
+	var tokens []Token
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("attribute_exists(username)"),
+	})
+
+	res, err := req.Send()
+	fmt.Println(err)
+	if err != nil {
+		return tokens, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return tokens, err
+	}
+
+	return tokens, nil
+}

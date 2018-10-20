@@ -42,7 +42,7 @@ start-web:
 	cd web && npm run start
 
 update-lib:
-	cd sync && go get && go mod vendor
+	cd sync && go get && go install && go mod tidy && go mod vendor
 	cd notification && go install && go mod vendor
 	cd dbstream && go get && go mod vendor
 
