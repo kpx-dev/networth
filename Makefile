@@ -43,8 +43,8 @@ start-web:
 
 update-lib:
 	cd sync && go get && go mod tidy && go mod vendor
-	cd notification && go install && go mod vendor
-	cd dbstream && go get && go mod vendor
+	cd notification && go get && go mod tidy && go mod vendor
+	cd dbstream && go get && go mod tidy && go mod vendor
 
 test:
 	cd api && go test
