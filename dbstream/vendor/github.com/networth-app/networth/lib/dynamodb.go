@@ -43,13 +43,13 @@ func (d DynamoDBClient) GetNetworth(username string) (Networth, error) {
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting networth ", err)
+		log.Printf("Problem getting networth: %+v\n", err)
 		return networth, err
 	}
 
 	payload := Networth{}
 	if err := dynamodbattribute.UnmarshalMap(res.Item, &payload); err != nil {
-		log.Println("Problem converting db to Networth struct ", err)
+		log.Printf("Problem converting db to Networth struct: %+v\n", err)
 
 		return networth, err
 	}
@@ -152,7 +152,7 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 	for _, token := range tokens {
 		accessToken, err := kms.Decrypt(token.AccessToken)
 		if err != nil {
-			log.Println("Problem decoding access_token ", err)
+			log.Printf("Problem decoding access token: %+v\n", err)
 			return nil, err
 		}
 		payload = append(payload, Token{
@@ -162,6 +162,42 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 	}
 
 	return payload, nil
+}
+
+// GetTokenByItemID - return decrypted token based on item_id
+func (d DynamoDBClient) GetTokenByItemID(kms *KMSClient, itemID string) (Token, error) {
+	var tokens []Token
+	var token Token
+
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("contains(id, :token) and item_id = :itemID"),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":token":  {S: aws.String(":token")},
+			":itemID": {S: aws.String(itemID)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return token, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return token, err
+	}
+
+	for _, token := range tokens {
+		accessToken, err := kms.Decrypt(token.AccessToken)
+		if err != nil {
+			log.Printf("Problem decoding access token: %+v\n", err)
+			return token, err
+		}
+		token.AccessToken = accessToken
+		break
+	}
+
+	return token, nil
 }
 
 // SetToken save token to db
@@ -188,7 +224,7 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetToken ", err)
+		log.Printf("Problem SetToken: %+v\n", err)
 		return err
 	}
 
@@ -250,7 +286,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetTransaction ", err)
+		log.Printf("Problem SetTransaction: %+v\n", err)
 		return err
 	}
 

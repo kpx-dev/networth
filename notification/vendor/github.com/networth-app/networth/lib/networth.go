@@ -21,7 +21,7 @@ func SyncNetworth(db *DynamoDBClient, username string) error {
 	accounts, err := db.GetAccounts(username)
 
 	if err != nil {
-		log.Println("Problem getting accounts ", err)
+		log.Printf("Problem getting accounts: %+v\n", err)
 		return err
 	}
 
@@ -39,7 +39,7 @@ func SyncNetworth(db *DynamoDBClient, username string) error {
 	networth := assets - liabilities
 
 	if err := db.SetNetworth(username, networth, assets, liabilities); err != nil {
-		log.Println("Problem setting networth ", err)
+		log.Printf("Problem setting networth: %+v\n", err)
 		return err
 	}
 

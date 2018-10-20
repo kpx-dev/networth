@@ -4,7 +4,6 @@ import (
 	_ "github.com/networth-app/networth/dotenv"
 
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 
@@ -35,7 +34,6 @@ func ErrorResp(w http.ResponseWriter, message interface{}) {
 	w.WriteHeader(http.StatusBadRequest)
 
 	msg := message.(string)
-	log.Println("Response error: " + msg)
 	json.NewEncoder(w).Encode(APIResponse{msg})
 }
 

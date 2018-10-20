@@ -7,31 +7,22 @@ import (
 	"github.com/networth-app/networth/lib"
 )
 
-func handleInsertModifyToken(username string, itemID string, record events.DynamoDBEventRecord) error {
-	token := record.Change.NewImage
+func handleInsertModifyToken(record events.DynamoDBEventRecord) error {
+	newToken := record.Change.NewImage
+	token := nwlib.Token{
+		Username:    newToken["username"].String(),
+		ItemID:      newToken["item_id"].String(),
+		AccessToken: newToken["access_token"].String(),
+	}
 
-	accessToken, err := kms.Decrypt(token["access_token"].String())
+	accessToken, err := kms.Decrypt(token.AccessToken)
 	if err != nil {
 		log.Printf("Problem decoding access token: %+v\n", err)
 		return err
 	}
+	token.AccessToken = accessToken
 
-	// TODO: make these into gorutines / wait group workers:
-	// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
-	if err := nwlib.SyncAccounts(plaidClient, db, username, itemID, accessToken); err != nil {
-		log.Printf("Problem syncing accounts: %+v\n", err)
-		return err
-	}
+	err = sync(token)
 
-	if err := nwlib.SyncNetworth(db, username); err != nil {
-		log.Printf("Problem syncing networth: %+v\n", err)
-		return err
-	}
-
-	if err := syncTransactions(username, accessToken); err != nil {
-		log.Printf("Problem syncing transactions: %+v", err)
-		return err
-	}
-
-	return nil
+	return err
 }

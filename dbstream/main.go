@@ -21,26 +21,18 @@ var (
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
 )
 
-func extractCompositeKeys(record events.DynamoDBEventRecord) (string, string, string) {
-	partitionKey := record.Change.Keys["id"].String()
-	sortKey := record.Change.Keys["sort"].String()
-	username := strings.Split(partitionKey, ":")[0]
-
-	return partitionKey, sortKey, username
-}
-
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	for _, record := range e.Records {
-		key, sort, username := extractCompositeKeys(record)
+		partitionKey := record.Change.Keys["id"].String()
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
-			if key == "webhook" {
+			if partitionKey == "webhook" {
 				if err := handleInsertModifyWebhook(record); err != nil {
 					log.Printf("Problem insert / modify webhook: %+v\n", err)
 				}
-			} else if strings.HasSuffix(key, ":token") {
-				if err := handleInsertModifyToken(username, sort, record); err != nil {
+			} else if strings.HasSuffix(partitionKey, ":token") {
+				if err := handleInsertModifyToken(record); err != nil {
 					log.Printf("Problem insert / modify token: %+v\n", err)
 				}
 			}

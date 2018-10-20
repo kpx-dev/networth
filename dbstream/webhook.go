@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/networth-app/networth/lib"
+	"log"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/networth-app/networth/lib"
 )
 
 func handleInsertModifyWebhook(record events.DynamoDBEventRecord) error {
@@ -13,6 +14,14 @@ func handleInsertModifyWebhook(record events.DynamoDBEventRecord) error {
 		WebhookType: newRecord["webhook_type"].String(),
 		WebhookCode: newRecord["webhook_code"].String(),
 	}
+
+	token, err := db.GetTokenByItemID(kms, webhook.ItemID)
+
+	if err != nil {
+		log.Printf("Problem getting token for item id: %s \n %+v\n", webhook.ItemID, err)
+	}
+
+	err = sync(token)
 
 	return nil
 }
