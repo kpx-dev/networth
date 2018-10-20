@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-redis/redis"
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 )
 
 // RedisClient redis client struct

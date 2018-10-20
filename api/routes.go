@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/apex/gateway"
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 	"github.com/rs/cors"
 	"gopkg.in/square/go-jose.v2/jwt"
 )

@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 )
 
 func (s *NetworthAPI) handleAccounts() http.HandlerFunc {

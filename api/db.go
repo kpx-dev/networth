@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 )
 
 // DBClient client for db storage

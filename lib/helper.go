@@ -3,12 +3,10 @@ package nwlib
 import (
 	_ "github.com/networth-app/networth/dotenv"
 
-	"bufio"
 	"encoding/json"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/aws/endpoints"
@@ -55,61 +53,6 @@ func SuccessResp(w http.ResponseWriter, message interface{}) {
 		json.NewEncoder(w).Encode(APIResponse{message})
 	}
 
-}
-
-// GetAPIVersion api version
-func GetAPIVersion() string {
-	path := GetRootDir() + "/api/Gopkg.toml"
-	file, _ := os.Open(path)
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	metadataFound := false
-	for scanner.Scan() {
-		line := scanner.Text()
-		if metadataFound {
-			lineSplitted := strings.Split(line, "=")
-			version := strings.Replace(lineSplitted[1], "\"", "", 2)
-			return strings.TrimSpace(version)
-		}
-
-		if line == "[metadata]" {
-			metadataFound = true
-		}
-	}
-
-	return ""
-}
-
-// GetRootDir root dir
-func GetRootDir() string {
-	dir, _ := os.Getwd()
-	if strings.HasSuffix(dir, "/api") {
-		dir = strings.Replace(dir, "/api", "", 1)
-	}
-
-	if strings.HasSuffix(dir, "/lib") {
-		dir = strings.Replace(dir, "/lib", "", 1)
-	}
-
-	return dir
-}
-
-// LoadDotEnv load .env file. TODO: remove in favor of Lambda ENV
-func LoadDotEnv() {
-	envPath := GetRootDir() + "/.env"
-	file, _ := os.Open(envPath)
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		lineSplitted := strings.Split(line, "=")
-
-		key := strings.TrimSpace(lineSplitted[0])
-		val := strings.TrimSpace(lineSplitted[1])
-		os.Setenv(key, val)
-	}
 }
 
 // LoadAWSConfig set default aws config

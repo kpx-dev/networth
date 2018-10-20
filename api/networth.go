@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 )
 
 func (s *NetworthAPI) handleNetworth() http.HandlerFunc {

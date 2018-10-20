@@ -1,7 +1,7 @@
 package nwlib
 
 import (
-	_ "github.com/networth-app/networth/api/lib/dotenv"
+	_ "github.com/networth-app/networth/dotenv"
 
 	"bufio"
 	"encoding/json"
