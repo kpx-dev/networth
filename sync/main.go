@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -24,33 +25,33 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 	users, err := db.GetAllUsers()
 
 	if err != nil {
-		fmt.Println("Problem getting all users", err)
+		log.Printf("Problem getting all users: %+v", err)
 		return
 	}
 
 	for _, user := range users {
-		fmt.Printf("Sync started for username: %s\n", user.Username)
+		log.Printf("Sync started for username: %s\n", user.Username)
 
 		tokens, err := db.GetTokens(kms, user.Username)
 		if err != nil {
-			fmt.Println("Problem getting tokens ", err)
+			log.Printf("Problem getting tokens: %+v", err)
 		}
 
 		for _, token := range tokens {
 			if err := nwlib.SyncAccounts(plaidClient, db, user.Username, token.ItemID, token.AccessToken); err != nil {
 				errMsg := fmt.Sprintf("Problem syncing accounts for username :%s\n %+v", user.Username, err)
-				fmt.Println(errMsg)
+				log.Println(errMsg)
 				nwlib.PublishSNS(snsARN, errMsg)
 				panic(err)
 			}
 		}
 
 		if err := nwlib.SyncNetworth(db, user.Username); err != nil {
-			fmt.Println("Problem syncing networth ", err)
+			log.Printf("Problem syncing networth: %+v", err)
 		}
 	}
 
-	fmt.Println("Sync done.")
+	log.Println("Sync done.")
 }
 
 func main() {
