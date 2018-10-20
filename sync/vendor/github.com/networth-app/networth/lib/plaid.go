@@ -13,12 +13,12 @@ type Tokens struct {
 
 // Token holds the structure single token
 type Token struct {
-	ItemID          string   `json:"item_id"`
-	AccessToken     string   `json:"access_token"`
-	AccountID       string   `json:"account_id"`
-	InstitutionID   string   `json:"institution_id"`
-	InstitutionName string   `json:"institution_name"`
-	Accounts        []string `json:"accounts"`
+	ItemID      string `json:"item_id"`
+	AccessToken string `json:"access_token"`
+	// AccountID       string   `json:"account_id"`
+	InstitutionID   string `json:"institution_id"`
+	InstitutionName string `json:"institution_name"`
+	// Accounts        []string `json:"accounts"`
 }
 
 // Transaction struct

@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/networth-app/networth/lib"
 )
 
 var (
@@ -24,14 +25,16 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 	// TODO: get all active username
 	username := "c1fa7e12-529e-4b63-8c64-855ba23690ff"
 
-	tokens, err := nwlib.GetTokens(username)
+	tokens, err := db.GetTokens(kms, username)
 	if err != nil {
 		fmt.Println("Problem getting tokens ", err)
 	}
 
-	// (plaidClient *PlaidClient, db *DynamoDBClient, username string, itemID string, token string) error {
-	if err := nwlib.SyncAccount(plaidClient, db, username); err != nil {
-		fmt.Println("Problem syncing accounts ", err)
+	for _, token := range tokens {
+		// (plaidClient *PlaidClient, db *DynamoDBClient, username string, itemID string, token string) error {
+		if err := nwlib.SyncAccounts(plaidClient, db, username, token.ItemID, token.AccessToken); err != nil {
+			fmt.Println("Problem syncing accounts ", err)
+		}
 	}
 
 	if err := nwlib.SyncNetworth(db, username); err != nil {
