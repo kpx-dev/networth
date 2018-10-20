@@ -36,20 +36,14 @@ github.com/aws/aws-sdk-go-v2/private/protocol/rest
 github.com/aws/aws-sdk-go-v2/private/protocol/json/jsonutil
 github.com/aws/aws-sdk-go-v2/private/protocol/query/queryutil
 github.com/aws/aws-sdk-go-v2/private/protocol/xml/xmlutil
-# github.com/davecgh/go-spew v1.1.1
-github.com/davecgh/go-spew/spew
 # github.com/go-ini/ini v1.39.0
 github.com/go-ini/ini
 # github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
 github.com/jmespath/go-jmespath
 # github.com/networth-app/networth/dotenv v0.0.0-20181020073026-6a606e482806
 github.com/networth-app/networth/dotenv
-# github.com/networth-app/networth/lib v0.0.0-20181020192240-1fb24cd377d5
+# github.com/networth-app/networth/lib v0.0.0-20181020195629-169c194db229
 github.com/networth-app/networth/lib
 # github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd
 github.com/plaid/plaid-go/plaid
 github.com/plaid/plaid-go/internal
-# github.com/pmezard/go-difflib v1.0.0
-github.com/pmezard/go-difflib/difflib
-# github.com/stretchr/testify v1.2.2
-github.com/stretchr/testify/assert

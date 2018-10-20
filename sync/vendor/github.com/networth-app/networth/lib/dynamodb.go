@@ -92,7 +92,6 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	liabilitiesStr := aws.String(strconv.FormatFloat(liabilities, 'f', -1, 64))
 	key := fmt.Sprintf("%s:networth", username)
 
-	fmt.Println("SetNetworth for ", username, networth, assets, liabilities)
 	req := d.BatchWriteItemRequest(&dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]dynamodb.WriteRequest{
 			dbTable: {
@@ -122,8 +121,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 		},
 	})
 
-	res, err := req.Send()
-	fmt.Printf("Set networth res %+v\n", res)
+	_, err := req.Send()
 
 	return err
 }
@@ -170,7 +168,7 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	tokenAttr, err := dynamodbattribute.MarshalMap(token)
 	if err != nil {
-		fmt.Println("Problem marshalling token struct into dyno format", err)
+		log.Printf("Problem marshalling token struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -201,7 +199,7 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 func (d DynamoDBClient) SetWebhook(webhook Webhook) error {
 	dbAttr, err := dynamodbattribute.MarshalMap(webhook)
 	if err != nil {
-		fmt.Println("Problem marshalling webhook struct into dyno format", err)
+		log.Printf("Problem marshalling webhook struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -220,7 +218,7 @@ func (d DynamoDBClient) SetWebhook(webhook Webhook) error {
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetWebhook ", err)
+		log.Printf("Problem SetWebhook: %+v\n", err)
 		return err
 	}
 
@@ -232,7 +230,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 
 	transactionAttr, err := dynamodbattribute.MarshalMap(transaction)
 	if err != nil {
-		fmt.Println("Problem marshalling transaction struct into dyno format", err)
+		log.Printf("Problem marshalling transaction struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -263,7 +261,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 func (d DynamoDBClient) SetAccount(username string, itemID string, account *plaid.Account) error {
 	accountAttr, err := dynamodbattribute.MarshalMap(account)
 	if err != nil {
-		fmt.Println("Problem marshalling account struct into dyno format", err)
+		log.Printf("Problem marshalling account struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -283,40 +281,11 @@ func (d DynamoDBClient) SetAccount(username string, itemID string, account *plai
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem saving account to db ", err)
+		log.Printf("Problem saving account to db: %+v\n", err)
 		return err
 	}
 
 	return nil
-}
-
-// Set key / val to db
-func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, valMap map[string]string) error {
-	items := map[string]dynamodb.AttributeValue{
-		"id": {S: aws.String(partitionKey)},
-	}
-
-	if len(sortKey) > 0 {
-		items["datetime"] = dynamodb.AttributeValue{S: aws.String(sortKey)}
-	}
-
-	for key, val := range valMap {
-		fmt.Println("key / val ", key, val)
-		items[key] = dynamodb.AttributeValue{S: aws.String(val)}
-	}
-
-	fmt.Println(items)
-
-	req := d.PutItemRequest(&dynamodb.PutItemInput{
-		Item:      items,
-		TableName: aws.String(table),
-	})
-
-	res, err := req.Send()
-
-	fmt.Println("Dyno Set() res: ", res)
-
-	return err
 }
 
 // GetAccounts return all accounts from db for a username
