@@ -19,7 +19,6 @@ var (
 	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
-	slackURL       = nwlib.GetEnv("SLACK_WEBHOOK_URL")
 )
 
 func extractCompositeKeys(record events.DynamoDBEventRecord) (string, string, string) {

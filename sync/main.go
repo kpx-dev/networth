@@ -18,7 +18,6 @@ var (
 	kms            = nwlib.NewKMSClient()
 	db             = nwlib.NewDynamoDBClient()
 	snsARN         = nwlib.GetEnv("SNS_TOPIC_ARN")
-	slackURL       = nwlib.GetEnv("SLACK_WEBHOOK_URL")
 )
 
 func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
@@ -30,7 +29,8 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 	}
 
 	for _, user := range users {
-		fmt.Printf("Syncing for username: %s\n", user.Username)
+		fmt.Printf("Sync started for username: %s\n", user.Username)
+
 		tokens, err := db.GetTokens(kms, user.Username)
 		if err != nil {
 			fmt.Println("Problem getting tokens ", err)
@@ -38,7 +38,10 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 
 		for _, token := range tokens {
 			if err := nwlib.SyncAccounts(plaidClient, db, user.Username, token.ItemID, token.AccessToken); err != nil {
-				fmt.Println("Problem syncing accounts ", err)
+				errMsg := fmt.Sprintf("Problem syncing accounts for username :%s\n %+v", user.Username, err)
+				fmt.Println(errMsg)
+				nwlib.PublishSNS(snsARN, errMsg)
+				panic(err)
 			}
 		}
 
