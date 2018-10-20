@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/networth-app/networth/lib"
 )
 
 func handleInsertModifyToken(username string, itemID string, record events.DynamoDBEventRecord) error {
@@ -17,7 +18,7 @@ func handleInsertModifyToken(username string, itemID string, record events.Dynam
 
 	// TODO: make these into gorutines / wait group workers:
 	// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
-	if err := syncAccounts(username, itemID, accessToken); err != nil {
+	if err := nwlib.SyncAccounts(plaidClient, db, username, itemID, accessToken); err != nil {
 		log.Println("Problem syncing accounts ", err)
 		return err
 	}

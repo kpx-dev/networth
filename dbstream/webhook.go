@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 
 	"github.com/aws/aws-lambda-go/events"
 )

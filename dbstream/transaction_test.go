@@ -1,9 +1,10 @@
 package main
 
 import (
+	_ "github.com/networth-app/networth/dotenv"
+
 	"testing"
 
-	_ "github.com/networth-app/networth/api/lib/dotenv"
 	"github.com/stretchr/testify/assert"
 )
 

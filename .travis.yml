@@ -19,7 +19,7 @@ matrix:
   - language: go
     install:
     - pip install --user awscli
-    before_script: cd api/dbstream
+    before_script: cd dbstream
     script: go test
     before_deploy: cd ${TRAVIS_BUILD_DIR}
     deploy:
@@ -29,7 +29,7 @@ matrix:
   - language: go
     install:
     - pip install --user awscli
-    before_script: cd api/notification
+    before_script: cd notification
     script: go test
     before_deploy: cd ${TRAVIS_BUILD_DIR}
     deploy:

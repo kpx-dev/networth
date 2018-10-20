@@ -1,0 +1,3 @@
+# lib
+
+Shared Golang lib

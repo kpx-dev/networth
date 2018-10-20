@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/networth-app/networth/api/lib"
+	"github.com/networth-app/networth/lib"
 )
 
 func syncNetworth(username string) error {
