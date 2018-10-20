@@ -9,7 +9,7 @@ import (
 
 // NetworthAPI nw api struct
 type NetworthAPI struct {
-	db     *DBClient
+	db     *nwlib.DynamoDBClient
 	router *mux.Router
 	plaid  *nwlib.PlaidClient
 }
@@ -25,7 +25,7 @@ var (
 
 func main() {
 	apiHost := nwlib.GetEnv("API_HOST", ":8000")
-	dbClient := NewDBClient()
+	dbClient := nwlib.NewDynamoDBClient()
 
 	api := &NetworthAPI{
 		db:     dbClient,

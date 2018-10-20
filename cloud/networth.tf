@@ -683,7 +683,7 @@ resource "aws_lambda_function" "sync" {
   handler          = "${var.AppName}-sync"
   source_code_hash = "${base64sha256(file("../bin/${var.AppName}-sync.zip"))}"
   runtime          = "go1.x"
-  timeout          = 300
+  timeout          = 900
 
   environment {
     variables = {
