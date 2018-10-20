@@ -3,7 +3,7 @@ package nwlib
 import (
 	"testing"
 
-	_ "github.com/networth-app/networth/api/lib/dotenv"
+	_ "github.com/networth-app/networth/dotenv"
 )
 
 var (

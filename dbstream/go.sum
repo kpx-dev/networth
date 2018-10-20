@@ -1,0 +1,4 @@
+github.com/aws/aws-lambda-go v1.6.0 h1:T+u/g79zPKw1oJM7xYhvpq7i4Sjc0iVsXZUaqRVVSOg=
+github.com/aws/aws-lambda-go v1.6.0/go.mod h1:zUsUQhAUjYzR8AuduJPCfhBuKWUaDbQiPOG+ouzmE1A=
+github.com/networth-app/networth v0.0.0-20181019070109-7af34b272e9e h1:t3cg3sc+2b0+6ndhJphtSZGhwDeJ1Z9iRCKNPAIn7Yg=
+github.com/networth-app/networth/api v0.0.0-20181019070109-7af34b272e9e h1:TFX4pqkhyxmZSLbrhmleAXu9Tg3xR+X/3LsTqIv4t4E=

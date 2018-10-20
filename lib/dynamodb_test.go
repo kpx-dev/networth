@@ -6,7 +6,7 @@ import (
 	"github.com/plaid/plaid-go/plaid"
 	"github.com/stretchr/testify/assert"
 
-	_ "github.com/networth-app/networth/api/lib/dotenv"
+	_ "github.com/networth-app/networth/dotenv"
 )
 
 var (

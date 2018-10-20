@@ -165,6 +165,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 // GetTokens - return all tokens decrypted from db for a username
 func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, error) {
 	var tokens []Token
+	var payload []Token
 	key := fmt.Sprintf("%s:token", username)
 
 	req := d.QueryRequest(&dynamodb.QueryInput{
@@ -190,9 +191,10 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 			log.Println("Problem decoding access_token ", err)
 			return nil, err
 		}
+		payload = append(payload, Token{AccessToken: accessToken})
 	}
 
-	return tokens, nil
+	return payload, nil
 }
 
 // SetToken save token to db
