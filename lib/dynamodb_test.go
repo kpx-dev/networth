@@ -15,6 +15,7 @@ var (
 	testUsername         = "b6989907-cba1-4ffb-b0f3-1258cb689ba0"
 	testUsernameNotExist = "test_not_exist_username@networth.app"
 	accountID            = "Vxk3QMnVmNhaJKmlrXg5tj7q5keD3bfW4BnnE"
+	itemID               = "dkeX46eyynhoaRqAOdmdUJnX31BmXPCP3wVnR0"
 )
 
 func TestSetTransaction(t *testing.T) {
@@ -144,4 +145,10 @@ func TestGetAllUsers(t *testing.T) {
 	res, err := db.GetAllUsers()
 	assert.Equal(t, err, nil)
 	assert.Equal(t, len(res) > 0, true)
+}
+
+func TestGetTokenByItemID(t *testing.T) {
+	kms := NewKMSClient()
+	_, err := db.GetTokenByItemID(kms, itemID)
+	assert.Equal(t, err, nil)
 }

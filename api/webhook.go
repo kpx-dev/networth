@@ -41,7 +41,7 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 
 		log.Printf("New webhook, type: %s, code: %s, item: %s\n", webhook.WebhookType, webhook.WebhookCode, webhook.ItemID)
 		if err := s.db.SetWebhook(webhook); err != nil {
-			log.Println("Problem saving webhook to db ", err)
+			log.Printf("Problem saving webhook to db: %+v\n", err)
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}

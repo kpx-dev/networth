@@ -59,7 +59,7 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		}
 
 		if err := s.db.SetToken(username, token); err != nil {
-			log.Println("Problem saving token to db ", err)
+			log.Printf("Problem saving token to db: %+v\n", err)
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}

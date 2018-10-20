@@ -31,7 +31,7 @@ func (s *NetworthAPI) init() {
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		url := strings.SplitAfter(r.URL.String(), prefix)
-		log.Println(fmt.Sprintf("%s %s", r.Method, url[1]))
+		log.Printf("%s %s\n", r.Method, url[1])
 		next.ServeHTTP(w, r)
 	})
 }
@@ -54,7 +54,7 @@ func extractUsernameMiddleware(next http.Handler) http.Handler {
 
 		tok, err := jwt.ParseSigned(jwtKey)
 		if err != nil {
-			log.Println("Problem parsing jwt ", err)
+			log.Printf("Problem parsing jwt: %+v\n", err)
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -72,8 +72,7 @@ func extractUsernameMiddleware(next http.Handler) http.Handler {
 func (s *NetworthAPI) Start(host string) {
 	s.init()
 	handler := cors.Default().Handler(s.router)
-
-	log.Println(fmt.Sprintf("API service started on: %s", host))
+	log.Printf("API service started on: %s\n", host)
 
 	if nwlib.GetEnv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		log.Fatal(http.ListenAndServe(host, handler))

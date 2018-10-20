@@ -29,7 +29,6 @@ func extractCompositeKeys(record events.DynamoDBEventRecord) (string, string, st
 	return partitionKey, sortKey, username
 }
 
-// TODO: https://github.com/aws/aws-lambda-go/issues/58
 func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 	for _, record := range e.Records {
 		key, sort, username := extractCompositeKeys(record)
@@ -38,11 +37,11 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 		case "INSERT", "MODIFY":
 			if key == "webhook" {
 				if err := handleInsertModifyWebhook(record); err != nil {
-					log.Println("Problem insert / modify webhook ", err)
+					log.Printf("Problem insert / modify webhook: %+v\n", err)
 				}
 			} else if strings.HasSuffix(key, ":token") {
 				if err := handleInsertModifyToken(username, sort, record); err != nil {
-					log.Println("Problem insert / modify token ", err)
+					log.Printf("Problem insert / modify token: %+v\n", err)
 				}
 			}
 			break

@@ -12,7 +12,7 @@ func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 		accounts, err := s.db.GetAccounts(username)
 
 		if err != nil {
-			log.Println("Problem getting accounts ", err)
+			log.Printf("Problem getting accounts: %+v\n", err)
 			nwlib.ErrorResp(w, err.Error())
 			return
 		}

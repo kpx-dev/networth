@@ -34,7 +34,7 @@ func (k KMSClient) Encrypt(token string) (string, error) {
 	res, err := req.Send()
 
 	if err != nil {
-		log.Println("Problem encrypting key ", err)
+		log.Printf("Problem encrypting key: %+v\n", err)
 		return "", err
 	}
 
@@ -52,7 +52,7 @@ func (k KMSClient) Decrypt(token string) (string, error) {
 	res, err := req.Send()
 
 	if err != nil {
-		log.Println("Problem decrypting key ", err)
+		log.Printf("Problem decrypting key: %+v\n", err)
 		return "", err
 	}
 

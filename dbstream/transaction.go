@@ -15,7 +15,7 @@ func syncTransactions(username string, token string) error {
 	trans, err := plaidClient.GetTransactions(token, startDateStr, endDateStr)
 
 	if err != nil {
-		log.Println("syncTransactions() Problem getting trans ", err)
+		log.Printf("syncTransactions() Problem getting trans ", err)
 		return err
 	}
 
