@@ -1,10 +1,5 @@
-import Dashboard from "../views/Dashboard.jsx";
+import Dashboard from "layouts/Dashboard/Dashboard.jsx";
 
-var indexRoutes = [
-  // { path: "/landing-page", name: "LandingPage", component: LandingPage },
-  // { path: "/profile-page", name: "ProfilePage", component: ProfilePage },
-  // { path: "/login", name: "LoginPage", component: LoginPage },
-  { path: "/", name: "Dashboard", component: Dashboard }
-];
+var indexRoutes = [{ path: "/", name: "Home", component: Dashboard }];
 
 export default indexRoutes;

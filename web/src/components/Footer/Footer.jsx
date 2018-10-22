@@ -1,85 +1,39 @@
+/*eslint-disable*/
 import React from "react";
+import { Container, Row } from "reactstrap";
+// used for making the prop types of this component
 import PropTypes from "prop-types";
-import classNames from "classnames";
-import { List, withStyles } from "@material-ui/core";
-// import Favorite from "@material-ui/icons/Favorite";
-import footerStyle from "../../assets/jss/material-kit-react/components/footerStyle.jsx";
 
-function Footer({ ...props }) {
-  const { classes, whiteFont } = props;
-  const footerClasses = classNames({
-    [classes.footer]: true,
-    [classes.footerWhiteFont]: whiteFont
-  });
-  // const aClasses = classNames({
-  //   [classes.a]: true,
-  //   [classes.footerWhiteFont]: whiteFont
-  // });
-  return (
-    <footer className={footerClasses}>
-      <div className={classes.container}>
-        <div className={classes.left}>
-          <List className={classes.list}>
-            {/* <ListItem className={classes.inlineBlock}>
-              <a
-                href="https://www.creative-tim.com/"
-                className={classes.block}
-                target="_blank"
-              >
-                Creative Tim
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a
-                href="https://www.creative-tim.com/presentation"
-                className={classes.block}
-                target="_blank"
-              >
-                About us
-              </a>
-            </ListItem>
-            <ListItem className={classes.inlineBlock}>
-              <a
-                href="http://blog.creative-tim.com/"
-                className={classes.block}
-                target="_blank"
-              >
-                Blog
-              </a>
-            </ListItem> */}
-
-            {/* <ListItem className={classes.inlineBlock}>
-              <a
-                href="https://www.creative-tim.com/license"
-                className={classes.block}
-                target="_blank"
-              >
-                Licenses
-              </a>
-            </ListItem> */}
-          </List>
-        </div>
-
-        {/* <div className={classes.right}>
-          &copy; {1900 + new Date().getYear()} , made with{" "}
-          <Favorite className={classes.icon} /> by{" "}
-          <a
-            href="https://www.creative-tim.com"
-            className={aClasses}
-            target="_blank"
-          >
-            Creative Tim
-          </a>{" "}
-          for a better web.
-        </div> */}
-      </div>
-    </footer>
-  );
+class Footer extends React.Component {
+  render() {
+    return (
+      <footer
+        className={"footer" + (this.props.default ? " footer-default" : "")}
+      >
+        <Container fluid={this.props.fluid ? true : false}>
+          <Row>
+            <nav className="footer-nav">
+              <ul>
+                <li>
+                  <a ref="mailto:feedback@networth.app">Feedback</a>
+                </li>
+              </ul>
+            </nav>
+            {/* <div className="credits ml-auto">
+              <div className="copyright">
+                Test
+              </div>
+            </div> */}
+          </Row>
+        </Container>
+      </footer>
+    );
+  }
 }
 
 Footer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  whiteFont: PropTypes.bool
+  default: PropTypes.bool,
+  fluid: PropTypes.bool
 };
 
-export default withStyles(footerStyle)(Footer);
+export default Footer;

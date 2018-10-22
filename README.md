@@ -21,10 +21,6 @@ username: `demo@networth.app`
 
 password: `Testing!!1234.`
 
-## We need help!
-
-Please spread FIRE concept to your friends and family!
-
 ## License
 
 [MIT](LICENSE)

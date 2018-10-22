@@ -99,6 +99,8 @@ resource "aws_dynamodb_table" "db_table" {
   range_key        = "sort"
   stream_enabled   = true
   stream_view_type = "NEW_AND_OLD_IMAGES"
+  read_capacity  = 2
+  write_capacity = 2
 
   server_side_encryption {
     enabled = true
