@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
+  Button, ButtonGroup,
   Card,
   CardHeader,
   CardBody,
   CardFooter,
-  // CardTitle,
   Row,
-  Col
+  Col,
 } from "reactstrap";
 import { Line } from "react-chartjs-2";
 import Stats from "components/Stats/Stats.jsx";
@@ -18,7 +18,8 @@ import { get } from "../../helpers/helpers.js";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {networth: 0};
+    this.state = { networth: 0, dateRange: 'weekly' };
+    // this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
   }
 
   static propTypes = {
@@ -28,6 +29,11 @@ class Dashboard extends React.Component {
   static defaultProps = {
     networth: 0,
   };
+
+  refreshNetworthChart(dateRange) {
+    this.setState({ dateRange });
+    console.log('clicked ', dateRange);
+  }
 
   async componentDidMount() {
     const startDate = '2018-10-01';
@@ -165,6 +171,14 @@ class Dashboard extends React.Component {
       <div className="content">
         <Row>
           <Col xs={12}>
+          <ButtonGroup size="sm">
+            <Button onClick={() => this.refreshNetworthChart('daily')} active={this.state.dateRange === 'daily'}>Daily</Button>
+            <Button onClick={() => this.refreshNetworthChart('weekly')} active={this.state.dateRange === 'weekly'}>Weekly</Button>
+            <Button onClick={() => this.refreshNetworthChart('monthly')} active={this.state.dateRange === 'monthly'}>Monthly</Button>
+            <Button onClick={() => this.refreshNetworthChart('yearly')} active={this.state.dateRange === 'yearly'}>Yearly</Button>
+
+          </ButtonGroup>
+
           <Card className="card-chart">
               <CardHeader>
                 {/* <CardTitle>Net Worth</CardTitle> */}
