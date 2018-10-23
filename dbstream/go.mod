@@ -3,5 +3,5 @@ module github.com/networth-app/networth/dbstream
 require (
 	github.com/aws/aws-lambda-go v1.6.0
 	github.com/networth-app/networth/dotenv v0.0.0-20181020073026-6a606e482806
-	github.com/networth-app/networth/lib v0.0.0-20181020223530-f564706b4def
+	github.com/networth-app/networth/lib v0.0.0-20181023180906-cdfb82b71233
 )

@@ -11,15 +11,15 @@ import {
 } from "reactstrap";
 import { Line } from "react-chartjs-2";
 import Stats from "components/Stats/Stats.jsx";
-import Loader from 'react-loader-spinner';
-import { each } from 'lodash/each';
+import Loader from "react-loader-spinner";
+import { each } from "lodash/each";
 import { get } from "../../helpers/helpers.js";
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { networth: 0, dateRange: 'weekly' };
-    // this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
+    this.state = { networth: 0, resolution: 'weekly' };
+    this.chartCache = {};
   }
 
   static propTypes = {
@@ -30,24 +30,26 @@ class Dashboard extends React.Component {
     networth: 0,
   };
 
-  refreshNetworthChart(dateRange) {
-    this.setState({ dateRange });
-    console.log('clicked ', dateRange);
+  async refreshNetworthChart(resolution) {
+    if (this.chartCache[resolution] !== undefined) {
+      this.setState({ resolution });
+      this.chartData = this.chartCache[resolution];
+      // console.log(this.chartData);
+      return this.chartData;
+    }
+
+    this.setState({ loading: true, resolution });
+    const res = await get(`/networth_history?resolution=${resolution}`);
+    const nwBody = await res.json();
+    this.chartData = this._generateChartData(nwBody.data);
+    this.setState({ loading: false });
+    this.chartCache[resolution] = this.chartData;
+
+    return this.chartData;
   }
 
   async componentDidMount() {
-    const startDate = '2018-10-01';
-    const endDate = '2018-11-01';
-    this.setState({ loading: true });
-    const nw = await get('/networth');
-    const nwHistory = await get(`/networth?start_date=${startDate}&end_date=${endDate}`);
-    const body = await nw.json();
-    const nwHistoryBody = await nwHistory.json();
-    this.chartData = this._generateChartData(nwHistoryBody.data);
-    this.setState({
-      networth: body.data,
-      loading: false
-    });
+    await this.refreshNetworthChart(this.state.resolution);
   }
 
   _generateChartData(data) {
@@ -66,45 +68,24 @@ class Dashboard extends React.Component {
       pointRadius: 1,
       pointHitRadius: 10,
       data: [] };
-    const assetsSet = {
-      label: 'Assets',
-      fill: false,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'blue',
-      pointBorderColor: 'blue',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 5,
-      pointHoverRadius: 10,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [] };
-    const liabilitiesSet = {
-      label: 'Liabilities',
-      fill: false,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'red',
-      pointBorderColor: 'red',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 5,
-      pointHoverRadius: 10,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [] };
+
     const payload = { labels: [], datasets: [] };
-    data.forEach(item => {
-      payload.labels.push(item.sort);
-      networthSet.data.push(item.networth);
-      assetsSet.data.push(item.assets);
-      liabilitiesSet.data.push(item.liabilities);
+
+    Object.keys(data).forEach(date => {
+      const dateObj = new Date(date);
+      let label = date;
+      switch(this.state.resolution) {
+        case "daily": label = `${dateObj.getHours()}`; break;
+        case "weekly":
+        case "monthly": label = `${dateObj.getMonth()}/${dateObj.getDate()}`; break;
+        case "yearly": label = `${dateObj.getMonth()}`; break;
+      }
+
+      payload.labels.push(label);
+      networthSet.data.push(data[date]);
     });
 
-    payload.datasets = [ networthSet, assetsSet, liabilitiesSet ];
+    payload.datasets = [ networthSet ];
 
     return payload;
   }
@@ -172,10 +153,10 @@ class Dashboard extends React.Component {
         <Row>
           <Col xs={12}>
           <ButtonGroup size="sm">
-            <Button onClick={() => this.refreshNetworthChart('daily')} active={this.state.dateRange === 'daily'}>Daily</Button>
-            <Button onClick={() => this.refreshNetworthChart('weekly')} active={this.state.dateRange === 'weekly'}>Weekly</Button>
-            <Button onClick={() => this.refreshNetworthChart('monthly')} active={this.state.dateRange === 'monthly'}>Monthly</Button>
-            <Button onClick={() => this.refreshNetworthChart('yearly')} active={this.state.dateRange === 'yearly'}>Yearly</Button>
+            <Button onClick={() => this.refreshNetworthChart('daily')} active={this.state.resolution === 'daily'}>Daily</Button>
+            <Button onClick={() => this.refreshNetworthChart('weekly')} active={this.state.resolution === 'weekly'}>Weekly</Button>
+            <Button onClick={() => this.refreshNetworthChart('monthly')} active={this.state.resolution === 'monthly'}>Monthly</Button>
+            <Button onClick={() => this.refreshNetworthChart('yearly')} active={this.state.resolution === 'yearly'}>Yearly</Button>
 
           </ButtonGroup>
 
@@ -186,8 +167,9 @@ class Dashboard extends React.Component {
               </CardHeader>
               <CardBody>
                 <Line
-                  data={this.getChartData().data}
-                  options={this.getChartData().options}
+                  data={this.chartData}
+                  // data={this.getChartData().data}
+                  // options={this.getChartData().options}
                   width={400}
                   height={150}
                 />

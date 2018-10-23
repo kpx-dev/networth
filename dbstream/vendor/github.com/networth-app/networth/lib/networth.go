@@ -11,6 +11,7 @@ type Networth struct {
 	Assets      float64 `json:"assets"`
 	Liabilities float64 `json:"liabilities"`
 	DateTime    string  `json:"sort"`
+	UpdatedAt   string  `json:"updated_at"`
 }
 
 // SyncNetworth save net worth to db for current datetime

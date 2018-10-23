@@ -26,6 +26,30 @@ func (s *NetworthAPI) handleNetworthHistory() http.HandlerFunc {
 		endDate := url.Get("end_date")
 		resolution := url.Get("resolution")
 
+		// set the start end date if missing
+		if resolution != "" && (startDate == "" || endDate == "") {
+			now := time.Now()
+			endDate = time.Now().Format("2006-01-02")
+
+			switch resolution {
+			case "daily":
+				// last 1 day:
+				startDate = now.AddDate(0, 0, -1).Format("2006-01-02")
+				break
+			case "weekly", "monthly":
+				// last 30 days (1 month)
+				startDate = now.AddDate(0, -1, 0).Format("2006-01-02")
+				break
+			case "yearly":
+				// last 12 months
+				startDate = now.AddDate(-1, 0, 0).Format("2006-01-02")
+				break
+			default:
+				// last 30 days (1 month)
+				startDate = now.AddDate(0, -1, 0).Format("2006-01-02")
+			}
+		}
+
 		networth, err := s.db.GetNetworthByDateRange(username, startDate, endDate)
 		if err != nil {
 			nwlib.ErrorResp(w, err.Error())
