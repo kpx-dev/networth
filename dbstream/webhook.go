@@ -24,14 +24,14 @@ func handleInsertModifyWebhook(record events.DynamoDBEventRecord) error {
 				log.Printf("Cannot get username for itemID: %s %+v", webhook.ItemID, err)
 			}
 
-			token := nwlib.Token{
+			token := &nwlib.Token{
 				Sort:     webhook.ItemID,
 				Username: username,
 				Error:    webhook.Error.ErrorCode,
 			}
 
-			if err := db.UpdateToken(username, token); err != nil {
-				log.Printf("Problem updating token for user: %s\n %+v\n", username, err)
+			if err := db.UpdateToken("error", token); err != nil {
+				log.Printf("Problem updating error value for user: %s\n %+v\n", username, err)
 				return err
 			}
 		}

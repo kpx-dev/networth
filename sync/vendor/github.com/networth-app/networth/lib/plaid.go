@@ -8,6 +8,8 @@ import (
 
 // Token holds the structure single token
 type Token struct {
+	ID              string   `json:"id"`
+	Sort            string   `json:"sort"`
 	ItemID          string   `json:"item_id"`
 	AccessToken     string   `json:"access_token"`
 	AccountID       string   `json:"account_id"`
@@ -15,6 +17,7 @@ type Token struct {
 	InstitutionName string   `json:"institution_name"`
 	Accounts        []string `json:"accounts"`
 	Username        string   `json:"username"`
+	Error           string   `json:"error"`
 }
 
 // Transaction struct
