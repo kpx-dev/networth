@@ -27,7 +27,7 @@ func handleDynamoDBStream(ctx context.Context, e events.DynamoDBEvent) {
 
 		switch record.EventName {
 		case "INSERT", "MODIFY":
-			if partitionKey == "webhook" {
+			if strings.HasSuffix(partitionKey, ":webhook") {
 				if err := handleInsertModifyWebhook(record); err != nil {
 					log.Printf("Problem insert / modify webhook: %+v\n", err)
 				}

@@ -271,7 +271,7 @@ func (d DynamoDBClient) SetWebhook(webhook Webhook) error {
 	}
 
 	dbKey := map[string]dynamodb.AttributeValue{
-		"id":   {S: aws.String("webhook")},
+		"id":   {S: aws.String(fmt.Sprintf("%s:webhook", webhook.Username))},
 		"sort": {S: aws.String(webhook.ItemID)},
 	}
 
