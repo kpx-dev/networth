@@ -18,7 +18,7 @@ import { get } from "../../helpers/helpers.js";
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { networth: 0, resolution: 'weekly' };
+    this.state = { networth: 0, resolution: "monhtly" };
     this.chartCache = {};
   }
 
@@ -56,27 +56,31 @@ class Dashboard extends React.Component {
     const networthSet = {
       label: 'Net Worth',
       fill: false,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(75,192,192,1)',
-      pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 5,
-      pointHoverRadius: 10,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [] };
+      borderColor: "#51CACF",
+      backgroundColor: "transparent",
+      pointBorderColor: "#51CACF",
+      pointRadius: 4,
+      pointHoverRadius: 4,
+      pointBorderWidth: 8,
+      data: []
+    };
 
-    const payload = { labels: [], datasets: [] };
+    const payload = {
+      labels: [],
+      datasets: [],
+      options: {
+        legend: {
+          display: false,
+          position: "top"
+        }
+      }
+    };
 
     Object.keys(data).forEach(date => {
       const dateObj = new Date(date);
       let label = date;
       switch(this.state.resolution) {
         case "daily": label = `${dateObj.getHours()}`; break;
-        case "weekly":
         case "monthly": label = `${dateObj.getMonth()}/${dateObj.getDate()}`; break;
         case "yearly": label = `${dateObj.getMonth()}`; break;
       }
@@ -154,7 +158,6 @@ class Dashboard extends React.Component {
           <Col xs={12}>
           <ButtonGroup size="sm">
             <Button onClick={() => this.refreshNetworthChart('daily')} active={this.state.resolution === 'daily'}>Daily</Button>
-            <Button onClick={() => this.refreshNetworthChart('weekly')} active={this.state.resolution === 'weekly'}>Weekly</Button>
             <Button onClick={() => this.refreshNetworthChart('monthly')} active={this.state.resolution === 'monthly'}>Monthly</Button>
             <Button onClick={() => this.refreshNetworthChart('yearly')} active={this.state.resolution === 'yearly'}>Yearly</Button>
 

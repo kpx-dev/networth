@@ -412,6 +412,54 @@ resource "aws_api_gateway_integration" "get_networth" {
   uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
+// create /api/networth_history
+resource "aws_api_gateway_resource" "networth_history" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.api.id}"
+  path_part   = "networth_history"
+}
+
+resource "aws_api_gateway_method" "get_networth_history" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.networth_history.id}"
+  http_method   = "GET"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = "${aws_api_gateway_authorizer.auth.id}"
+}
+
+resource "aws_api_gateway_integration" "get_networth_history" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.get_networth_history.resource_id}"
+  http_method = "${aws_api_gateway_method.get_networth_history.http_method}"
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
+// create /api/accounts
+resource "aws_api_gateway_resource" "accounts" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.api.id}"
+  path_part   = "accounts"
+}
+
+resource "aws_api_gateway_method" "get_accounts" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.accounts.id}"
+  http_method   = "GET"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = "${aws_api_gateway_authorizer.auth.id}"
+}
+
+resource "aws_api_gateway_integration" "get_accounts" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.get_accounts.resource_id}"
+  http_method = "${aws_api_gateway_method.get_accounts.http_method}"
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
 // create /api/tokens
 resource "aws_api_gateway_resource" "tokens" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
@@ -439,10 +487,14 @@ resource "aws_api_gateway_integration" "post_tokens" {
 resource "aws_api_gateway_deployment" "api" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "latest"
+  # description = "deployed on: ${timestamp()}"
+  # stage_description = "deployed on: ${timestamp()}"
 
   # TODO: deploy api based on changes: https://github.com/hashicorp/terraform/issues/6613
   depends_on = [
     "aws_api_gateway_integration.get_networth",
+    "aws_api_gateway_integration.get_networth_history",
+    "aws_api_gateway_integration.get_accounts",
     "aws_api_gateway_integration.get_healthcheck",
     "aws_api_gateway_integration.post_webhook",
     "aws_api_gateway_integration.post_tokens",

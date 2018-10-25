@@ -39,7 +39,18 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 			return
 		}
 
-		log.Printf("New webhook, type: %s, code: %s, item: %s\n", webhook.WebhookType, webhook.WebhookCode, webhook.ItemID)
+		// look up username by itemID:
+		username, err := GetUsernameByItemID(webhook.ItemID)
+
+		if err != nil {
+			log.Printf("Cannot find username based on itemID: %s", webhook.ItemID)
+			nwlib.ErrorResp(w, err.Error())
+			return
+		}
+
+		webhook.Username = username
+
+		log.Printf("New webhook, username: %s, type: %s, code: %s, item: %s\n", webhook.Username, webhook.WebhookType, webhook.WebhookCode, webhook.ItemID)
 		if err := s.db.SetWebhook(webhook); err != nil {
 			log.Printf("Problem saving webhook to db: %+v\n", err)
 			nwlib.ErrorResp(w, err.Error())

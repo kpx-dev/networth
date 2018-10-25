@@ -36,7 +36,11 @@ func (s *NetworthAPI) handleNetworthHistory() http.HandlerFunc {
 				// last 1 day:
 				startDate = now.AddDate(0, 0, -1).Format("2006-01-02")
 				break
-			case "weekly", "monthly":
+			case "weekly":
+				// last 7 days
+				startDate = now.AddDate(0, 0, 7).Format("2006-01-02")
+				break
+			case "monthly":
 				// last 30 days (1 month)
 				startDate = now.AddDate(0, -1, 0).Format("2006-01-02")
 				break
