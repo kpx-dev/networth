@@ -231,25 +231,25 @@ func (d DynamoDBClient) GetUsernameByItemID(itemID string) (string, error) {
 	return "", nil
 }
 
-// UpdateToken update single token record based on key
-func (d DynamoDBClient) UpdateToken(key string, token *Token) error {
+// UpdateTokenError update error field for token
+func (d DynamoDBClient) UpdateTokenError(token *Token) error {
 	req := d.UpdateItemRequest(&dynamodb.UpdateItemInput{
 		TableName: aws.String(dbTable),
 		Key: map[string]dynamodb.AttributeValue{
 			"id":   {S: aws.String(fmt.Sprintf("%s:token", token.Username))},
 			"sort": {S: aws.String(token.Sort)},
 		},
-		UpdateExpression: aws.String("SET #key = :key"),
+		UpdateExpression: aws.String("SET #error = :errorVal"),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":key": {S: aws.String(key)},
+			":errorVal": {S: aws.String(token.Error)},
 		},
 		ExpressionAttributeNames: map[string]string{
-			"#key": key,
+			"#error": "error",
 		},
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Printf("Problem SetToken: %+v\n", err)
+		log.Printf("Problem UpdateToken: %+v\n", err)
 		return err
 	}
 
