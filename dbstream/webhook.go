@@ -15,9 +15,12 @@ func handleInsertModifyWebhook(record events.DynamoDBEventRecord) error {
 		WebhookCode: newRecord["webhook_code"].String(),
 	}
 
+	webhookError := newRecord["error"].Map()
+	webhookErrorCode := webhookError["error_code"].String()
+
 	switch webhook.WebhookCode {
 	case "ERROR":
-		if webhook.Error.ErrorCode == "ITEM_LOGIN_REQUIRED" {
+		if webhookErrorCode == "ITEM_LOGIN_REQUIRED" {
 			username, err := db.GetUsernameByItemID(webhook.ItemID)
 
 			if err != nil || username == "" {
@@ -27,10 +30,10 @@ func handleInsertModifyWebhook(record events.DynamoDBEventRecord) error {
 			token := &nwlib.Token{
 				Sort:     webhook.ItemID,
 				Username: username,
-				Error:    webhook.Error.ErrorCode,
+				Error:    webhookErrorCode,
 			}
 
-			if err := db.UpdateToken("error", token); err != nil {
+			if err := db.UpdateTokenError(token); err != nil {
 				log.Printf("Problem updating error value for user: %s\n %+v\n", username, err)
 				return err
 			}
