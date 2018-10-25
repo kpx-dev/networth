@@ -6,19 +6,15 @@ import (
 	"github.com/plaid/plaid-go/plaid"
 )
 
-// Tokens holds the structure multiple tokens
-type Tokens struct {
-	Tokens []*Token `json:"tokens"`
-}
-
 // Token holds the structure single token
 type Token struct {
-	ItemID      string `json:"item_id"`
-	AccessToken string `json:"access_token"`
-	// AccountID       string   `json:"account_id"`
-	InstitutionID   string `json:"institution_id"`
-	InstitutionName string `json:"institution_name"`
-	// Accounts        []string `json:"accounts"`
+	ItemID          string   `json:"item_id"`
+	AccessToken     string   `json:"access_token"`
+	AccountID       string   `json:"account_id"`
+	InstitutionID   string   `json:"institution_id"`
+	InstitutionName string   `json:"institution_name"`
+	Accounts        []string `json:"accounts"`
+	Username        string   `json:"username"`
 }
 
 // Transaction struct
@@ -43,6 +39,7 @@ type Webhook struct {
 	Error               WebhookError `json:"error"`                // null,
 	NewTransactions     int          `json:"new_transactions"`     //19
 	RemovedTransactions []string     `json:"removed_transactions"` // ["yBVBEwrPyJs8GvR77N7QTxnGg6wG74H7dEDN6", "kgygNvAVPzSX9KkddNdWHaVGRVex1MHm3k9no"],
+	Username            string       `json:"username"`
 }
 
 // Account wrapper struct for plaid.Account

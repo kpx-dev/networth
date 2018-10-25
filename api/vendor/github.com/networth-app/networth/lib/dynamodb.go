@@ -43,13 +43,13 @@ func (d DynamoDBClient) GetNetworth(username string) (Networth, error) {
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting networth ", err)
+		log.Printf("Problem getting networth: %+v\n", err)
 		return networth, err
 	}
 
 	payload := Networth{}
 	if err := dynamodbattribute.UnmarshalMap(res.Item, &payload); err != nil {
-		log.Println("Problem converting db to Networth struct ", err)
+		log.Printf("Problem converting db to Networth struct: %+v\n", err)
 
 		return networth, err
 	}
@@ -72,7 +72,7 @@ func (d DynamoDBClient) GetNetworthByDateRange(username string, startDate string
 
 	res, err := req.Send()
 	if err != nil {
-		log.Println("Problem getting networth by date range ", err)
+		log.Printf("Problem getting networth by date range: %s - %s %+v", startDate, endDate, err)
 		return networth, err
 	}
 
@@ -92,7 +92,6 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	liabilitiesStr := aws.String(strconv.FormatFloat(liabilities, 'f', -1, 64))
 	key := fmt.Sprintf("%s:networth", username)
 
-	fmt.Println("SetNetworth for ", username, networth, assets, liabilities)
 	req := d.BatchWriteItemRequest(&dynamodb.BatchWriteItemInput{
 		RequestItems: map[string][]dynamodb.WriteRequest{
 			dbTable: {
@@ -104,6 +103,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 							"networth":    {N: networthStr},
 							"assets":      {N: assetsStr},
 							"liabilities": {N: liabilitiesStr},
+							"updated_at":  {S: aws.String(timestamp)},
 						},
 					},
 				},
@@ -115,6 +115,7 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 							"networth":    {N: networthStr},
 							"assets":      {N: assetsStr},
 							"liabilities": {N: liabilitiesStr},
+							"updated_at":  {S: aws.String(timestamp)},
 						},
 					},
 				},
@@ -122,45 +123,10 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 		},
 	})
 
-	res, err := req.Send()
-	fmt.Printf("Set networth res %+v\n", res)
+	_, err := req.Send()
 
 	return err
 }
-
-// TODO: Query based on ins id?
-// GetToken return tokens from db
-// func (d DynamoDBClient) GetToken(username string, institutionID string) *Tokens {
-// 	dbTokens := &Tokens{}
-// 	key := fmt.Sprintf("%s:token", username)
-// 	sort := ""
-// 	if len(institutionID) > 0 {
-// 		sort = institutionID
-// 	}
-
-// 	req := d.GetItemRequest(&dynamodb.GetItemInput{
-// 		TableName: aws.String(dbTable),
-// 		Key: map[string]dynamodb.AttributeValue{
-// 			"id":   {S: aws.String(key)},
-// 			"sort": {S: aws.String(sort)},
-// 		},
-// 	})
-
-// 	res, err := req.Send()
-// 	if err != nil {
-// 		log.Printf("Problem getting tokens from db using sort key %s %v", sort, err)
-
-// 		return dbTokens
-// 	}
-
-// 	if err := dynamodbattribute.UnmarshalMap(res.Item, &dbTokens); err != nil {
-// 		log.Println("Problem converting token data from db ", err)
-
-// 		return dbTokens
-// 	}
-
-// 	return dbTokens
-// }
 
 // GetTokens - return all tokens decrypted from db for a username
 func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, error) {
@@ -188,20 +154,88 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 	for _, token := range tokens {
 		accessToken, err := kms.Decrypt(token.AccessToken)
 		if err != nil {
-			log.Println("Problem decoding access_token ", err)
+			log.Printf("Problem decoding access token: %+v\n", err)
 			return nil, err
 		}
-		payload = append(payload, Token{AccessToken: accessToken})
+		payload = append(payload, Token{
+			AccessToken:   accessToken,
+			ItemID:        token.ItemID,
+			InstitutionID: token.InstitutionID})
 	}
 
 	return payload, nil
+}
+
+// GetTokenByItemID - return decrypted token based on item_id
+func (d DynamoDBClient) GetTokenByItemID(kms *KMSClient, itemID string) (Token, error) {
+	var tokens []Token
+	var token Token
+
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("contains(id, :token) and item_id = :itemID"),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":token":  {S: aws.String(":token")},
+			":itemID": {S: aws.String(itemID)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return token, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return token, err
+	}
+
+	for _, token := range tokens {
+		accessToken, err := kms.Decrypt(token.AccessToken)
+		if err != nil {
+			log.Printf("Problem decoding access token: %+v\n", err)
+			return token, err
+		}
+		token.AccessToken = accessToken
+		break
+	}
+
+	return token, nil
+}
+
+// GetUsernameByItemID - return username based on item_id
+func (d DynamoDBClient) GetUsernameByItemID(itemID string) (string, error) {
+	var tokens []Token
+
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("contains(id, :token) and item_id = :itemID and attribute_exists(username)"),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":token":  {S: aws.String(":token")},
+			":itemID": {S: aws.String(itemID)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return "", err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return "", err
+	}
+
+	for _, token := range tokens {
+		return token.Username, nil
+	}
+
+	return "", nil
 }
 
 // SetToken save token to db
 func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	tokenAttr, err := dynamodbattribute.MarshalMap(token)
 	if err != nil {
-		fmt.Println("Problem marshalling token struct into dyno format", err)
+		log.Printf("Problem marshalling token struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -221,7 +255,7 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetToken ", err)
+		log.Printf("Problem SetToken: %+v\n", err)
 		return err
 	}
 
@@ -232,7 +266,7 @@ func (d DynamoDBClient) SetToken(username string, token *Token) error {
 func (d DynamoDBClient) SetWebhook(webhook Webhook) error {
 	dbAttr, err := dynamodbattribute.MarshalMap(webhook)
 	if err != nil {
-		fmt.Println("Problem marshalling webhook struct into dyno format", err)
+		log.Printf("Problem marshalling webhook struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -251,7 +285,7 @@ func (d DynamoDBClient) SetWebhook(webhook Webhook) error {
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetWebhook ", err)
+		log.Printf("Problem SetWebhook: %+v\n", err)
 		return err
 	}
 
@@ -263,7 +297,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 
 	transactionAttr, err := dynamodbattribute.MarshalMap(transaction)
 	if err != nil {
-		fmt.Println("Problem marshalling transaction struct into dyno format", err)
+		log.Printf("Problem marshalling transaction struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -283,7 +317,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem SetTransaction ", err)
+		log.Printf("Problem SetTransaction: %+v\n", err)
 		return err
 	}
 
@@ -294,7 +328,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 func (d DynamoDBClient) SetAccount(username string, itemID string, account *plaid.Account) error {
 	accountAttr, err := dynamodbattribute.MarshalMap(account)
 	if err != nil {
-		fmt.Println("Problem marshalling account struct into dyno format", err)
+		log.Printf("Problem marshalling account struct into dyno format: %+v\n", err)
 		return err
 	}
 
@@ -314,40 +348,11 @@ func (d DynamoDBClient) SetAccount(username string, itemID string, account *plai
 	})
 
 	if _, err := req.Send(); err != nil {
-		log.Println("Problem saving account to db ", err)
+		log.Printf("Problem saving account to db: %+v\n", err)
 		return err
 	}
 
 	return nil
-}
-
-// Set key / val to db
-func (d DynamoDBClient) Set(table string, partitionKey string, sortKey string, valMap map[string]string) error {
-	items := map[string]dynamodb.AttributeValue{
-		"id": {S: aws.String(partitionKey)},
-	}
-
-	if len(sortKey) > 0 {
-		items["datetime"] = dynamodb.AttributeValue{S: aws.String(sortKey)}
-	}
-
-	for key, val := range valMap {
-		fmt.Println("key / val ", key, val)
-		items[key] = dynamodb.AttributeValue{S: aws.String(val)}
-	}
-
-	fmt.Println(items)
-
-	req := d.PutItemRequest(&dynamodb.PutItemInput{
-		Item:      items,
-		TableName: aws.String(table),
-	})
-
-	res, err := req.Send()
-
-	fmt.Println("Dyno Set() res: ", res)
-
-	return err
 }
 
 // GetAccounts return all accounts from db for a username
@@ -398,4 +403,25 @@ func (d DynamoDBClient) GetTransactions(username string, accountID string) ([]Tr
 	}
 
 	return transactions, nil
+}
+
+// GetAllUsers - get all users
+func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
+	// TODO: Query on username index instead of Scan
+	var tokens []Token
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("attribute_exists(username)"),
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return tokens, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return tokens, err
+	}
+
+	return tokens, nil
 }

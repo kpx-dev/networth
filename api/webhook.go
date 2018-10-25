@@ -42,7 +42,7 @@ func (s *NetworthAPI) handleWebhook() http.HandlerFunc {
 		// look up username by itemID:
 		username, err := s.db.GetUsernameByItemID(webhook.ItemID)
 
-		if err != nil {
+		if err != nil || username == "" {
 			log.Printf("Cannot find username based on itemID: %s", webhook.ItemID)
 			nwlib.ErrorResp(w, err.Error())
 			return

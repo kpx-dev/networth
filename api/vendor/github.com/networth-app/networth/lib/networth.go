@@ -1,7 +1,6 @@
 package nwlib
 
 import (
-	"fmt"
 	"log"
 	"strings"
 )
@@ -12,6 +11,7 @@ type Networth struct {
 	Assets      float64 `json:"assets"`
 	Liabilities float64 `json:"liabilities"`
 	DateTime    string  `json:"sort"`
+	UpdatedAt   string  `json:"updated_at"`
 }
 
 // SyncNetworth save net worth to db for current datetime
@@ -22,7 +22,7 @@ func SyncNetworth(db *DynamoDBClient, username string) error {
 	accounts, err := db.GetAccounts(username)
 
 	if err != nil {
-		log.Println("Problem getting accounts ", err)
+		log.Printf("Problem getting accounts: %+v\n", err)
 		return err
 	}
 
@@ -38,11 +38,9 @@ func SyncNetworth(db *DynamoDBClient, username string) error {
 	}
 
 	networth := assets - liabilities
-	msg := fmt.Sprintf("%s - networth %f assets %f liabilities %f\n", username, networth, assets, liabilities)
-	log.Printf(msg)
 
 	if err := db.SetNetworth(username, networth, assets, liabilities); err != nil {
-		log.Println("Problem setting networth ", err)
+		log.Printf("Problem setting networth: %+v\n", err)
 		return err
 	}
 

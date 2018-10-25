@@ -42,6 +42,7 @@ start-web:
 	cd web && npm run start
 
 update-lib:
+	cd api && go get github.com/networth-app/networth/lib && go mod tidy && go mod vendor
 	cd sync && go get github.com/networth-app/networth/lib && go mod tidy && go mod vendor
 	cd notification && go get github.com/networth-app/networth/lib && go mod tidy && go mod vendor
 	cd dbstream && go get github.com/networth-app/networth/lib && go mod tidy && go mod vendor
