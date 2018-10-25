@@ -202,6 +202,35 @@ func (d DynamoDBClient) GetTokenByItemID(kms *KMSClient, itemID string) (Token, 
 	return token, nil
 }
 
+// GetUsernameByItemID - return username based on item_id
+func (d DynamoDBClient) GetUsernameByItemID(kms *KMSClient, itemID string) (string, error) {
+	var tokens []Token
+
+	req := d.ScanRequest(&dynamodb.ScanInput{
+		TableName:        aws.String(dbTable),
+		FilterExpression: aws.String("contains(id, :token) and item_id = :itemID and attribute_exists(username)"),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":token":  {S: aws.String(":token")},
+			":itemID": {S: aws.String(itemID)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return "", err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return "", err
+	}
+
+	for _, token := range tokens {
+		return token.Username, nil
+	}
+
+	return "", nil
+}
+
 // SetToken save token to db
 func (d DynamoDBClient) SetToken(username string, token *Token) error {
 	tokenAttr, err := dynamodbattribute.MarshalMap(token)

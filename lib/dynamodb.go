@@ -203,7 +203,7 @@ func (d DynamoDBClient) GetTokenByItemID(kms *KMSClient, itemID string) (Token, 
 }
 
 // GetUsernameByItemID - return username based on item_id
-func (d DynamoDBClient) GetUsernameByItemID(kms *KMSClient, itemID string) (string, error) {
+func (d DynamoDBClient) GetUsernameByItemID(itemID string) (string, error) {
 	var tokens []Token
 
 	req := d.ScanRequest(&dynamodb.ScanInput{

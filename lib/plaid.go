@@ -39,6 +39,7 @@ type Webhook struct {
 	Error               WebhookError `json:"error"`                // null,
 	NewTransactions     int          `json:"new_transactions"`     //19
 	RemovedTransactions []string     `json:"removed_transactions"` // ["yBVBEwrPyJs8GvR77N7QTxnGg6wG74H7dEDN6", "kgygNvAVPzSX9KkddNdWHaVGRVex1MHm3k9no"],
+	Username            string       `json:"username"`
 }
 
 // Account wrapper struct for plaid.Account
