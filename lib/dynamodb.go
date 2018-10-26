@@ -436,7 +436,7 @@ func (d DynamoDBClient) GetAllUsers() ([]Token, error) {
 	var tokens []Token
 	req := d.ScanRequest(&dynamodb.ScanInput{
 		TableName:        aws.String(dbTable),
-		FilterExpression: aws.String("attribute_exists(username)"),
+		FilterExpression: aws.String("attribute_exists(username) AND attribute_exists(access_token)"),
 	})
 
 	res, err := req.Send()
