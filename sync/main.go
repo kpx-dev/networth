@@ -23,6 +23,7 @@ var (
 
 func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 	users, err := db.GetAllUsers()
+	processedUsers := make(map[string]string)
 
 	if err != nil {
 		log.Printf("Problem getting all users: %+v", err)
@@ -30,6 +31,12 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 	}
 
 	for _, user := range users {
+		// ignore processed users:
+		if _, existed := processedUsers[user.Username]; existed {
+			log.Printf("Skipping sync for processed username: %s", user.Username)
+			continue
+		}
+
 		log.Printf("Sync started for username: %s\n", user.Username)
 
 		tokens, err := db.GetTokens(kms, user.Username)
@@ -38,6 +45,12 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 		}
 
 		for _, token := range tokens {
+			// ignore token with known error:
+			if token.Error != "" {
+				log.Printf("Skipping sync for token with error: %s", token.Error)
+				continue
+			}
+
 			if err := nwlib.SyncAccounts(plaidClient, db, user.Username, token.ItemID, token.AccessToken); err != nil {
 				errMsg := fmt.Sprintf("Problem syncing accounts for username: %s, item id: %s\n %+v", user.Username, token.ItemID, err)
 				log.Println(errMsg)
@@ -49,6 +62,8 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 		if err := nwlib.SyncNetworth(db, user.Username); err != nil {
 			log.Printf("Problem syncing networth: %+v", err)
 		}
+
+		processedUsers[user.Username] = user.Username
 	}
 
 	log.Println("Sync done.")

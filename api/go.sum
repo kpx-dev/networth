@@ -22,8 +22,8 @@ github.com/jtolds/gls v4.2.1+incompatible h1:fSuqC+Gmlu6l/ZYAoZzx2pyucC8Xza35fpR
 github.com/jtolds/gls v4.2.1+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
 github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82 h1:tSyL8js6PP/XECj0aLjYOjrjcaJAxxx48g+LYOnYWLg=
 github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82/go.mod h1:wz+raRJgNFD9crCt5q5UzuuREPwSvBmHAz+J2uwmd84=
-github.com/networth-app/networth/lib v0.0.0-20181025200442-9d6c45a65671 h1:Mre9Zvb4Tb0VD5GtZkVGbSIeY5syTe365rekVfhDXFQ=
-github.com/networth-app/networth/lib v0.0.0-20181025200442-9d6c45a65671/go.mod h1:/UOxshCuiSS60r+bfnKLD+UXmoLq0d5r3gXZ+rAQjDo=
+github.com/networth-app/networth/lib v0.0.0-20181026042026-5c97effd7885 h1:/ZQ5p14fsUDt8RB+sAtXnIgFZKGREUDY1isQg/5vVVM=
+github.com/networth-app/networth/lib v0.0.0-20181026042026-5c97effd7885/go.mod h1:/UOxshCuiSS60r+bfnKLD+UXmoLq0d5r3gXZ+rAQjDo=
 github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd h1:0NQ8P+8Hop86vm7urcCZQxetNcox/SNWEclQu+Yf2Xc=
