@@ -13,6 +13,7 @@ import Loader from "react-loader-spinner";
 import { get } from "../../helpers/helpers.js";
 import { Auth } from 'aws-amplify';
 import * as DB from '../../db.js';
+import NotificationAlert from "react-notification-alert";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -35,11 +36,17 @@ class Dashboard extends React.Component {
     }
 
     this.setState({ loading: true, resolution });
-    const res = await get(`/networth_history?resolution=${resolution}`);
-    const nwBody = await res.json();
-    this.chartData = this._generateChartData(nwBody.data);
-    this.setState({ loading: false });
-    this.chartCache[resolution] = this.chartData;
+
+    try {
+      const res = await get(`/networth_history?resolution=${resolution}`);
+      const nwBody = await res.json();
+      this.chartData = this._generateChartData(nwBody.data);
+      this.setState({ loading: false });
+      this.chartCache[resolution] = this.chartData;
+    } catch (e) {
+      this.alert('Cannot connect to REST API.');
+      this.setState({ loading: false });
+    }
 
     return this.chartData;
   }
@@ -52,7 +59,6 @@ class Dashboard extends React.Component {
     this.db = await DB.get();
     const networth = await this.db.networth.findOne().where("username").eq(username).exec();
     if (networth && networth.updated_at) {
-      // const rtf = new Intl.RelativeTimeFormat('en');
       const networthUpdatedAt = new Date(networth.updated_at).toDateString();
       this.setState({ networthUpdatedAt });
     }
@@ -95,15 +101,35 @@ class Dashboard extends React.Component {
     return payload;
   }
 
+  alert(message, dismiss) {
+    const options = {
+      place: "tc",
+      type: "danger",
+      icon: "nc-icon nc-alert-circle-i",
+      message: (
+        <div>
+          <div>
+            {message}
+          </div>
+        </div>
+      ),
+    };
+    if (dismiss) options.autoDismiss = dismiss;
+    this.refs.alert.notificationAlert(options);
+  }
+
   render() {
     if (this.state.loading) return (
       <div className="content">
+        <NotificationAlert ref="alert" />
+
         <Loader type="ThreeDots" height={80} width={80} />
       </div>
     );
 
     return (
       <div className="content">
+        <NotificationAlert ref="alert" />
         <br />
         <Row>
           <Col xs={12}>

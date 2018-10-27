@@ -96,22 +96,25 @@ class Header extends React.Component {
 
     // if cached for more than 1 min, get new one from api
     if (queryRes === null || queryRes.networth === 0 || (nowTS - new Date(queryRes.updated_at)) / 1000 > 60 ) {
-      const networthRes = await get(`/networth`);
-      const nwBody = await networthRes.json();
-      const dbBody = {
-        username,
-        networth: nwBody.data.networth,
-        updated_at: new Date().toISOString(),
-      };
+      try {
+        const networthRes = await get(`/networth`);
+        const nwBody = await networthRes.json();
+        const dbBody = {
+          username,
+          networth: nwBody.data.networth,
+          updated_at: new Date().toISOString(),
+        };
 
-      if (queryRes === null) {
-        const insertRes = await this.db.networth.insert(dbBody);
-        console.log(insertRes);
-      } else {
-        const upsertRes = await query.update({$set: dbBody});
-        console.log("upsertRes ", upsertRes);
+        if (queryRes === null) {
+          const insertRes = await this.db.networth.insert(dbBody);
+          console.log(insertRes);
+        } else {
+          const upsertRes = await query.update({$set: dbBody});
+        }
+        this.setState({ networth: nwBody.data.networth });
+      } catch (e) {
+        console.error('Problem getting networth. Cannot connect to REST API.');
       }
-      this.setState({ networth: nwBody.data.networth });
     } else {
       this.setState({ networth: queryRes.networth });
     }
