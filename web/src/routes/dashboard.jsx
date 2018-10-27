@@ -1,5 +1,7 @@
 import Dashboard from "views/Dashboard/Dashboard.jsx";
-import TableList from "views/TableList/TableList.jsx";
+import Accounts from "views/Accounts/Accounts.jsx";
+import Transactions from "views/Transactions/Transactions.jsx";
+import Connect from "views/Connect/Connect.jsx";
 
 var dashRoutes = [
   {
@@ -8,36 +10,24 @@ var dashRoutes = [
     icon: "nc-icon nc-money-coins",
     component: Dashboard
   },
-  // {
-  //   path: "/user-page",
-  //   name: "User Profile",
-  //   icon: "nc-icon nc-single-02",
-  //   component: UserPage
-  // },
   {
     path: "/accounts",
     name: "Accounts",
     icon: "nc-icon nc-bank",
-    component: TableList
+    component: Accounts
   },
   {
     path: "/transactions",
     name: "Transactions",
     icon: "nc-icon nc-tile-56",
-    component: TableList
+    component: Transactions
   },
-  // {
-  //   path: "/icons",
-  //   name: "Icons",
-  //   icon: "nc-icon nc-diamond",
-  //   component: Icons
-  // },
-  // {
-  //   path: "/typography",
-  //   name: "Typography",
-  //   icon: "nc-icon nc-caps-small",
-  //   component: Typography
-  // },
+  {
+    path: "/connect",
+    name: "Connect New Bank",
+    icon: "nc-icon nc-simple-add",
+    component: Connect
+  },
   { redirect: true, path: "/", pathTo: "/networth", name: "Net Worth" }
 ];
 export default dashRoutes;

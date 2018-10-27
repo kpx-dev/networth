@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import {
   Collapse,
@@ -7,19 +8,15 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  // Dropdown,
-  // DropdownToggle,
-  // DropdownMenu,
-  // DropdownItem,
   Container,
-  // InputGroup,
-  // InputGroupText,
-  // InputGroupAddon,
-  // Input
+  Badge,
+  Tooltip,
 } from "reactstrap";
 import dashboardRoutes from "routes/dashboard.jsx";
 import { Auth } from 'aws-amplify';
 import Connect from "components/Connect/Connect.jsx";
+import { get } from "../../helpers/helpers.js";
+import * as DB from '../../db.js';
 
 class Header extends React.Component {
   constructor(props) {
@@ -27,11 +24,20 @@ class Header extends React.Component {
     this.state = {
       isOpen: false,
       dropdownOpen: false,
-      color: "transparent"
+      color: "transparent",
+      networth: 0
     };
     this.toggle = this.toggle.bind(this);
     this.dropdownToggle = this.dropdownToggle.bind(this);
   }
+
+  static propTypes = {
+    networth: PropTypes.number,
+  };
+
+  static defaultProps = {
+    networth: 0,
+  };
 
   async handleLogout() {
     await Auth.signOut();
@@ -59,35 +65,12 @@ class Header extends React.Component {
       dropdownOpen: !this.state.dropdownOpen
     });
   }
-  getBrand() {
-    var name;
-    dashboardRoutes.map((prop, key) => {
-      if (prop.collapse) {
-        prop.views.map((prop, key) => {
-          if (prop.path === this.props.location.pathname) {
-            name = prop.name;
-          }
-          return null;
-        });
-      } else {
-        if (prop.redirect) {
-          if (prop.path === this.props.location.pathname) {
-            name = prop.name;
-          }
-        } else {
-          if (prop.path === this.props.location.pathname) {
-            name = prop.name;
-          }
-        }
-      }
-      return null;
-    });
-    return name;
-  }
+
   openSidebar() {
     document.documentElement.classList.toggle("nav-open");
     this.refs.sidebarToggle.classList.toggle("toggled");
   }
+
   // function that adds color dark/transparent to the navbar on resize (this is for the collapse)
   updateColor() {
     if (window.innerWidth < 993 && this.state.isOpen) {
@@ -100,9 +83,40 @@ class Header extends React.Component {
       });
     }
   }
-  componentDidMount() {
+
+  async componentDidMount() {
     window.addEventListener("resize", this.updateColor.bind(this));
+    const userInfo = await Auth.currentUserInfo();
+    const username = userInfo.username;
+
+    this.db = await DB.get();
+    const query = await this.db.networth.findOne().where("username").eq(username);
+    const queryRes = await query.exec();
+    const nowTS = Date.now();
+
+    // if cached for more than 1 min, get new one from api
+    if (queryRes === null || queryRes.networth === 0 || (nowTS - new Date(queryRes.updated_at)) / 1000 > 60 ) {
+      const networthRes = await get(`/networth`);
+      const nwBody = await networthRes.json();
+      const dbBody = {
+        username,
+        networth: nwBody.data.networth,
+        updated_at: new Date().toISOString(),
+      };
+
+      if (queryRes === null) {
+        const insertRes = await this.db.networth.insert(dbBody);
+        console.log(insertRes);
+      } else {
+        const upsertRes = await query.update({$set: dbBody});
+        console.log("upsertRes ", upsertRes);
+      }
+      this.setState({ networth: nwBody.data.networth });
+    } else {
+      this.setState({ networth: queryRes.networth });
+    }
   }
+
   componentDidUpdate(e) {
     if (
       window.innerWidth < 993 &&
@@ -145,7 +159,16 @@ class Header extends React.Component {
                 <span className="navbar-toggler-bar bar3" />
               </button>
             </div>
-            <NavbarBrand href="/">{this.getBrand()}</NavbarBrand>
+            <NavbarBrand>
+              <Badge color="dark" pill title="Net Worth">{
+                new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 0,
+                }).format(this.state.networth)}</Badge>
+
+            </NavbarBrand>
           </div>
           <NavbarToggler onClick={this.toggle}>
             <span className="navbar-toggler-bar navbar-kebab" />
@@ -157,41 +180,10 @@ class Header extends React.Component {
             navbar
             className="justify-content-end"
           >
-            {/* <form>
-              <InputGroup className="no-border">
-                <Input placeholder="Search..." />
-                <InputGroupAddon addonType="append">
-                  <InputGroupText>
-                    <i className="nc-icon nc-zoom-split" />
-                  </InputGroupText>
-                </InputGroupAddon>
-              </InputGroup>
-            </form> */}
             <Nav navbar>
               <NavItem>
                 <Connect></Connect>
-                {/* <Link to="/connect" className="nav-link btn-magnify">
-                  <i className="nc-icon nc-simple-add" title="Connect" /> Connect
-                </Link> */}
               </NavItem>
-              {/* <Dropdown
-                nav
-                isOpen={this.state.dropdownOpen}
-                toggle={e => this.dropdownToggle(e)}
-              >
-                <DropdownToggle caret nav>
-                  <i className="nc-icon nc-bell-55" />
-                  <p>
-                    <span className="d-lg-none d-md-block">Some Actions</span>
-                  </p>
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem tag="a">Action</DropdownItem>
-                  <DropdownItem tag="a">Another Action</DropdownItem>
-                  <DropdownItem tag="a">Something else here</DropdownItem>
-                </DropdownMenu>
-              </Dropdown> */}
-
               <NavItem>
                 <Link to="/logout" onClick={this.handleLogout} className="nav-link btn-rotate">
                   <i className="nc-icon nc-lock-circle-open" title="Logout"/>

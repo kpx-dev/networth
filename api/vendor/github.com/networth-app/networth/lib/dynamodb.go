@@ -157,10 +157,9 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 			log.Printf("Problem decoding access token: %+v\n", err)
 			return nil, err
 		}
-		payload = append(payload, Token{
-			AccessToken:   accessToken,
-			ItemID:        token.ItemID,
-			InstitutionID: token.InstitutionID})
+
+		token.AccessToken = accessToken
+		payload = append(payload, token)
 	}
 
 	return payload, nil

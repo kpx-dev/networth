@@ -19,7 +19,7 @@ class RegularTables extends React.Component {
           <Col xs={12}>
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">Recent Transactions</CardTitle>
+                <CardTitle tag="h4">Accounts</CardTitle>
               </CardHeader>
               <CardBody>
                 <Table responsive>

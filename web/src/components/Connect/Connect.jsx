@@ -5,7 +5,6 @@ import { post } from "../../helpers/helpers.js";
 import { PLAID_CLIENT_NAME, PLAID_PUBLIC_KEY, PLAID_ENV, PLAID_PRODUCTS, PLAID_WEBHOOK } from "../../helpers/constants.js"
 import {
   Button,
-  Tooltip
 } from "reactstrap";
 
 class Connect extends React.Component {
@@ -21,17 +20,16 @@ class Connect extends React.Component {
   }
 
   static propTypes = {
-    // classes: PropTypes.object.isRequired,
     institution: PropTypes.string,
     text: PropTypes.string
   };
 
   static defaultProps = {
-    text: "Connect"
+    text: "+ Connect"
   };
 
   render() {
-    const { classes, institution, text } = this.props;
+    const { institution, text } = this.props;
     const plaidStyle = { padding: 0, border: "none", borderRadius: 0, background: "none" };
 
     return (
@@ -46,11 +44,7 @@ class Connect extends React.Component {
         publicKey={PLAID_PUBLIC_KEY}
         onSuccess={this.handleOnSuccess}
       >
-      {/* Connect new financial source */}
-      {text}
-        {/* <Button>
-            <AddIcon className={classes.icons} /> {text}
-        </Button> */}
+        <Button color="danger" size="sm">{text}</Button>
       </PlaidLink>
     );
   }
