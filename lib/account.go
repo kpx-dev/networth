@@ -15,7 +15,7 @@ func SyncAccounts(plaidClient *PlaidClient, db *DynamoDBClient, token *Token) er
 	}
 
 	for _, account := range accounts.Accounts {
-		if err := db.SetAccount(token.Username, token.ItemID, &account); err != nil {
+		if err := db.SetAccount(token, &account); err != nil {
 			log.Printf("Problem saving account to db for username: %s, itemID: %s\n", token.Username, token.ItemID)
 			return err
 		}
