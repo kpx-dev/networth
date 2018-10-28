@@ -48,6 +48,8 @@ type Webhook struct {
 // Account wrapper struct for plaid.Account
 type Account struct {
 	plaid.Account
+	InstitutionID   string `json:"institution_id"`
+	InstitutionName string `json:"institution_name"`
 }
 
 // PlaidClient plaid client

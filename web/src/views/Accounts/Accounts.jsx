@@ -6,10 +6,30 @@ import {
   CardTitle,
   Table,
   Row,
-  Col
+  Col,
+  ListGroup,
+  ListGroupItem,
 } from "reactstrap";
+import { get } from "../../helpers/helpers.js";
 
-class RegularTables extends React.Component {
+class Accounts extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { accounts: {} };
+  }
+
+  async componentDidMount() {
+    try {
+      const res = await get(`/accounts`);
+      const body = await res.json();
+      this.setState({ loading: false, accounts: body.data });
+      console.log(body.data);
+    } catch (e) {
+      this.alert('Cannot get accounts. Problem connecting to REST API.');
+      this.setState({ loading: false });
+    }
+  }
+
   render() {
     return (
       <div className="content">
@@ -20,66 +40,28 @@ class RegularTables extends React.Component {
                 <CardTitle tag="h4">Accounts</CardTitle>
               </CardHeader>
               <CardBody>
-                <Table responsive>
-                  <thead className="text-primary">
-                    <tr>
 
-                    </tr>
-                  </thead>
-                  <tbody>
+              {Object.keys(this.state.accounts).map((key, _) => {
+                return (
+                  <div>
+                <h6>{this.state.accounts[key].institution_name}</h6>
+                <ListGroup>
+                  {this.state.accounts[key].accounts.map((account, _) => {
+                    return (<ListGroupItem>{account.name} - {account.official_name}</ListGroupItem>)
+                  })}
+                </ListGroup>
+                <br />
+                </div>
+                )
+              })}
 
-                  </tbody>
-                </Table>
               </CardBody>
             </Card>
           </Col>
-
-          {/* <Col xs={12}>
-            <Card className="card-plain">
-              <CardHeader>
-                <CardTitle tag="h4">Table on Plain Background</CardTitle>
-                <p className="card-category"> Here is a subtitle for this table</p>
-              </CardHeader>
-              <CardBody>
-                <Table responsive>
-                  <thead className="text-primary">
-                    <tr>
-                      {thead.map((prop, key) => {
-                        if (key === thead.length - 1)
-                          return (
-                            <th key={key} className="text-right">
-                              {prop}
-                            </th>
-                          );
-                        return <th key={key}>{prop}</th>;
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tbody.map((prop, key) => {
-                      return (
-                        <tr key={key}>
-                          {prop.data.map((prop, key) => {
-                            if (key === thead.length - 1)
-                              return (
-                                <td key={key} className="text-right">
-                                  {prop}
-                                </td>
-                              );
-                            return <td key={key}>{prop}</td>;
-                          })}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Card>
-          </Col> */}
         </Row>
       </div>
     );
   }
 }
 
-export default RegularTables;
+export default Accounts;

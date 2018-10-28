@@ -42,7 +42,7 @@ github.com/go-ini/ini
 github.com/jmespath/go-jmespath
 # github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82
 github.com/networth-app/networth/dotenv
-# github.com/networth-app/networth/lib v0.0.0-20181028030144-6722bca8249d
+# github.com/networth-app/networth/lib v0.0.0-20181028061811-e7a569f4cc43
 github.com/networth-app/networth/lib
 # github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd
 github.com/plaid/plaid-go/plaid

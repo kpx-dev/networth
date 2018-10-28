@@ -384,12 +384,11 @@ func (d DynamoDBClient) SetAccount(token *Token, account *plaid.Account) error {
 // GetAccounts return all accounts from db for a username
 func (d DynamoDBClient) GetAccounts(username string) ([]Account, error) {
 	var accounts []Account
-	key := fmt.Sprintf("%s:account", username)
 
 	req := d.QueryRequest(&dynamodb.QueryInput{
 		TableName: aws.String(dbTable),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":id": {S: aws.String(key)},
+			":id": {S: aws.String(fmt.Sprintf("%s:account", username))},
 		},
 		KeyConditionExpression: aws.String("id = :id"),
 	})
