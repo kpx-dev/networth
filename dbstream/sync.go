@@ -9,7 +9,7 @@ import (
 func sync(token nwlib.Token) error {
 	// TODO: make these into gorutines / wait group workers:
 	// http://devs.cloudimmunity.com/gotchas-and-common-mistakes-in-go-golang/index.html#gor_app_exit
-	if err := nwlib.SyncAccounts(plaidClient, db, token.Username, token.ItemID, token.AccessToken); err != nil {
+	if err := nwlib.SyncAccounts(plaidClient, db, token); err != nil {
 		log.Printf("Problem syncing accounts: %+v\n", err)
 		return err
 	}
