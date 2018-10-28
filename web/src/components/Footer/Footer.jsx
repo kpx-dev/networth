@@ -15,7 +15,7 @@ class Footer extends React.Component {
             <nav className="footer-nav">
               <ul>
                 <li>
-                  <a ref="mailto:feedback@networth.app">Feedback</a>
+                  <a href="mailto:feedback@networth.app?subject=Feedback">Feedback</a>
                 </li>
               </ul>
             </nav>

@@ -15,7 +15,8 @@ type AccountResp struct {
 
 func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		payload := make(map[string]AccountResp)
+		grouped := make(map[string]AccountResp)
+		// var payload []AccountResp
 
 		accounts, err := s.db.GetAccounts(username)
 
@@ -34,20 +35,31 @@ func (s *NetworthAPI) handleAccounts() http.HandlerFunc {
 			}
 
 			if insName == "" {
-				insName = "Unknown"
+				insName = "Unknown / Manual"
 			}
 
-			existingAccounts := make([]nwlib.Account, 1)
-			if _, ok := payload[insID]; ok {
-				existingAccounts = payload[insID].Accounts
+			var existingAccounts []nwlib.Account
+			if _, ok := grouped[insID]; ok {
+				existingAccounts = grouped[insID].Accounts
 			}
 
-			payload[insID] = AccountResp{
+			grouped[insID] = AccountResp{
 				Accounts:        append(existingAccounts, account),
 				InstitutionName: insName,
 			}
 		}
 
-		nwlib.SuccessResp(w, payload)
+		// TODO: sort by Institution Name
+		// var keys []string
+		// for insID := range grouped {
+		// 	keys = append(keys, grouped[insID].InstitutionName)
+		// }
+		// sort.Strings(keys)
+
+		// for key, val := range keys {
+		// 	fmt.Println(key, val)
+		// }
+
+		nwlib.SuccessResp(w, grouped)
 	}
 }

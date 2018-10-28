@@ -9,6 +9,11 @@ import {
   Col,
   ListGroup,
   ListGroupItem,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
 } from "reactstrap";
 import { get } from "../../helpers/helpers.js";
 import NotificationAlert from "react-notification-alert";
@@ -16,7 +21,10 @@ import NotificationAlert from "react-notification-alert";
 class Accounts extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { accounts: {} };
+    this.state = {
+      dropdownOpen: false,
+      accounts: {}
+    };
   }
 
   async componentDidMount() {
@@ -29,6 +37,13 @@ class Accounts extends React.Component {
       this.alert('Cannot get accounts. Problem connecting to REST API.');
       this.setState({ loading: false });
     }
+  }
+
+  dropdownToggle(e) {
+    console.log(e);
+    this.setState({
+      dropdownOpen: !this.state.dropdownOpen
+    });
   }
 
   alert(message, dismiss) {
@@ -52,32 +67,71 @@ class Accounts extends React.Component {
     return (
       <div className="content">
         <NotificationAlert ref="alert" />
+        <h4>Accounts</h4>
         <Row>
           <Col xs={12}>
-            <Card>
+          {Object.keys(this.state.accounts).map((key, _) => {
+            return (
+              <Card>
               <CardHeader>
-                <CardTitle tag="h4">Accounts</CardTitle>
+                <CardTitle tag="h6">{this.state.accounts[key].institution_name}</CardTitle>
               </CardHeader>
               <CardBody>
+                <Table responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th width="40%">Name</th>
+                      <th width="40%">Official Name</th>
+                      <th width="10%">Balance</th>
+                      <th className="text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.accounts[key].accounts.map((account, idx) => {
+                      return (
+                        <tr>
+                          <td>{account.name}</td>
+                          <td>{account.official_name}</td>
+                          <td>{account.balances.current}</td>
+                          <td key={`${key}_${idx}`} className="text-right">
+                          <UncontrolledDropdown>
+                            <DropdownToggle caret nav></DropdownToggle>
+                            <DropdownMenu right>
+                              <DropdownItem tag="a">Connect</DropdownItem>
+                            </DropdownMenu>
+                          </UncontrolledDropdown>
 
-              {Object.keys(this.state.accounts).map((key, _) => {
-                return (
-                  <div>
-                <h6>{this.state.accounts[key].institution_name}</h6>
-                <ListGroup>
-                  {this.state.accounts[key].accounts.map((account, _) => {
-                    return (<ListGroupItem>{account.name} - {account.official_name}</ListGroupItem>)
-                  })}
-                </ListGroup>
-                <br />
-                </div>
-                )
-              })}
-
+                          </td>
+                        </tr>
+                      )
+                    })}
+                    {/* {tbody.map((prop, key) => {
+                      return (
+                        <tr key={key}>
+                          {prop.data.map((prop, key) => {
+                            if (key === thead.length - 1)
+                              return (
+                                <td key={key} className="text-right">
+                                  {prop}
+                                </td>
+                              );
+                            return <td key={key}>{prop}</td>;
+                          })}
+                        </tr>
+                      );
+                    })} */}
+                  </tbody>
+                </Table>
               </CardBody>
             </Card>
+            )
+          })}
+
           </Col>
-        </Row>
+          </Row>
+
+
+
       </div>
     );
   }
