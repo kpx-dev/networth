@@ -349,7 +349,7 @@ func (d DynamoDBClient) SetTransaction(username string, transaction plaid.Transa
 }
 
 // SetAccount save account to db
-func (d DynamoDBClient) SetAccount(username string, itemID string, account *plaid.Account) error {
+func (d DynamoDBClient) SetAccount(token *Token, account *plaid.Account) error {
 	accountAttr, err := dynamodbattribute.MarshalMap(account)
 	if err != nil {
 		log.Printf("Problem marshalling account struct into dyno format: %+v\n", err)
@@ -357,9 +357,11 @@ func (d DynamoDBClient) SetAccount(username string, itemID string, account *plai
 	}
 
 	dbKey := map[string]dynamodb.AttributeValue{
-		"id":      {S: aws.String(fmt.Sprintf("%s:account", username))},
-		"sort":    {S: aws.String(account.AccountID)},
-		"item_id": {S: aws.String(itemID)},
+		"id":               {S: aws.String(fmt.Sprintf("%s:account", token.Username))},
+		"sort":             {S: aws.String(account.AccountID)},
+		"item_id":          {S: aws.String(token.ItemID)},
+		"institution_id":   {S: aws.String(token.InstitutionID)},
+		"institution_name": {S: aws.String(token.InstitutionName)},
 	}
 
 	for k, v := range dbKey {
