@@ -51,7 +51,7 @@ func handleScheduledEvent(ctx context.Context, e events.CloudWatchEvent) {
 				continue
 			}
 
-			if err := nwlib.SyncAccounts(plaidClient, db, user.Username, token.ItemID, token.AccessToken); err != nil {
+			if err := nwlib.SyncAccounts(plaidClient, db, &token); err != nil {
 				errMsg := fmt.Sprintf("Problem syncing accounts for username: %s, item id: %s\n %+v", user.Username, token.ItemID, err)
 				log.Println(errMsg)
 				nwlib.PublishSNS(snsARN, errMsg)
