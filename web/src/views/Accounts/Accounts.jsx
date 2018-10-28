@@ -11,6 +11,7 @@ import {
   ListGroupItem,
 } from "reactstrap";
 import { get } from "../../helpers/helpers.js";
+import NotificationAlert from "react-notification-alert";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -30,9 +31,27 @@ class Accounts extends React.Component {
     }
   }
 
+  alert(message, dismiss) {
+    const options = {
+      place: "tc",
+      type: "danger",
+      icon: "nc-icon nc-alert-circle-i",
+      message: (
+        <div>
+          <div>
+            {message}
+          </div>
+        </div>
+      ),
+    };
+    if (dismiss) options.autoDismiss = dismiss;
+    this.refs.alert.notificationAlert(options);
+  }
+
   render() {
     return (
       <div className="content">
+        <NotificationAlert ref="alert" />
         <Row>
           <Col xs={12}>
             <Card>
