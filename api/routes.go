@@ -17,6 +17,7 @@ var prefix = "/api"
 func (s *NetworthAPI) init() {
 	// unauth routes
 	s.router.HandleFunc(fmt.Sprintf("%s/tokens", prefix), s.handleTokenExchange()).Methods("POST")
+	s.router.HandleFunc(fmt.Sprintf("%s/tokens/public", prefix), s.handleGetPublicToken()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/webhook", prefix), s.handleWebhook()).Methods("POST")
 	s.router.HandleFunc(fmt.Sprintf("%s/healthcheck", prefix), s.handleHealthcheck()).Methods("GET")
 
@@ -24,6 +25,7 @@ func (s *NetworthAPI) init() {
 	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.handleNetworth()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/networth_history", prefix), s.handleNetworthHistory()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts()).Methods("GET")
+	s.router.HandleFunc(fmt.Sprintf("%s/transactions", prefix), s.handleTransactions()).Methods("GET")
 
 	s.router.Use(loggingMiddleware)
 	s.router.Use(extractUsernameMiddleware)

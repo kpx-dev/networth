@@ -6,7 +6,7 @@ require (
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
 	github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82
-	github.com/networth-app/networth/lib v0.0.0-20181028061811-e7a569f4cc43
+	github.com/networth-app/networth/lib v0.0.0-20181028084333-0f399823c98b
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/stretchr/testify v1.2.2

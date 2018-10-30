@@ -21,6 +21,7 @@ var (
 	plaidPublicKey = nwlib.GetEnv("PLAID_PUBLIC_KEY")
 	plaidEnv       = nwlib.GetEnv("PLAID_ENV")
 	plaidClient    = nwlib.NewPlaidClient(plaidClientID, plaidSecret, plaidPublicKey, plaidEnv)
+	kmsClient      = nwlib.NewKMSClient()
 )
 
 func main() {

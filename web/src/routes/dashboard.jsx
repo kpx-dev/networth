@@ -5,29 +5,38 @@ import Connect from "views/Connect/Connect.jsx";
 
 var dashRoutes = [
   {
-    path: "/networth",
+    path: "/app/networth",
     name: "Net Worth",
     icon: "nc-icon nc-money-coins",
     component: Dashboard
   },
   {
-    path: "/accounts",
+    path: "/app/accounts",
     name: "Accounts",
     icon: "nc-icon nc-bank",
     component: Accounts
   },
   {
-    path: "/transactions",
+    path: "/app/transactions",
     name: "Transactions",
     icon: "nc-icon nc-tile-56",
     component: Transactions
   },
   {
-    path: "/connect",
+    path: "/app/connect",
     name: "Connect New Bank",
     icon: "nc-icon nc-simple-add",
     component: Connect
   },
-  { redirect: true, path: "/", pathTo: "/networth", name: "Net Worth" }
+  { redirect: true,
+    path: "/",
+    pathTo: "/app/networth",
+    name: "Net Worth"
+  },
+  { redirect: true,
+    path: "/app",
+    pathTo: "/app/networth",
+    name: "Net Worth"
+  }
 ];
 export default dashRoutes;

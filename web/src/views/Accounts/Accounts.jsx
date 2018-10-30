@@ -92,7 +92,13 @@ class Accounts extends React.Component {
                         <tr>
                           <td>{account.name}</td>
                           <td>{account.official_name}</td>
-                          <td>{account.balances.current}</td>
+                          <td>{
+                            new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'USD',
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }).format(account.balances.current)}</td>
                           <td key={`${key}_${idx}`} className="text-right">
                           <UncontrolledDropdown>
                             <DropdownToggle caret nav></DropdownToggle>

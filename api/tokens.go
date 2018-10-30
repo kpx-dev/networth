@@ -8,15 +8,30 @@ import (
 	"github.com/networth-app/networth/lib"
 )
 
-// IncomingToken body from api
-type IncomingToken struct {
-	AccessToken     string `json:"access_token"`
-	AccountID       string `json:"account_id"`
-	InstitutionID   string `json:"institution_id"`
-	InstitutionName string `json:"institution_name"`
+func (s *NetworthAPI) handleGetPublicToken() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		url := r.URL.Query()
+		itemID := url.Get("item_id")
+
+		publicToken, err := s.db.GetTokenByItemID(kmsClient, itemID)
+
+		if err != nil {
+			nwlib.ErrorResp(w, err.Error())
+			return
+		}
+
+		nwlib.SuccessResp(w, publicToken)
+	}
 }
 
 func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
+	// IncomingToken body from api
+	type IncomingToken struct {
+		AccessToken     string `json:"access_token"`
+		AccountID       string `json:"account_id"`
+		InstitutionID   string `json:"institution_id"`
+		InstitutionName string `json:"institution_name"`
+	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var body IncomingToken
@@ -43,7 +58,6 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 			return
 		}
 
-		kmsClient := nwlib.NewKMSClient()
 		encryptedToken, err := kmsClient.Encrypt(exchangedToken.AccessToken)
 
 		if err != nil {

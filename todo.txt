@@ -1,0 +1,15 @@
+[BUG] UI refresh => S3 error
+
+[BUG] Fix merrill edge expired pass
+
+[UI] show transactions on UI
+[BUG][UI] First login empty page
+[UI] after initial account link, ws stream to update UI
+[INFRA] fix travis deploy to staging and prod (webapp currently using .env.prod)
+[TECH] use dyno-db local: https://hub.docker.com/r/amazon/dynamodb-local/
+[INFRA] Verification email / better template / From Name
+
+[MOBILE] Get basic tab app up
+[DESKTOP] Get basic desktop app up
+
+DONE ========================================================================
