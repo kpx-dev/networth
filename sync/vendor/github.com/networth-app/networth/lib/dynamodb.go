@@ -165,6 +165,39 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 	return payload, nil
 }
 
+// GetToken - return decrypted token based on username and item_id
+func (d DynamoDBClient) GetToken(kms *KMSClient, username, itemID string) (Token, error) {
+	var token Token
+	req := d.GetItemRequest(&dynamodb.GetItemInput{
+		TableName: aws.String(dbTable),
+		Key: map[string]dynamodb.AttributeValue{
+			"id":   {S: aws.String(fmt.Sprintf("%s:token", username))},
+			"sort": {S: aws.String(itemID)},
+		},
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		log.Printf("Problem getting token: %+v\n", err)
+		return token, err
+	}
+
+	if err := dynamodbattribute.UnmarshalMap(res.Item, &token); err != nil {
+		log.Printf("Problem converting db to Token struct: %+v\n", err)
+
+		return token, err
+	}
+
+	accessToken, err := kms.Decrypt(token.AccessToken)
+	if err != nil {
+		log.Printf("Problem decoding access token: %+v\n", err)
+		return token, err
+	}
+	token.AccessToken = accessToken
+
+	return token, nil
+}
+
 // GetTokenByItemID - return decrypted token based on item_id
 func (d DynamoDBClient) GetTokenByItemID(kms *KMSClient, itemID string) (Token, error) {
 	var tokens []Token

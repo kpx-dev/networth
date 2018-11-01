@@ -50,7 +50,7 @@ github.com/gorilla/mux
 github.com/jmespath/go-jmespath
 # github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82
 github.com/networth-app/networth/dotenv
-# github.com/networth-app/networth/lib v0.0.0-20181030071242-8575ed9dac20
+# github.com/networth-app/networth/lib v0.0.0-20181101051519-3a1dc0e2ff0e
 github.com/networth-app/networth/lib
 # github.com/pkg/errors v0.8.0
 github.com/pkg/errors
