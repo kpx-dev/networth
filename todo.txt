@@ -1,5 +1,3 @@
-[BUG] UI refresh => S3 error
-
 [BUG] Fix merrill edge expired pass
 
 [UI] show transactions on UI

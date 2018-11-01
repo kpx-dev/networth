@@ -188,7 +188,7 @@ class Header extends React.Component {
                 <Connect></Connect>
               </NavItem>
               <NavItem>
-                <Link to="/logout" onClick={this.handleLogout} className="nav-link btn-rotate">
+                <Link to="/app/logout" onClick={this.handleLogout} className="nav-link btn-rotate">
                   <i className="nc-icon nc-lock-circle-open" title="Logout"/>
                   <p>
                     <span className="d-lg-none d-md-block">Logout</span>
