@@ -17,15 +17,16 @@ var prefix = "/api"
 func (s *NetworthAPI) init() {
 	// unauth routes
 	s.router.HandleFunc(fmt.Sprintf("%s/tokens", prefix), s.handleTokenExchange()).Methods("POST")
-	s.router.HandleFunc(fmt.Sprintf("%s/tokens/public", prefix), s.handleGetPublicToken()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/webhook", prefix), s.handleWebhook()).Methods("POST")
 	s.router.HandleFunc(fmt.Sprintf("%s/healthcheck", prefix), s.handleHealthcheck()).Methods("GET")
 
 	// auth routes
+	s.router.HandleFunc(fmt.Sprintf("%s/tokens/public", prefix), s.handleGetPublicToken()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.handleNetworth()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/networth_history", prefix), s.handleNetworthHistory()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/transactions", prefix), s.handleTransactions()).Methods("GET")
+	s.router.HandleFunc(fmt.Sprintf("%s/ws", prefix), s.handleWebSocket()).Methods("GET")
 
 	s.router.Use(loggingMiddleware)
 	s.router.Use(extractUsernameMiddleware)
@@ -75,7 +76,7 @@ func extractUsernameMiddleware(next http.Handler) http.Handler {
 func (s *NetworthAPI) Start(host string) {
 	s.init()
 	handler := cors.Default().Handler(s.router)
-	log.Printf("API service started on: %s\n", host)
+	log.Printf("REST API and Websocket service started on: %s\n", host)
 
 	if nwlib.GetEnv("AWS_LAMBDA_FUNCTION_NAME") == "" {
 		log.Fatal(http.ListenAndServe(host, handler))

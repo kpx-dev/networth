@@ -5,6 +5,7 @@ require (
 	github.com/aws/aws-lambda-go v1.6.0 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.6.2
+	github.com/gorilla/websocket v1.4.0
 	github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82
 	github.com/networth-app/networth/lib v0.0.0-20181101051732-81cbcbfa5b5b
 	github.com/pkg/errors v0.8.0 // indirect

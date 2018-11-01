@@ -1,7 +1,7 @@
 import RxDB from 'rxdb';
 
 RxDB.plugin(require('pouchdb-adapter-idb'));
-const dbVersion = 1;
+const dbVersion = 0;
 
 const networthSchema = {
   title: "networth schema",
