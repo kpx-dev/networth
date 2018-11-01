@@ -13,7 +13,14 @@ func (s *NetworthAPI) handleGetPublicToken() http.HandlerFunc {
 		url := r.URL.Query()
 		itemID := url.Get("item_id")
 
-		publicToken, err := s.db.GetToken(kmsClient, username, itemID)
+		token, err := s.db.GetToken(kmsClient, username, itemID)
+
+		if err != nil {
+			nwlib.ErrorResp(w, err.Error())
+			return
+		}
+
+		publicToken, err := s.plaid.CreatePublicToken(token.AccessToken)
 
 		if err != nil {
 			nwlib.ErrorResp(w, err.Error())

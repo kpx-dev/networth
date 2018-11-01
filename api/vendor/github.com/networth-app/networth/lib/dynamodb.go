@@ -165,7 +165,7 @@ func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, err
 	return payload, nil
 }
 
-// GetToken - return decrypted token based on username and item_id
+//  - return decrypted token based on username and item_id
 func (d DynamoDBClient) GetToken(kms *KMSClient, username, itemID string) (Token, error) {
 	var token Token
 	req := d.GetItemRequest(&dynamodb.GetItemInput{

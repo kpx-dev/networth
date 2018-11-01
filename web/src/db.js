@@ -1,10 +1,11 @@
 import RxDB from 'rxdb';
 
 RxDB.plugin(require('pouchdb-adapter-idb'));
+const dbVersion = 1;
 
 const networthSchema = {
   title: "networth schema",
-  version: 0,
+  version: dbVersion,
   description: "hold networth info",
   type: "object",
   properties: {
@@ -23,7 +24,7 @@ const networthSchema = {
 
 const networthHistorySchema = {
   title: "networth history schema",
-  version: 0,
+  version: dbVersion,
   description: "hold networth history info",
   type: "object",
   properties: {
@@ -49,7 +50,7 @@ const _create = async () => {
   });
 
   await db.collection({name: 'networth', schema: networthSchema});
-  // await db.collection({name: 'networth_history', schema: networthHistorySchema});
+  await db.collection({name: 'networth_history', schema: networthHistorySchema});
 
   return db;
 }

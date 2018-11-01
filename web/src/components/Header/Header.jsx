@@ -10,9 +10,7 @@ import {
   NavItem,
   Container,
   Badge,
-  Tooltip,
 } from "reactstrap";
-import dashboardRoutes from "routes/dashboard.jsx";
 import { Auth } from 'aws-amplify';
 import Connect from "components/Connect/Connect.jsx";
 import { get } from "../../helpers/helpers.js";
@@ -110,6 +108,7 @@ class Header extends React.Component {
           console.log(insertRes);
         } else {
           const upsertRes = await query.update({$set: dbBody});
+          console.log(upsertRes);
         }
         this.setState({ networth: nwBody.data.networth });
       } catch (e) {
