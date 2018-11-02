@@ -12,7 +12,7 @@ import (
 var (
 	db                   = NewDynamoDBClient()
 	institutionID        = "ins_1"
-	testUsername         = "b6989907-cba1-4ffb-b0f3-1258cb689ba0"
+	testUsername         = "c1fa7e12-529e-4b63-8c64-855ba23690ff"
 	testUsernameNotExist = "test_not_exist_username@networth.app"
 	accountID            = "Vxk3QMnVmNhaJKmlrXg5tj7q5keD3bfW4BnnE"
 	itemID               = "dkeX46eyynhoaRqAOdmdUJnX31BmXPCP3wVnR0"
@@ -31,19 +31,12 @@ func TestSetTransaction(t *testing.T) {
 }
 
 func TestSetAccount(t *testing.T) {
-	username := "test_set_account@networth.app"
-	itemID := "1"
 	account := &plaid.Account{
 		AccountID: "1",
 		Name:      "test",
 	}
 
-	// set for specific ins
-	err := db.SetAccount(username, institutionID, account)
-	assert.Equal(t, err, nil)
-
-	// set for all
-	err = db.SetAccount(username, itemID, account)
+	err := db.SetAccount(&Token{}, account)
 	assert.Equal(t, err, nil)
 }
 
@@ -151,4 +144,10 @@ func TestGetTokenByItemID(t *testing.T) {
 	kms := NewKMSClient()
 	_, err := db.GetTokenByItemID(kms, itemID)
 	assert.Equal(t, err, nil)
+}
+
+func TestGetTokensWithError(t *testing.T) {
+	tokens, err := db.GetTokensWithError(testUsername)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(tokens) > 0, true)
 }

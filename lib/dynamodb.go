@@ -141,7 +141,8 @@ func (d DynamoDBClient) GetTokensWithError(username string) ([]Token, error) {
 		ExpressionAttributeNames: map[string]string{
 			"#error": "error",
 		},
-		KeyConditionExpression: aws.String("id = :id AND attribute_exists(#error)"),
+		KeyConditionExpression: aws.String("id = :id"),
+		FilterExpression:       aws.String("attribute_exists(#error)"),
 	})
 
 	res, err := req.Send()
