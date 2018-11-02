@@ -25,11 +25,12 @@ class Connect extends React.Component {
   };
 
   static defaultProps = {
-    text: "+ Connect"
+    text: "+ Connect",
+    token: null,
   };
 
   render() {
-    const { institution, text } = this.props;
+    const { institution, text, token } = this.props;
     const plaidStyle = { padding: 0, border: "none", borderRadius: 0, background: "none" };
 
     return (
@@ -43,6 +44,7 @@ class Connect extends React.Component {
         product={PLAID_PRODUCTS}
         publicKey={PLAID_PUBLIC_KEY}
         onSuccess={this.handleOnSuccess}
+        token={token}
       >
         <Button color="danger" size="sm">{text}</Button>
       </PlaidLink>

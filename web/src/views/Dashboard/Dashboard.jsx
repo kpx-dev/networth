@@ -14,6 +14,7 @@ import { get } from "../../helpers/helpers.js";
 import { Auth } from 'aws-amplify';
 import * as DB from '../../db.js';
 import NotificationAlert from "react-notification-alert";
+import Connect from "components/Connect/Connect.jsx";
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -62,6 +63,22 @@ class Dashboard extends React.Component {
       const networthUpdatedAt = new Date(networth.updated_at).toDateString();
       this.setState({ networthUpdatedAt });
     }
+    await this.getTokenError();
+  }
+
+  async getTokenError() {
+    try {
+      let res = await get(`/tokens/error`);
+      const tokenErrors = await res.json();
+      const badToken = tokenErrors.data[0];
+
+      res = await get(`/tokens/public?item_id=${badToken.item_id}`);
+      const publicTokenData = await res.json();
+      const publicToken = publicTokenData.data.public_token;
+
+      this.alertRelinkAccount(`Accounts from ${badToken.institution_name} need re-linking again.`, publicToken);
+    } catch (e) {
+    }
   }
 
   _generateChartData(data) {
@@ -99,6 +116,22 @@ class Dashboard extends React.Component {
     payload.datasets = [ networthSet ];
 
     return payload;
+  }
+
+  alertRelinkAccount(message, publicToken) {
+    const options = {
+      place: "tc",
+      type: "danger",
+      icon: "nc-icon nc-alert-circle-i",
+      message: (
+        <div>
+          <div>
+            {message} <Connect text="Fix Now" token={publicToken}></Connect>
+          </div>
+        </div>
+      ),
+    };
+    this.refs.alert.notificationAlert(options);
   }
 
   alert(message, dismiss) {

@@ -148,6 +148,6 @@ func TestGetTokenByItemID(t *testing.T) {
 
 func TestGetTokensWithError(t *testing.T) {
 	tokens, err := db.GetTokensWithError(testUsername)
-	assert.Equal(t, err, nil)
-	assert.Equal(t, len(tokens) > 0, true)
+	assert.Equal(t, nil, err)
+	assert.Equal(t, len(tokens) == 0, true)
 }
