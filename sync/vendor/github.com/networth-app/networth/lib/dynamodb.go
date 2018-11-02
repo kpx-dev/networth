@@ -128,6 +128,31 @@ func (d DynamoDBClient) SetNetworth(username string, networth float64, assets fl
 	return err
 }
 
+// GetTokensWithError - return all tokens with error
+func (d DynamoDBClient) GetTokensWithError(username string) ([]Token, error) {
+	var tokens []Token
+	key := fmt.Sprintf("%s:token", username)
+
+	req := d.QueryRequest(&dynamodb.QueryInput{
+		TableName: aws.String(dbTable),
+		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
+			":id": {S: aws.String(key)},
+		},
+		KeyConditionExpression: aws.String("id = :id AND attribute_exists(error)"),
+	})
+
+	res, err := req.Send()
+	if err != nil {
+		return tokens, err
+	}
+
+	if err := dynamodbattribute.UnmarshalListOfMaps(res.Items, &tokens); err != nil {
+		return tokens, err
+	}
+
+	return tokens, nil
+}
+
 // GetTokens - return all tokens decrypted from db for a username
 func (d DynamoDBClient) GetTokens(kms *KMSClient, username string) ([]Token, error) {
 	var tokens []Token
