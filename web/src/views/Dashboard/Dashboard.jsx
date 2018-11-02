@@ -70,14 +70,17 @@ class Dashboard extends React.Component {
     try {
       let res = await get(`/tokens/error`);
       const tokenErrors = await res.json();
-      const badToken = tokenErrors.data[0];
+      const badTokens = tokenErrors.data;
+      if (badTokens && badTokens.length > 0) {
+        const badToken = badTokens[0];
+        res = await get(`/tokens/public?item_id=${badToken.item_id}`);
+        const publicTokenData = await res.json();
+        const publicToken = publicTokenData.data.public_token;
 
-      res = await get(`/tokens/public?item_id=${badToken.item_id}`);
-      const publicTokenData = await res.json();
-      const publicToken = publicTokenData.data.public_token;
-
-      this.alertRelinkAccount(`Accounts from ${badToken.institution_name} need re-linking again.`, publicToken);
+        this.alertRelinkAccount(`Accounts from ${badToken.institution_name} need re-linking again.`, publicToken);
+      }
     } catch (e) {
+      console.error(e);
     }
   }
 

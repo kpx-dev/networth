@@ -136,13 +136,14 @@ func (d DynamoDBClient) GetTokensWithError(username string) ([]Token, error) {
 	req := d.QueryRequest(&dynamodb.QueryInput{
 		TableName: aws.String(dbTable),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
-			":id": {S: aws.String(key)},
+			":id":    {S: aws.String(key)},
+			":error": {S: aws.String("ITEM_LOGIN_REQUIRED")},
 		},
 		ExpressionAttributeNames: map[string]string{
 			"#error": "error",
 		},
 		KeyConditionExpression: aws.String("id = :id"),
-		FilterExpression:       aws.String("attribute_exists(#error)"),
+		FilterExpression:       aws.String("attribute_exists(#error) AND #error = :error"),
 	})
 
 	res, err := req.Send()
