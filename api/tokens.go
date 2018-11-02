@@ -8,6 +8,19 @@ import (
 	"github.com/networth-app/networth/lib"
 )
 
+func (s *NetworthAPI) handleGetErrorToken() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tokens, err := s.db.GetTokensWithError(username)
+
+		if err != nil {
+			nwlib.ErrorResp(w, err.Error())
+			return
+		}
+
+		nwlib.SuccessResp(w, tokens)
+	}
+}
+
 func (s *NetworthAPI) handleGetPublicToken() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		url := r.URL.Query()
@@ -89,4 +102,5 @@ func (s *NetworthAPI) handleTokenExchange() http.HandlerFunc {
 		payload.AccessToken = "*redacted*"
 		nwlib.SuccessResp(w, payload)
 	}
+
 }

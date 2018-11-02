@@ -2,5 +2,5 @@ module github.com/networth-app/networth/notification
 
 require (
 	github.com/aws/aws-lambda-go v1.6.0
-	github.com/networth-app/networth/lib v0.0.0-20181101051732-81cbcbfa5b5b
+	github.com/networth-app/networth/lib v0.0.0-20181101173154-f7208136dd8d
 )

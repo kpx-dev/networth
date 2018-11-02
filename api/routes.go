@@ -22,6 +22,7 @@ func (s *NetworthAPI) init() {
 
 	// auth routes
 	s.router.HandleFunc(fmt.Sprintf("%s/tokens/public", prefix), s.handleGetPublicToken()).Methods("GET")
+	s.router.HandleFunc(fmt.Sprintf("%s/tokens/error", prefix), s.handleGetErrorToken()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.handleNetworth()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/networth_history", prefix), s.handleNetworthHistory()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts()).Methods("GET")

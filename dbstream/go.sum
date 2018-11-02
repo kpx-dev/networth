@@ -17,8 +17,8 @@ github.com/jtolds/gls v4.2.1+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVY
 github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82/go.mod h1:wz+raRJgNFD9crCt5q5UzuuREPwSvBmHAz+J2uwmd84=
 github.com/networth-app/networth/dotenv v0.0.0-20181020073026-6a606e482806 h1:8MC2pZ2qjIeHl7yreymP/DhBni2QFZRS+Pvpci3KTgg=
 github.com/networth-app/networth/dotenv v0.0.0-20181020073026-6a606e482806/go.mod h1:wz+raRJgNFD9crCt5q5UzuuREPwSvBmHAz+J2uwmd84=
-github.com/networth-app/networth/lib v0.0.0-20181101051732-81cbcbfa5b5b h1:mps6IZSGEWbiMAUfuifymPSDymQf5CpmZUmAXj2OBXQ=
-github.com/networth-app/networth/lib v0.0.0-20181101051732-81cbcbfa5b5b/go.mod h1:/UOxshCuiSS60r+bfnKLD+UXmoLq0d5r3gXZ+rAQjDo=
+github.com/networth-app/networth/lib v0.0.0-20181101173154-f7208136dd8d h1:AKnLSqGy13VIi+CtSgQQtIMfOONnFH3rP/lC178GxNI=
+github.com/networth-app/networth/lib v0.0.0-20181101173154-f7208136dd8d/go.mod h1:/UOxshCuiSS60r+bfnKLD+UXmoLq0d5r3gXZ+rAQjDo=
 github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd h1:0NQ8P+8Hop86vm7urcCZQxetNcox/SNWEclQu+Yf2Xc=
 github.com/plaid/plaid-go v0.0.0-20180625002317-ef879de0d7bd/go.mod h1:c7cDT1Lkcr0AgKJGVIG+oCa07jOrrg4Um8nduQ1eQN0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

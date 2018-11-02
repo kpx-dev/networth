@@ -10,4 +10,6 @@
 [MOBILE] Get basic tab app up
 [DESKTOP] Get basic desktop app up
 
+[SERVER] websocket...
+
 DONE ========================================================================
