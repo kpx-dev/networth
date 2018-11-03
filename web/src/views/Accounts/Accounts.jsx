@@ -100,7 +100,7 @@ class Accounts extends React.Component {
                           <UncontrolledDropdown>
                             <DropdownToggle caret nav></DropdownToggle>
                             <DropdownMenu right>
-                              <DropdownItem tag="a">Connect</DropdownItem>
+                              <DropdownItem tag="a">View Transactions</DropdownItem>
                             </DropdownMenu>
                           </UncontrolledDropdown>
 

@@ -14,7 +14,7 @@ var (
 	institutionID        = "ins_1"
 	testUsername         = "c1fa7e12-529e-4b63-8c64-855ba23690ff"
 	testUsernameNotExist = "test_not_exist_username@networth.app"
-	accountID            = "Vxk3QMnVmNhaJKmlrXg5tj7q5keD3bfW4BnnE"
+	accountID            = "OKLDJMBK3Jf1N6nMLvvQHQ4VkoMbJaT8w7YBX"
 	itemID               = "dkeX46eyynhoaRqAOdmdUJnX31BmXPCP3wVnR0"
 )
 
@@ -122,17 +122,17 @@ func TestGetNetworthByDateRange(t *testing.T) {
 	assert.Equal(t, len(networth), 0)
 }
 
-// func TestGetTransaction(t *testing.T) {
-// 	// get using existing username
-// 	transactions, err := db.GetTransactions(testUsername, accountID)
-// 	assert.Equal(t, err, nil)
-// 	assert.Equal(t, len(transactions) > 0, true)
+func TestGetTransaction(t *testing.T) {
+	// get using existing username
+	transactions, err := db.GetTransactions(testUsername, accountID)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(transactions) > 0, true)
 
-// 	// get using non-exist username
-// 	// accounts, err = db.GetAccounts(testUsernameNotExist)
-// 	// assert.Equal(t, err, nil)
-// 	// assert.Equal(t, len(accounts), 0)
-// }
+	// get using non-exist username
+	transactions, err = db.GetTransactions(testUsernameNotExist, accountID)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(transactions), 0)
+}
 
 func TestGetAllUsers(t *testing.T) {
 	res, err := db.GetAllUsers()

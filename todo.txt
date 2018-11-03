@@ -1,5 +1,3 @@
-[BUG] Fix merrill edge expired pass
-
 [UI] show transactions on UI
 [BUG][UI] First login empty page
 [UI] after initial account link, ws stream to update UI
