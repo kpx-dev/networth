@@ -14,6 +14,7 @@ import {
 } from "reactstrap";
 import { get } from "../../helpers/helpers.js";
 import NotificationAlert from "react-notification-alert";
+import { Link } from "react-router-dom";
 
 class Accounts extends React.Component {
   constructor(props) {
@@ -100,29 +101,13 @@ class Accounts extends React.Component {
                           <UncontrolledDropdown>
                             <DropdownToggle caret nav></DropdownToggle>
                             <DropdownMenu right>
-                              <DropdownItem tag="a">View Transactions</DropdownItem>
+                              <DropdownItem tag="a"><Link to={`/app/transactions/${account.account_id}`} className="nav-link">View Transactions</Link></DropdownItem>
                             </DropdownMenu>
                           </UncontrolledDropdown>
-
                           </td>
                         </tr>
                       )
                     })}
-                    {/* {tbody.map((prop, key) => {
-                      return (
-                        <tr key={key}>
-                          {prop.data.map((prop, key) => {
-                            if (key === thead.length - 1)
-                              return (
-                                <td key={key} className="text-right">
-                                  {prop}
-                                </td>
-                              );
-                            return <td key={key}>{prop}</td>;
-                          })}
-                        </tr>
-                      );
-                    })} */}
                   </tbody>
                 </Table>
               </CardBody>

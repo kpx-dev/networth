@@ -7,7 +7,7 @@ require (
 	github.com/gorilla/mux v1.6.2
 	github.com/gorilla/websocket v1.4.0
 	github.com/networth-app/networth/dotenv v0.0.0-20181020070538-07ae72e66c82
-	github.com/networth-app/networth/lib v0.0.0-20181102071317-d9b74f3313da
+	github.com/networth-app/networth/lib v0.0.0-20181103085253-2eb053246642
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/rs/cors v1.6.0
 	github.com/stretchr/testify v1.2.2

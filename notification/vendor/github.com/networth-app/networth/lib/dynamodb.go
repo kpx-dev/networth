@@ -474,7 +474,8 @@ func (d DynamoDBClient) GetTransactions(username string, accountID string) ([]Tr
 
 	req := d.QueryRequest(&dynamodb.QueryInput{
 		TableName:              aws.String(dbTable),
-		KeyConditionExpression: aws.String("id = :id and account_id = :accountID"),
+		KeyConditionExpression: aws.String("id = :id"),
+		FilterExpression:       aws.String("account_id = :accountID"),
 		ExpressionAttributeValues: map[string]dynamodb.AttributeValue{
 			":id":        {S: aws.String(fmt.Sprintf("%s:transaction", username))},
 			":accountID": {S: aws.String(accountID)},

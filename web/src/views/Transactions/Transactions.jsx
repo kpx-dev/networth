@@ -8,8 +8,33 @@ import {
   Row,
   Col
 } from "reactstrap";
+import { get } from "../../helpers/helpers.js";
+import NotificationAlert from "react-notification-alert";
+import last from "lodash/last";
 
 class RegularTables extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      transactions: [],
+    };
+  }
+
+  async componentDidMount() {
+    const accountID = last(this.props.location.pathname.split('/'));
+
+    try {
+      this.setState({ loading: true });
+      const res = await get(`/transactions/${accountID}`);
+      const body = await res.json();
+      console.log(body.data);
+      this.setState({ loading: false, transactions: body.data });
+    } catch (e) {
+      // this.alert('Cannot get accounts. Problem connecting to REST API.');
+      this.setState({ loading: false });
+    }
+  }
+
   render() {
     return (
       <div className="content">
@@ -23,11 +48,21 @@ class RegularTables extends React.Component {
                 <Table responsive>
                   <thead className="text-primary">
                     <tr>
-
+                      <th width="60%">Name</th>
+                      <th width="20%">Date</th>
+                      <th width="20%">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
-
+                  {this.state.transactions.map((transaction, idx) => {
+                      return (
+                        <tr>
+                          <td>{transaction.name}</td>
+                          <td>{transaction.date}</td>
+                          <td>{transaction.amount * -1}</td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </Table>
               </CardBody>

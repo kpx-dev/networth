@@ -26,7 +26,7 @@ func (s *NetworthAPI) init() {
 	s.router.HandleFunc(fmt.Sprintf("%s/networth", prefix), s.handleNetworth()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/networth_history", prefix), s.handleNetworthHistory()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/accounts", prefix), s.handleAccounts()).Methods("GET")
-	s.router.HandleFunc(fmt.Sprintf("%s/transactions", prefix), s.handleTransactions()).Methods("GET")
+	s.router.HandleFunc(fmt.Sprintf("%s/transactions/{accountID}", prefix), s.handleTransactions()).Methods("GET")
 	s.router.HandleFunc(fmt.Sprintf("%s/ws", prefix), s.handleWebSocket()).Methods("GET")
 
 	s.router.Use(loggingMiddleware)
