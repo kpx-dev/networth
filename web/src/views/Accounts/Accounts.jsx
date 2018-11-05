@@ -30,7 +30,6 @@ class Accounts extends React.Component {
       const res = await get(`/accounts`);
       const body = await res.json();
       this.setState({ loading: false, accounts: body.data });
-      console.log(body.data);
     } catch (e) {
       this.alert('Cannot get accounts. Problem connecting to REST API.');
       this.setState({ loading: false });

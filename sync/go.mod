@@ -2,5 +2,5 @@ module github.com/networth-app/networth/sync
 
 require (
 	github.com/aws/aws-lambda-go v1.6.0
-	github.com/networth-app/networth/lib v0.0.0-20181103085253-2eb053246642
+	github.com/networth-app/networth/lib v0.0.0-20181104013221-f3057f7dcda2
 )
