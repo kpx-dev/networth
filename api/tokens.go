@@ -33,14 +33,23 @@ func (s *NetworthAPI) handleGetPublicToken() http.HandlerFunc {
 			return
 		}
 
-		publicToken, err := s.plaid.CreatePublicToken(token.AccessToken)
+		retry := 0
+		for {
+			publicToken, err := s.plaid.CreatePublicToken(token.AccessToken)
 
-		if err != nil {
-			nwlib.ErrorResp(w, err.Error())
-			return
+			if err == nil {
+				nwlib.SuccessResp(w, publicToken)
+				return
+			}
+
+			if retry >= 10 {
+				nwlib.ErrorResp(w, err.Error())
+				return
+			}
+
+			retry++
 		}
 
-		nwlib.SuccessResp(w, publicToken)
 	}
 }
 

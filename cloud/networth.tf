@@ -532,6 +532,54 @@ resource "aws_api_gateway_integration" "post_tokens" {
   uri                     = "${aws_lambda_function.api.invoke_arn}"
 }
 
+// create /api/tokens/error
+resource "aws_api_gateway_resource" "tokens_error" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.tokens.id}"
+  path_part   = "error"
+}
+
+resource "aws_api_gateway_method" "get_tokens_error" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.tokens_error.id}"
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_tokens_error" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.get_tokens_error.resource_id}"
+  http_method = "${aws_api_gateway_method.get_tokens_error.http_method}"
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
+// create /api/tokens/public
+resource "aws_api_gateway_resource" "tokens_public" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  parent_id   = "${aws_api_gateway_resource.tokens.id}"
+  path_part   = "public"
+}
+
+resource "aws_api_gateway_method" "get_tokens_public" {
+  rest_api_id   = "${aws_api_gateway_rest_api.api.id}"
+  resource_id   = "${aws_api_gateway_resource.tokens_public.id}"
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_tokens_public" {
+  rest_api_id = "${aws_api_gateway_rest_api.api.id}"
+  resource_id = "${aws_api_gateway_method.get_tokens_public.resource_id}"
+  http_method = "${aws_api_gateway_method.get_tokens_public.http_method}"
+
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.api.invoke_arn}"
+}
+
 resource "aws_api_gateway_deployment" "api" {
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
   stage_name  = "latest"

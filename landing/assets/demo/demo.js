@@ -103,7 +103,7 @@ demo = {
       type: 'line',
       responsive: true,
       data: {
-        labels: ["JUN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+        labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
         datasets: [{
           label: "Data",
           fill: true,

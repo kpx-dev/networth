@@ -1,3 +1,7 @@
+[BUG] Account error not showing up in api
+
+[BUG] Sync issue
+
 [UI] Landing page
 
 [MOBILE] Get basic tab app up
