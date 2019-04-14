@@ -1,4 +1,4 @@
-# ![networth.app logo](landing/assets/img/networth-logo-50.png "networth.app") FIRE with [networth.app](https://networth.app)
+# ![networth.app logo](landing/assets/img/networth-logo-30.png "networth.app") FIRE with [networth.app](https://networth.app)
 
 ## What is FIRE?
 
